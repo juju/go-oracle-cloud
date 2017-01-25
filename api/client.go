@@ -6,20 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 )
-
-// defines the region where the oracle cloud
-// infrastracture is geo locatted.
-type Region string
-
-const (
-	US1 = "us1"
-	US3 = "us3"
-)
-
-// base url for oracle cloud api
-var base = "https://api-z999.compute.%s.oraclecloud.com"
 
 // Config represents the significat details that a client
 // needs in order to interact with the oracle cloud api.
@@ -30,28 +19,32 @@ type Config struct {
 	Username string
 	// Password will be the password of the orcale cloud client account
 	Password string
-	// Region will be the region on what oracle infrastructure we wish to use
-	Region Region
+	// Endpoint will hold the base url endpoint of the oracle cloud api
+	Endpoint string
 }
 
-func (c Config) validate() (bool, error) {
+func (c Config) validate() error {
 	if c.Identify == "" {
-		return false, errors.New("Empty identify endpoint name")
+		return errors.New("Empty identify endpoint name")
 	}
 
 	if c.Password == "" {
-		return false, errors.New("Empty client password")
+		return errors.New("Empty client password")
 	}
 
 	if c.Username == "" {
-		return false, errors.New("Empty client username")
+		return errors.New("Empty client username")
 	}
 
-	if c.Region == "" {
-		return false, errors.New("Empty cloud region")
+	if c.Endpoint == "" {
+		return errors.New("Empty endpoint url basepath")
 	}
 
-	return true, nil
+	if _, err := url.Parse(c.Endpoint); err != nil {
+		return errors.New("The endpoint provided is invalid")
+	}
+
+	return nil
 }
 
 // Client holds the client credentials of the clients
@@ -63,81 +56,73 @@ type Client struct {
 	identify string
 	username string
 	password string
-	cookie   *http.Cookie
+	cookie   http.Cookie
 	endpoint string
-	r        *http.Request
+
+	// internal http client
+	http http.Client
 }
 
 func NewClient(cfg Config) (*Client, error) {
-	ok, err := cfg.validate()
-	if !ok {
+	var err error
+	if err = cfg.validate(); err != nil {
 		return nil, err
 	}
-
 	cli := &Client{
 		identify: cfg.Identify,
 		username: cfg.Username,
 		password: cfg.Password,
-		endpoint: fmt.Sprintf("https://api-z999.compute.%s.oraclecloud.com", cfg.Region),
 	}
-
-	if err = cli.newRequest(); err != nil {
+	endpoint := fmt.Sprintf("%s/Compute-%s/", cfg.Endpoint, cfg.Identify)
+	if _, err = url.Parse(endpoint); err != nil {
 		return nil, err
 	}
+	cli.endpoint = endpoint
+
+	cli.http = http.Client{}
 
 	return cli, nil
 }
 
-func (c *Client) newRequest() error {
-	var err error
-	c.r, err = http.NewRequest("", c.endpoint, nil)
+func (c *Client) Authenticate() (err error) {
+	authenticate := map[string]string{
+		"user":     fmt.Sprintf("/Compute-%s/%s", c.identify, c.username),
+		"password": c.password,
+	}
+
+	body, err := json.Marshal(authenticate)
 	if err != nil {
 		return err
 	}
 
-	c.r.Header.Del("Agent") // remove the golang agent crap
-
-	// add oracle comaptible headers
-	c.r.Header.Add("Content-Type", "application/oracle-compute-v3+json")
-	c.r.Header.Add("user", c.username)
-	c.r.Header.Add("password", c.password)
-
-	fmt.Println(c.r)
-	os.Exit(1)
-	if c.r.Cookie == nil {
-		c.newCookie()
-	}
-
-	c.r.AddCookie(c.cookie)
-
-	return nil
-}
-
-func (c *Client) newCookie() error {
-	sufix := "/authenticate/"
-	url := fmt.Sprintf(c.endpoint, sufix)
-
-	credentials := map[string]string{"username": c.username, "password": c.password}
-	body, err := json.Marshal(credentials)
+	url := fmt.Sprintf("%s%s", c.endpoint, "authenticate")
+	fmt.Println(url)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if err != nil {
 		return err
 	}
 
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	req.Header.Add("Content-Type", "application/oracle-compute-v3+json")
+
+	resp, err := c.http.Do(req)
 	if err != nil {
 		return err
 	}
 
-	if resp.StatusCode != http.StatusOK {
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			err = closeErr
+		}
+	}()
+
+	// the api in this case should not return any body at all.
+	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("Cannot generate cookie, status code %d", resp.StatusCode)
 	}
 
 	cookies := resp.Cookies()
 	fmt.Println(cookies)
-	//TODO
-	if resp.Body.Close() != nil {
-		return errors.New("Cannot close response body cookie")
-	}
-
+	os.Exit(1)
 	return nil
+
 }
