@@ -89,22 +89,19 @@ func (c *Client) Authenticate() (err error) {
 		"user":     fmt.Sprintf("/Compute-%s/%s", c.identify, c.username),
 		"password": c.password,
 	}
-
 	body, err := json.Marshal(authenticate)
 	if err != nil {
 		return err
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoint, "authenticate")
-	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
 	if err != nil {
 		return err
 	}
-
 	req.Header.Add("Content-Type", "application/oracle-compute-v3+json")
-
 	resp, err := c.http.Do(req)
+	fmt.Println(resp.Cookies())
 	if err != nil {
 		return err
 	}
@@ -117,6 +114,7 @@ func (c *Client) Authenticate() (err error) {
 
 	// the api in this case should not return any body at all.
 	if resp.StatusCode != http.StatusNoContent {
+		fmt.Printf("%+q\n", resp)
 		return fmt.Errorf("Cannot generate cookie, status code %d", resp.StatusCode)
 	}
 
