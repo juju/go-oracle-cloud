@@ -1,13 +1,9 @@
 package api
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 )
 
 // Config represents the significat details that a client
@@ -56,11 +52,13 @@ type Client struct {
 	identify string
 	username string
 	password string
-	cookie   http.Cookie
+	cookie   *http.Cookie
 	endpoint string
 
 	// internal http client
 	http http.Client
+	// internal http cookie
+	// this cookie will be generated based on the client connection
 }
 
 func NewClient(cfg Config) (*Client, error) {
@@ -68,59 +66,21 @@ func NewClient(cfg Config) (*Client, error) {
 	if err = cfg.validate(); err != nil {
 		return nil, err
 	}
+
 	cli := &Client{
 		identify: cfg.Identify,
 		username: cfg.Username,
 		password: cfg.Password,
+		endpoint: cfg.Endpoint,
+		http:     http.Client{},
 	}
-	endpoint := fmt.Sprintf("%s/Compute-%s/", cfg.Endpoint, cfg.Identify)
-	if _, err = url.Parse(endpoint); err != nil {
-		return nil, err
-	}
-	cli.endpoint = endpoint
-
-	cli.http = http.Client{}
 
 	return cli, nil
 }
 
-func (c *Client) Authenticate() (err error) {
-	authenticate := map[string]string{
-		"user":     fmt.Sprintf("/Compute-%s/%s", c.identify, c.username),
-		"password": c.password,
+func (c Client) isAuth() bool {
+	if cookie == nil {
+		return false
 	}
-	body, err := json.Marshal(authenticate)
-	if err != nil {
-		return err
-	}
-
-	url := fmt.Sprintf("%s%s", c.endpoint, "authenticate")
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
-	if err != nil {
-		return err
-	}
-	req.Header.Add("Content-Type", "application/oracle-compute-v3+json")
-	resp, err := c.http.Do(req)
-	fmt.Println(resp.Cookies())
-	if err != nil {
-		return err
-	}
-
-	defer func() {
-		if closeErr := resp.Body.Close(); closeErr != nil {
-			err = closeErr
-		}
-	}()
-
-	// the api in this case should not return any body at all.
-	if resp.StatusCode != http.StatusNoContent {
-		fmt.Printf("%+q\n", resp)
-		return fmt.Errorf("Cannot generate cookie, status code %d", resp.StatusCode)
-	}
-
-	cookies := resp.Cookies()
-	fmt.Println(cookies)
-	os.Exit(1)
-	return nil
-
+	return true
 }
