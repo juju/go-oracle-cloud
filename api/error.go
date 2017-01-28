@@ -13,8 +13,8 @@ var (
 	ErrNotAuth     = errors.New("The client is not authenticated")
 )
 
-func decodeErr(body io.ReadCloser) *response.Error {
-	e := &response.Error{}
-	_ = json.NewDecoder(body).Decode(e)
-	return e
+func dumpApiError(body io.Reader) string {
+	var e response.Error
+	_ := json.NewDecoder(body).Decode(&e)
+	return e.Message
 }

@@ -79,7 +79,7 @@ func NewClient(cfg Config) (*Client, error) {
 }
 
 func (c Client) isAuth() bool {
-	if cookie == nil {
+	if c.cookie == nil {
 		return false
 	}
 	return true
