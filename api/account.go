@@ -2,12 +2,11 @@ package api
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-func (c Client) Account(name string) (resp response.Account, err error) {
+func (c Client) AccountDetails(name string) (resp response.AccountDetails, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -20,18 +19,31 @@ func (c Client) Account(name string) (resp response.Account, err error) {
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		body:   nil,
-		treat: func(resp *http.Response) (err error) {
-			if resp.StatusCode != http.StatusOK {
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
 
-			return nil
-		},
-		resp: &resp,
+	return resp, nil
+
+}
+
+func (c Client) Account(name string) (resp response.Account, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	// build the url for the api endpoint
+	url := fmt.Sprintf("%s/%s/", c.endpoint, "account")
+	if err = request(paramsRequest{
+		directory: true,
+		client:    &c.http,
+		cookie:    c.cookie,
+		verb:      "GET",
+		url:       url,
+		treat:     defaultTreat,
+		resp:      &resp,
 	}); err != nil {
 		return resp, err
 	}

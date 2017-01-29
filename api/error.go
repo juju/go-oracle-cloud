@@ -9,12 +9,12 @@ import (
 )
 
 var (
-	ErrAlreadyAuth = errors.New("The client is already authenticated")
-	ErrNotAuth     = errors.New("The client is not authenticated")
+	ErrAlreadyAuth = errors.New("go-oracle-cloud: The client is already authenticated")
+	ErrNotAuth     = errors.New("go-oracle-cloud: The client is not authenticated")
 )
 
 func dumpApiError(body io.Reader) string {
 	var e response.Error
-	_ := json.NewDecoder(body).Decode(&e)
+	json.NewDecoder(body).Decode(&e) // skip error
 	return e.Message
 }

@@ -33,7 +33,7 @@ func (c *Client) Authenticate() (err error) {
 			if resp.StatusCode != http.StatusNoContent {
 				return fmt.Errorf(
 					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp),
+					resp.StatusCode, dumpApiError(resp.Body),
 				)
 			}
 
