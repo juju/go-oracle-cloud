@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	ErrAlreadyAuth = errors.New("go-oracle-cloud: The client is already authenticated")
-	ErrNotAuth     = errors.New("go-oracle-cloud: The client is not authenticated")
+	ErrAlreadyAuth    = errors.New("go-oracle-cloud: The client is already authenticated")
+	ErrNotAuth        = errors.New("go-oracle-cloud: The client is not authenticated")
+	ErrUndefinedShape = errors.New("go-oracle-cloud: The shape specified is undefined")
 )
 
 func dumpApiError(body io.Reader) string {
