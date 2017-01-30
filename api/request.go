@@ -75,17 +75,22 @@ func request(cfg paramsRequest) (err error) {
 	// let the endpoint api know that the request
 	// was made from the go oracle cloud client
 	req.Header.Add("User-Agent", "go-oracle-cloud v1.0")
+	// the oracle api supports listing so in order to use it
+	// we should include the +directory header
+	if cfg.directory {
+		req.Header.Add("Accept", "application/oracle-compute-v3+directory+json")
+	} else {
+		req.Header.Add("Accept", "application/oracle-compute-v3+json")
+	}
+	// every request should let know that we accept encoded gzip responses
+	req.Header.Add("Accept-Encoding", "gzip;q=1.0, identity; q=0.5")
+
 	switch cfg.verb {
 	case "POST", "PUT":
 		req.Header.Add("Content-Encoding", "deflate")
 		req.Header.Add("Content-Type", "application/oracle-compute-v3+json")
-	case "GET", "DELETE":
-		if cfg.directory {
-			req.Header.Add("Accept", "application/oracle-compute-v3+directory+json")
-		} else {
-			req.Header.Add("Accept", "application/oracle-compute-v3+json")
-		}
-		req.Header.Add("Accept-Encoding", "gzip;q=1.0, identity; q=0.5")
+	case "DELETE":
+		// TODO(sgiulitti): nothing for now
 	}
 
 	resp, err := cfg.client.Do(req)
