@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
@@ -9,6 +10,10 @@ import (
 func (c Client) AccountDetails(name string) (resp response.AccountDetails, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: empty account name")
 	}
 
 	// build the url for the api endpoint
@@ -32,6 +37,10 @@ func (c Client) AccountDetails(name string) (resp response.AccountDetails, err e
 func (c Client) Account(name string) (resp response.Account, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: empty account name")
 	}
 
 	// build the url for the api endpoint

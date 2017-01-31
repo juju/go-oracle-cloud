@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -12,6 +13,15 @@ func (c Client) AddSHHKey(name string, key string, enabled bool) (resp response.
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: empty key name")
+	}
+
+	if key == "" {
+		return resp, errors.New("go-oracle-cloud: ssh key provided is empty")
+	}
+
 	ssh := struct {
 		Enabled bool   `json:"enabled"`
 		Key     string `json:"key"`
@@ -51,6 +61,10 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 		return ErrNotAuth
 	}
 
+	if name == "" {
+		return errors.New("go-oracle-cloud: empty key name")
+	}
+
 	keyname := fmt.Sprintf("Compute-%s/%s/%s", c.identify, c.username, name)
 	url := fmt.Sprintf("%s/%s/%s", c.endpoint, "sshkey", keyname)
 
@@ -79,6 +93,10 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: empty key name")
 	}
 
 	keyname := fmt.Sprintf("Compute-%s/%s/%s", c.identify, c.username, name)
@@ -145,6 +163,14 @@ func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 func (c Client) UpdateSSHKey(name string, key string, enabled bool) (resp response.SSH, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: empty key name")
+	}
+
+	if key == "" {
+		return resp, errors.New("go-oracle-cloud: ssh key provided is empty")
 	}
 
 	ssh := struct {

@@ -24,7 +24,7 @@ func (c *Client) Authenticate() (err error) {
 	return request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
-		url:    fmt.Sprintf("%s/%s", c.endpoint, "authenticate/"),
+		url:    fmt.Sprintf("%s/%s/", c.endpoint, "authenticate"),
 		verb:   "POST",
 		body:   auth,
 		treat: func(resp *http.Response) (err error) {

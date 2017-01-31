@@ -1,4 +1,4 @@
 package response
 
-type Instance struct {
+type LaunchPlan struct {
 }
