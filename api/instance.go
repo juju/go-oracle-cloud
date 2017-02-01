@@ -8,11 +8,11 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-type shape uint8
+type Shape uint8
 
 const (
 	// General purpose
-	OC3 shape = iota // 1CPU + 7.5 GB Memory
+	OC3 Shape = iota // 1CPU + 7.5 GB Memory
 	OC4              // 2CPU + 15GB Memory
 	OC5              // 4CPU + 30GB Memory
 	OC6              // 8CPU + 60GB Memory
@@ -26,7 +26,7 @@ const (
 )
 
 // shapes is a mapping between shapes
-var shapes = map[shape]string{
+var shapes = map[Shape]string{
 	OC3:  "oc3",
 	OC4:  "oc4",
 	OC5:  "oc5",
@@ -44,7 +44,7 @@ type InstanceParams struct {
 	// Shape represents every instance in oracle cloud has a predefined shape
 	// in order to create a virtual instance
 	// we need to specify the computing power shape
-	Shape shape
+	Shape Shape
 	// Imagelist is the virtual image that will be used
 	// in order to init the instance
 	Imagelist string

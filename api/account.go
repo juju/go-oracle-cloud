@@ -33,7 +33,47 @@ func (c Client) AccountDetails(name string) (resp response.AccountDetails, err e
 	return resp, nil
 
 }
+func (c Client) AllAccountDetais() (resp response.AllAccounts, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
 
+	url := fmt.Sprintf("%s/%s/Compute-%s/", c.endpoint, "account", c.identify)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		verb:   "GET",
+		url:    url,
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (c Client) AllAccounts() (resp response.Account, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+	url := fmt.Sprintf("%s/%s/Compute-%s/", c.endpoint, "account", c.identify)
+
+	if err = request(paramsRequest{
+		directory: true,
+		client:    &c.http,
+		cookie:    c.cookie,
+		verb:      "GET",
+		url:       url,
+		treat:     defaultTreat,
+		resp:      &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
 func (c Client) Account(name string) (resp response.Account, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth

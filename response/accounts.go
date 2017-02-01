@@ -14,3 +14,7 @@ type AccountDetails struct {
 type Account struct {
 	Result []string `json:"result"`
 }
+
+type AllAccounts struct {
+	Result []AccountDetails `json:"result"`
+}
