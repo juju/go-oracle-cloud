@@ -85,7 +85,8 @@ func (c Client) CreateInstance(params []InstanceParams) (resp response.LaunchPla
 			return resp, errors.New("go-oracle-cloud: Empty label in instance parameters")
 		}
 		instanceArgs[i].Label = params[i].Label
-		instanceArgs[i].Name = fmt.Sprintf("Compute-%s/%s/%s", c.identify, c.username, params[i].Name)
+		instanceArgs[i].Name = fmt.Sprintf("Compute-%s/%s/%s",
+			c.identify, c.username, params[i].Name)
 		shape, ok := shapes[params[i].Shape]
 		if !ok {
 			return resp, ErrUndefinedShape
@@ -93,7 +94,8 @@ func (c Client) CreateInstance(params []InstanceParams) (resp response.LaunchPla
 		instanceArgs[i].Shape = shape
 		keys := len(instanceArgs[i].SSHKeys)
 		for j := 0; j < keys; j++ {
-			instanceArgs[i].SSHKeys[i] = fmt.Sprintf("Compute-%s/%s/%s", c.identify, c.username, params[i].SSHKeys[i])
+			instanceArgs[i].SSHKeys[i] = fmt.Sprintf("Compute-%s/%s/%s",
+				c.identify, c.username, params[i].SSHKeys[i])
 		}
 	}
 
@@ -122,7 +124,9 @@ func (c Client) DeleteInstance(uuid string) (err error) {
 		return errors.New("go-oracle-cloud: uuid provided is empty")
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s", c.endpoint, "instance", c.identify, c.username, uuid)
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
+		c.endpoint, "instance", c.identify, c.username, uuid)
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -141,4 +145,88 @@ func (c Client) DeleteInstance(uuid string) (err error) {
 	}
 
 	return nil
+}
+
+func (c Client) AllInstance() (resp response.AllInstance, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
+		c.endpoint, "instance", c.identify, c.username)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (c Client) InstanceDetails(uuid string) (resp response.Instance, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
+		c.endpoint, "instance", c.identify, c.username, uuid)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (c Client) AllInstanceNames() (resp response.AllInstanceNames, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
+		c.endpoint, "instance", c.identify, c.username)
+
+	if err = request(paramsRequest{
+		directory: true,
+		client:    &c.http,
+		cookie:    c.cookie,
+		url:       url,
+		verb:      "GET",
+		treat:     defaultTreat,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (c Client) InstanceNames() (resp response.AllInstanceNames, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+	url := fmt.Sprintf("%s/%s/", c.endpoint, "instance")
+
+	if err = request(paramsRequest{
+		directory: true,
+		client:    &c.http,
+		cookie:    c.cookie,
+		url:       url,
+		verb:      "GET",
+		treat:     defaultTreat,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
