@@ -7,7 +7,7 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-func (c Client) AccountDetails(name string) (resp response.AccountDetails, err error) {
+func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -33,7 +33,8 @@ func (c Client) AccountDetails(name string) (resp response.AccountDetails, err e
 	return resp, nil
 
 }
-func (c Client) AllAccountDetais() (resp response.AllAccounts, err error) {
+
+func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -54,7 +55,7 @@ func (c Client) AllAccountDetais() (resp response.AllAccounts, err error) {
 	return resp, nil
 }
 
-func (c Client) AllAccounts() (resp response.Account, err error) {
+func (c Client) AllAccounts() (resp response.AllAccountList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -73,8 +74,10 @@ func (c Client) AllAccounts() (resp response.Account, err error) {
 	}
 
 	return resp, nil
+
 }
-func (c Client) Account(name string) (resp response.Account, err error) {
+
+func (c Client) Account(name string) (resp response.AllAccountList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}

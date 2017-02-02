@@ -1,6 +1,6 @@
 package response
 
-type AccountDetails struct {
+type Account struct {
 	// Credentials specific to the account, which may include a username, password or certificate. The credentials are not returned.
 	Credentials map[string]string `json:"credentials,omitempty"`
 	// Description of this account.
@@ -11,10 +11,10 @@ type AccountDetails struct {
 	Uri string `json:"uri,omitempty"`
 }
 
-type Account struct {
+type AllAccountList struct {
 	Result []string `json:"result"`
 }
 
-type AllAccounts struct {
-	Result []AccountDetails `json:"result"`
+type AllAccount struct {
+	Result []Account `json:"result"`
 }

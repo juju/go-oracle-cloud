@@ -9,6 +9,6 @@ type Shape struct {
 	Name           string `json:"name"`
 }
 
-type AllShapes struct {
+type AllShape struct {
 	Result []Shape `json:"result"`
 }

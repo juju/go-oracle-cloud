@@ -147,7 +147,7 @@ func (c Client) DeleteInstance(uuid string) (err error) {
 	return nil
 }
 
-func (c Client) AllInstance() (resp response.AllInstance, err error) {
+func (c Client) AllInstances() (resp response.AllInstance, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}

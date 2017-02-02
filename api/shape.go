@@ -32,7 +32,7 @@ func (c Client) ShapeDetails(name Shape) (resp response.Shape, err error) {
 	return resp, nil
 }
 
-func (c Client) AllShapeDetails() (resp response.AllShapes, err error) {
+func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
