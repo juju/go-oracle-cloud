@@ -22,23 +22,23 @@ type Config struct {
 
 func (c Config) validate() error {
 	if c.Identify == "" {
-		return errors.New("Empty identify endpoint name")
+		return errors.New("go-oracle-cloud: Empty identify endpoint name")
 	}
 
 	if c.Password == "" {
-		return errors.New("Empty client password")
+		return errors.New("go-oracle-cloud: Empty client password")
 	}
 
 	if c.Username == "" {
-		return errors.New("Empty client username")
+		return errors.New("go-oracle-cloud: Empty client username")
 	}
 
 	if c.Endpoint == "" {
-		return errors.New("Empty endpoint url basepath")
+		return errors.New("go-oracle-cloud: Empty endpoint url basepath")
 	}
 
 	if _, err := url.Parse(c.Endpoint); err != nil {
-		return errors.New("The endpoint provided is invalid")
+		return errors.New("go-oracle-cloud: The endpoint provided is invalid")
 	}
 
 	return nil
