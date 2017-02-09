@@ -8,7 +8,7 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-func (c Client) ImageListDetail(name string) (resp response.Image, err error) {
+func (c Client) ImageListDetail(name string) (resp response.ImageList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -34,7 +34,7 @@ func (c Client) ImageListDetail(name string) (resp response.Image, err error) {
 	return resp, nil
 }
 
-func (c Client) AllImageList() (resp response.AllImage, err error) {
+func (c Client) AllImageList() (resp response.AllImageList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -56,7 +56,7 @@ func (c Client) AllImageList() (resp response.AllImage, err error) {
 	return resp, nil
 }
 
-func (c Client) AllImageNames() (resp response.AllImageNames, err error) {
+func (c Client) AllImageListNames() (resp response.AllImageListNames, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -80,7 +80,7 @@ func (c Client) AllImageNames() (resp response.AllImageNames, err error) {
 	return resp, nil
 }
 
-func (c Client) AddImage(def uint64, description string, name string) (resp response.Image, err error) {
+func (c Client) AddImageList(def uint64, description string, name string) (resp response.ImageList, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -121,7 +121,7 @@ func (c Client) AddImage(def uint64, description string, name string) (resp resp
 	return resp, nil
 }
 
-func (c Client) DeleteImage(name string) (err error) {
+func (c Client) DeleteImageList(name string) (err error) {
 	if !c.isAuth() {
 		return ErrNotAuth
 	}
@@ -154,7 +154,7 @@ func (c Client) DeleteImage(name string) (err error) {
 	return nil
 }
 
-func (c Client) UpdateImage(target, name, description string, def uint64) (err error) {
+func (c Client) UpdateImageList(target, name, description string, def uint64) (err error) {
 
 	if !c.isAuth() {
 		return ErrNotAuth
@@ -189,4 +189,74 @@ func (c Client) UpdateImage(target, name, description string, def uint64) (err e
 	}
 
 	return nil
+}
+
+func (c Client) AllImageListEntries(entryName string) (resp response.AllImageListEntries, err error) {
+
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if entryName == "" {
+		return resp, errors.New("go-oracle-api: Empty image list entry name")
+	}
+
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
+		c.endpoint, "imagelist", c.identify, c.username, entryName)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		verb:   "GET",
+		url:    url,
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+type AddImagelistParams struct {
+	Attributes    map[string]interface{} `json:"attributes,omitempty"`
+	Version       uint64                 `json:"version"`
+	MachineImages []string               `json:"machineimages"`
+	Uri           string                 `json:"uri"`
+}
+
+//TODO
+func (c Client) AddImageListEntries(name string, params AddImagelistParams) (resp response.AllImageListEntries, err error) {
+
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-api: Empty image list entry name")
+	}
+
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s/%s/",
+		c.endpoint, "imagelist", c.identify, c.username, name, "entry")
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		verb:   "POST",
+		url:    url,
+		treat: func(resp *http.Response) (err error) {
+			if resp.StatusCode != http.StatusCreated {
+				return fmt.Errorf("go-oracle-cloud: Error api response %d %s",
+					resp.StatusCode, dumpApiError(resp.Body),
+				)
+			}
+			return nil
+		},
+		resp: &resp,
+		body: &params,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }

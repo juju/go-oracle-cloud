@@ -1,6 +1,6 @@
 package response
 
-type Image struct {
+type ImageList struct {
 	Default     uint64    `json:"default"`
 	Description string    `json:"description,omitempty"`
 	Entries     []Entries `json:"entries",omitempty`
@@ -8,7 +8,7 @@ type Image struct {
 	Name        string    `json:"name"`
 }
 
-type AllImageNames struct {
+type AllImageListNames struct {
 	Result []string `json:"result"`
 }
 
@@ -27,6 +27,11 @@ type attr struct {
 	SupportedShapes string      `json:"supportedshape,omitempty"`
 }
 
-type AllImage struct {
-	Result []Image `json:"result"`
+type AllImageList struct {
+	Result []ImageList `json:"result"`
+}
+
+type AllImageListEntries struct {
+	// TODO
+	Entries Entries `json:"entries,omitempty"`
 }
