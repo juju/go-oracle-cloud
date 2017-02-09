@@ -17,7 +17,8 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	}
 
 	// build the url for the api endpoint
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s", c.endpoint, "account", c.identify, name)
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s",
+		c.endpoint, "account", c.identify, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
