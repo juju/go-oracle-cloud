@@ -23,9 +23,29 @@ func defaultTreat(resp *http.Response) (err error) {
 	return nil
 }
 
+func defaultPostTreat(resp *http.Response) (err error) {
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf(
+			"go-oracle-cloud: Error api response %d %s",
+			resp.StatusCode, dumpApiError(resp.Body),
+		)
+	}
+	return nil
+}
+
+func defaultDeleteTreat(resp *http.Response) (err error) {
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf(
+			"go-oracle-cloud: Error api response %d %s",
+			resp.StatusCode, dumpApiError(resp.Body),
+		)
+	}
+	return nil
+}
+
 // paramsRequest used to fill up the params for the request function
 type paramsRequest struct {
-	// directory request
+	// directory is the type of directory request
 	directory bool
 	// use this client to do the request
 	client *http.Client
@@ -90,7 +110,6 @@ func request(cfg paramsRequest) (err error) {
 		req.Header.Add("Content-Encoding", "deflate")
 		req.Header.Add("Content-Type", "application/oracle-compute-v3+json")
 	case "DELETE":
-		// TODO(sgiulitti): nothing for now
 	}
 
 	resp, err := cfg.client.Do(req)

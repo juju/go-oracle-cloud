@@ -25,19 +25,19 @@ func (c Config) validate() error {
 		return errors.New("go-oracle-cloud: Empty identify endpoint name")
 	}
 
-	if c.Password == "" {
-		return errors.New("go-oracle-cloud: Empty client password")
-	}
-
 	if c.Username == "" {
 		return errors.New("go-oracle-cloud: Empty client username")
+	}
+
+	if c.Password == "" {
+		return errors.New("go-oracle-cloud: Empty client password")
 	}
 
 	if c.Endpoint == "" {
 		return errors.New("go-oracle-cloud: Empty endpoint url basepath")
 	}
 
-	if _, err := url.Parse(c.Endpoint); err != nil {
+	if _, err := url.ParseRequestURI(c.Endpoint); err != nil {
 		return errors.New("go-oracle-cloud: The endpoint provided is invalid")
 	}
 
@@ -86,7 +86,8 @@ func (c Client) isAuth() bool {
 	return true
 }
 
-// RefreshCookie refreshes the authentication tokens that expires usually around 30 minutes.
+// RefreshCookie refreshes the authentication tokens
+// that expires usually around 30 minutes.
 // This request extends the expiry of a valid authentication
 // token by 30 minutes from the time you run the command.
 // It extends the expiry of the current authentication token,
@@ -109,7 +110,10 @@ func (c *Client) RefreshCookie() (err error) {
 			// take the new refresh cookies
 			cookies := resp.Cookies()
 			if len(cookies) != 1 {
-				return fmt.Errorf("go-oracle-cloud: Invalid number of session cookies: %q", cookies)
+				return fmt.Errorf(
+					"go-oracle-cloud: Invalid number of session cookies: %q",
+					cookies,
+				)
 			}
 
 			// take the cookie

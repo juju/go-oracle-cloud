@@ -11,7 +11,7 @@ type Account struct {
 	Uri string `json:"uri,omitempty"`
 }
 
-type AllAccountList struct {
+type AllAccountNames struct {
 	Result []string `json:"result"`
 }
 

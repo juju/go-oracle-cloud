@@ -13,10 +13,13 @@ func (c Client) VritualVnc(name string) (resp response.Vnc, err error) {
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Vitual NIC name provided is empty")
+		return resp, errors.New(
+			"go-oracle-cloud: Vitual NIC name provided is empty",
+		)
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s", c.endpoint, "network/v1/vnic", c.identify, c.username, name)
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
+		c.endpoint, "network/v1/vnic", c.identify, c.username, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -37,7 +40,8 @@ func (c Client) AllVritualVnc() (resp response.AllVnc, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/", c.endpoint, "network/v1/vnic", c.identify, c.username)
+	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
+		c.endpoint, "network/v1/vnic", c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
