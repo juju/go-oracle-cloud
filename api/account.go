@@ -7,6 +7,8 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
+// AccountDetails retrieves details of the specified account.
+// example of deafult name account that oracle provider has: default, cloud_storage.
 func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -35,12 +37,16 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 
 }
 
+// AllAccountDetails retrives details of the accounts that are in the
+// specified identity domain. You can use this HTTP request to
+// get details of the account that you must specify while creating a machine image.
 func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/", c.endpoint, "account", c.identify)
+	url := fmt.Sprintf("%s/%s/Compute-%s/",
+		c.endpoint, "account", c.identify)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -56,7 +62,8 @@ func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
 	return resp, nil
 }
 
-func (c Client) AllAccountNames() (resp response.AllAccountNames, err error) {
+// AllAccountNames retrieves names of all the accounts in the specified container.
+func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -80,13 +87,12 @@ func (c Client) AllAccountNames() (resp response.AllAccountNames, err error) {
 
 }
 
-func (c Client) Account(name string) (resp response.AllAccount, err error) {
+// DirectoryAccount retrieves the names of containers
+// that contain objects that you can access. You can use this
+// information to construct the multipart name of an object
+func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
-	}
-
-	if name == "" {
-		return resp, errors.New("go-oracle-cloud: empty account name")
 	}
 
 	url := fmt.Sprintf("%s/%s/", c.endpoint, "account")

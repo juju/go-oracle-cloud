@@ -8,7 +8,7 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-func (c Client) ImageListDetail(name string) (resp response.ImageList, err error) {
+func (c Client) ImageListDetails(name string) (resp response.ImageList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}

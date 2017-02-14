@@ -5,13 +5,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 // treatStatus will be used as a callback to custom check the response
 // if the client decides the response contains some error codes
 // it will make the Request return that error
 type treatStatus func(resp *http.Response) error
+
+func debugTreat(resp *http.Response) (err error) {
+	raw, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(raw))
+	os.Exit(1)
+	return nil
+}
 
 func defaultTreat(resp *http.Response) (err error) {
 	if resp.StatusCode != http.StatusOK {
@@ -110,6 +122,8 @@ func request(cfg paramsRequest) (err error) {
 		req.Header.Add("Content-Encoding", "deflate")
 		req.Header.Add("Content-Type", "application/oracle-compute-v3+json")
 	case "DELETE":
+		req.Header.Add("Content-Type", "application/oracle-compute-v3+json")
+	case "GET":
 	}
 
 	resp, err := cfg.client.Do(req)
