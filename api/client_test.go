@@ -1,17 +1,11 @@
 package api_test
 
 import (
-	"fmt"
-	"net/http"
-	"net/http/httptest"
-
 	"github.com/hoenirvili/go-oracle-cloud/api"
 	gc "gopkg.in/check.v1"
 )
 
-type clientTest struct {
-	server *httptest.Server
-}
+type clientTest struct{}
 
 var _ = gc.Suite(&clientTest{})
 
@@ -24,22 +18,6 @@ func (cli clientTest) NewConfig(c *gc.C) api.Config {
 		Identify: "myIdentify",
 		Endpoint: "http://localhost",
 	}
-}
-
-type testRecorder func(c *gc.C, record *httptest.ResponseRecorder)
-
-// TODO(write test server)
-func (cli *clientTest) NewServer() {
-	cli.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/oracle-compute-v3+json")
-		w.WriteHeader(http.StatusOK)
-		fmt.Printf("%+v\n", r)
-		fmt.Fprintf(w, "hi")
-	}))
-}
-
-func (cli *clientTest) Clear() {
-	cli.server.Close()
 }
 
 func (cl clientTest) TestNewClient(c *gc.C) {
