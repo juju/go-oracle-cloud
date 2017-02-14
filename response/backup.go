@@ -21,7 +21,3 @@ type Interval struct {
 type Hourly struct {
 	HourlyInterval uint64 `json:"hourlyInterval"`
 }
-
-type AllBackupConfiguration struct {
-	Result []BackupConfiguration `json:"result"`
-}

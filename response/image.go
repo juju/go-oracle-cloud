@@ -8,10 +8,6 @@ type ImageList struct {
 	Name        string    `json:"name"`
 }
 
-type AllImageListNames struct {
-	Result []string `json:"result"`
-}
-
 type Entries struct {
 	Attributes    attr     `json:"attributes,omitempty"`
 	Version       uint64   `json:"version"`
@@ -20,7 +16,7 @@ type Entries struct {
 }
 
 type attr struct {
-	//TODO (make a special type for userdata)
+	//TODO(sgiulitti) make a special type for userdata
 	Userdata        interface{} `json:"userdata,omitempty"`
 	MinimumDiskSize string      `json:"minimumdisksize,omitempty"`
 	DefaultShape    string      `json:"defaultshape,omitempty"`
@@ -31,7 +27,10 @@ type AllImageList struct {
 	Result []ImageList `json:"result"`
 }
 
-type AllImageListEntries struct {
-	// TODO
-	Entries Entries `json:"entries,omitempty"`
+type ImageListEntry struct {
+	Attributes    attr      `json:"attributes,omitempty"`
+	ImageList     ImageList `json:"imagelist"`
+	Version       uint64    `json:"version"`
+	Machineimages []string  `json:"machineimages"`
+	Uri           string    `json:"uri"`
 }

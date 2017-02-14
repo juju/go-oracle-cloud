@@ -164,7 +164,7 @@ func (c Client) BackupConfigurationDetails(name string) (resp response.BackupCon
 
 // AllBackupConfiguration retrieves details for all backup
 // configuration objects the current user has permission to access
-func (c Client) AllBackupConfiguration() (resp response.AllBackupConfiguration, err error) {
+func (c Client) AllBackupConfiguration() (resp []response.BackupConfiguration, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -240,5 +240,4 @@ func (c Client) UpdateBackupConfiguration(
 	}
 
 	return resp, nil
-
 }

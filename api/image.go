@@ -3,11 +3,13 @@ package api
 import (
 	"errors"
 	"fmt"
-	"net/http"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
+// ImageListDetails retrieves details of the specified image list.
+// You can also use this request to retrieve details of all the available
+// image list entries in the specified image list.
 func (c Client) ImageListDetails(name string) (resp response.ImageList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -17,8 +19,8 @@ func (c Client) ImageListDetails(name string) (resp response.ImageList, err erro
 		return resp, errors.New("go-oracle-api: Empty image name")
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
-		c.endpoint, "imagelist", c.identify, c.username, name)
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -34,13 +36,15 @@ func (c Client) ImageListDetails(name string) (resp response.ImageList, err erro
 	return resp, nil
 }
 
+// AllImageList retrieves details of all the available
+// image lists in the specified container.
 func (c Client) AllImageList() (resp response.AllImageList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
-		c.endpoint, "imagelist", c.identify, c.username)
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/",
+		c.endpoint, c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -56,14 +60,16 @@ func (c Client) AllImageList() (resp response.AllImageList, err error) {
 	return resp, nil
 }
 
-func (c Client) AllImageListNames() (resp response.AllImageListNames, err error) {
+// AllImageListNames retrieves the names of objects and
+// subcontainers that you can access in the specified container.
+func (c Client) AllImageListNames() (resp response.DirectoryNames, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
-		c.endpoint, "imagelist", c.identify, c.username)
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/",
+		c.endpoint, c.identify, c.username)
 
 	if err = request(paramsRequest{
 		directory: true,
@@ -80,7 +86,8 @@ func (c Client) AllImageListNames() (resp response.AllImageListNames, err error)
 	return resp, nil
 }
 
-func (c Client) AddImageList(def uint64, description string, name string) (resp response.ImageList, err error) {
+// CreateImageList Adds an image list to Oracle Compute Cloud Service.
+func (c Client) CreateImageList(def uint64, description string, name string) (resp response.ImageList, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -93,11 +100,12 @@ func (c Client) AddImageList(def uint64, description string, name string) (resp 
 	}{
 		Def:         def,
 		Description: description,
-		Name:        fmt.Sprintf("/Compute-%s/%s/%s", c.identify, c.username, name),
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, name),
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
-		c.endpoint, "imagelist", c.identify, c.username)
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/",
+		c.endpoint, c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -105,15 +113,8 @@ func (c Client) AddImageList(def uint64, description string, name string) (resp 
 		verb:   "POST",
 		url:    url,
 		body:   &image,
-		treat: func(resp *http.Response) (err error) {
-			if resp.StatusCode != http.StatusCreated {
-				return fmt.Errorf("go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
-			return nil
-		},
-		resp: &resp,
+		treat:  defaultPostTreat,
+		resp:   &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -121,6 +122,7 @@ func (c Client) AddImageList(def uint64, description string, name string) (resp 
 	return resp, nil
 }
 
+// DeleteImageList deletes an image list
 func (c Client) DeleteImageList(name string) (err error) {
 	if !c.isAuth() {
 		return ErrNotAuth
@@ -130,23 +132,15 @@ func (c Client) DeleteImageList(name string) (err error) {
 		return errors.New("go-oracle-api: Empty image name")
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
-		c.endpoint, "imagelist", c.identify, c.username, name)
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat: func(resp *http.Response) (err error) {
-			if resp.StatusCode != http.StatusNoContent {
-				return fmt.Errorf("go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-
-			}
-			return nil
-		},
+		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -154,6 +148,9 @@ func (c Client) DeleteImageList(name string) (err error) {
 	return nil
 }
 
+// UpdateImageList updates the description of an image list.
+// You can also update the default image list entry to be used
+// while launching instances using the specified image list.
 func (c Client) UpdateImageList(target, name, description string, def uint64) (err error) {
 
 	if !c.isAuth() {
@@ -166,16 +163,17 @@ func (c Client) UpdateImageList(target, name, description string, def uint64) (e
 
 	image := struct {
 		Def         uint64 `json:"default"`
-		Description string `json:"description"`
+		Description string `json:"description,omitempty"`
 		Name        string `json:"name"`
 	}{
 		Def:         def,
 		Description: description,
-		Name:        fmt.Sprintf("/Compute-%s/%s/%s", c.identify, c.username, name),
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, name),
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
-		c.endpoint, "imagelist", c.identify, c.username, target)
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, target)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -191,18 +189,20 @@ func (c Client) UpdateImageList(target, name, description string, def uint64) (e
 	return nil
 }
 
-func (c Client) AllImageListEntries(entryName string) (resp response.AllImageListEntries, err error) {
-
+// ImageListEntry Retrieves details of the specified image list entry.
+func (c Client) ImageListEntry(name string, version uint64) (resp response.Entries, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	if entryName == "" {
-		return resp, errors.New("go-oracle-api: Empty image list entry name")
+	if name == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Cannot retrive entry from empty image list name",
+		)
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
-		c.endpoint, "imagelist", c.identify, c.username, entryName)
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%d",
+		c.endpoint, c.identify, c.username, name, version)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -218,42 +218,94 @@ func (c Client) AllImageListEntries(entryName string) (resp response.AllImageLis
 	return resp, nil
 }
 
-type AddImagelistParams struct {
-	Attributes    map[string]interface{} `json:"attributes,omitempty"`
-	Version       uint64                 `json:"version"`
-	MachineImages []string               `json:"machineimages"`
-	Uri           string                 `json:"uri"`
+// DeleteImageListEntry deletes an Image List Entry
+func (c Client) DeleteImageListEntry(name string, version uint64) (err error) {
+	if !c.isAuth() {
+		return ErrNotAuth
+	}
+
+	if name == "" {
+		return errors.New(
+			"go-oracle-cloud: Cannot retrive entry from empty image list name",
+		)
+	}
+
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%d",
+		c.endpoint, c.identify, c.username, name, version)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		verb:   "DELETE",
+		url:    url,
+		treat:  defaultDeleteTreat,
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-//TODO
-func (c Client) AddImageListEntries(name string, params AddImagelistParams) (resp response.AllImageListEntries, err error) {
+// AddImageListEntry adds an Image List Entry
+func (c Client) AddImageListEntry(
+	name string,
+	version uint64,
+	attributes map[string]interface{},
+	machineImages []string,
+) (resp response.Entries, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-api: Empty image list entry name")
+		return resp, errors.New(
+			"go-oracle-cloud: Cannot create entry from empty image list name",
+		)
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s/%s/",
-		c.endpoint, "imagelist", c.identify, c.username, name, "entry")
+	if attributes == nil {
+		return resp, errors.New(
+			"go-oracle-cloud: Cannot create entry from nil attributes",
+		)
+	}
+
+	if machineImages == nil {
+		return resp, errors.New(
+			"go-oracle-cloud: Cannot create entry from nil machineImages",
+		)
+	}
+
+	n := len(machineImages)
+	// suppose we have only machine images names
+	// so we must make them oracle cloud api complaint
+	// when we are passing them into the post body
+	for i := 0; i < n; i++ {
+		machineImages[i] = fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, machineImages[i])
+	}
+
+	entry := struct {
+		Attributes    map[string]interface{} `json:"attributes"`
+		MachineImages []string               `json:"machineImages"`
+		Version       uint64                 `json:"version"`
+	}{
+		Attributes:    attributes,
+		MachineImages: machineImages,
+		Version:       version,
+	}
+
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%d",
+		c.endpoint, c.identify, c.username, name, version)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		verb:   "POST",
 		url:    url,
-		treat: func(resp *http.Response) (err error) {
-			if resp.StatusCode != http.StatusCreated {
-				return fmt.Errorf("go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
-			return nil
-		},
-		resp: &resp,
-		body: &params,
+		treat:  defaultPostTreat,
+		resp:   &resp,
+		body:   &entry,
 	}); err != nil {
 		return resp, err
 	}
