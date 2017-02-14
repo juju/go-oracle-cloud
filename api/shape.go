@@ -1,22 +1,22 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-func (c Client) ShapeDetails(name Shape) (resp response.Shape, err error) {
+func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	s, ok := shapes[name]
-	if !ok {
-		return resp, ErrUndefinedShape
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty shape name provided")
 	}
 
-	url := fmt.Sprintf("%s/%s/%s", c.endpoint, "shape", s)
+	url := fmt.Sprintf("%s/shape/%s", c.endpoint, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -37,7 +37,7 @@ func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/", c.endpoint, "shape")
+	url := fmt.Sprintf("%s/shape/", c.endpoint)
 
 	if err = request(paramsRequest{
 		client: &c.http,
