@@ -1,8 +1,10 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
@@ -25,7 +27,7 @@ type InstanceParams struct {
 }
 
 func (c Client) CreateInstance(params []InstanceParams) (resp response.LaunchPlan, err error) {
-	if params != nil || len(params) == 0 {
+	if params == nil || len(params) == 0 {
 		return resp, errors.New("go-oracle-cloud: Empty slice of instance parameters")
 	}
 
@@ -42,10 +44,10 @@ func (c Client) CreateInstance(params []InstanceParams) (resp response.LaunchPla
 		SSHKeys   []string `json:"sshkeys"`
 	}
 
-	instanceArgs := make([]args, len(params), len(params))
+	n := len(params)
+	instanceArgs := make([]args, n, n)
 
 	// here we are constructing the post body json
-	n := len(params)
 	for i := 0; i < n; i++ {
 		// add the imagelist
 		if params[i].Imagelist == "" {
@@ -53,7 +55,9 @@ func (c Client) CreateInstance(params []InstanceParams) (resp response.LaunchPla
 				"go-oracle-cloud: Empty image list in instance parameters",
 			)
 		}
-		instanceArgs[i].Imagelist = params[i].Imagelist
+		instanceArgs[i].Imagelist = fmt.Sprintf(
+			"/Compute-%s/%s/%s", c.identify, c.username, params[i].Imagelist,
+		)
 
 		// add the label
 		if params[i].Label == "" {
@@ -64,30 +68,48 @@ func (c Client) CreateInstance(params []InstanceParams) (resp response.LaunchPla
 		instanceArgs[i].Label = params[i].Label
 
 		// make the name oracle cloud complaint
-		instanceArgs[i].Name = fmt.Sprintf("Compute-%s/%s/%s",
+		instanceArgs[i].Name = fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, params[i].Name)
 
 		// add the shape
 		instanceArgs[i].Shape = params[i].Shape
 
 		// add the ssh keys
-		keys := len(instanceArgs[i].SSHKeys)
+		keys := len(params[i].SSHKeys)
+		instanceArgs[i].SSHKeys = make([]string, keys, keys)
 		for j := 0; j < keys; j++ {
-			instanceArgs[i].SSHKeys[i] = fmt.Sprintf("Compute-%s/%s/%s",
-				c.identify, c.username, params[i].SSHKeys[i])
+			instanceArgs[i].SSHKeys[j] = fmt.Sprintf("/Compute-%s/%s/%s",
+				c.identify, c.username, params[i].SSHKeys[j],
+			)
 		}
 	}
 
 	url := fmt.Sprintf("%s/launchplan/", c.endpoint)
-
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "POST",
 		body:   &instanceArgs,
-		treat:  defaultTreat,
-		resp:   &resp,
+		treat: func(resp *http.Response) (err error) {
+			type Instances struct {
+				Instances string `json:"instances,omitempty"`
+			}
+			type m struct {
+				Message Instances `json:"message,omitempty"`
+			}
+			var errOut m
+			if resp.StatusCode != http.StatusCreated {
+				json.NewDecoder(resp.Body).Decode(&errOut)
+				return fmt.Errorf(
+					"go-oracle-cloud: Error Api response %d %s",
+					resp.StatusCode, errOut.Message.Instances,
+				)
+			}
+
+			return nil
+		},
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

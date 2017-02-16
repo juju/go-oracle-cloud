@@ -17,10 +17,10 @@ type Entries struct {
 
 type attr struct {
 	//TODO(sgiulitti) make a special type for userdata
-	Userdata        interface{} `json:"userdata,omitempty"`
-	MinimumDiskSize string      `json:"minimumdisksize,omitempty"`
-	DefaultShape    string      `json:"defaultshape,omitempty"`
-	SupportedShapes string      `json:"supportedshape,omitempty"`
+	Userdata        map[string]interface{} `json:"userdata,omitempty"`
+	MinimumDiskSize string                 `json:"minimumdisksize,omitempty"`
+	DefaultShape    string                 `json:"defaultshape,omitempty"`
+	SupportedShapes string                 `json:"supportedShapes,omitempty"`
 }
 
 type AllImageList struct {
