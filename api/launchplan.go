@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
@@ -88,8 +87,6 @@ func (c Client) CreateInstance(params []InstanceParams) (resp response.LaunchPla
 		}
 	}
 
-	fmt.Printf("%+v\n", instanceArgs)
-	os.Exit(1)
 	url := fmt.Sprintf("%s/launchplan/", c.endpoint)
 	if err = request(paramsRequest{
 		client: &c.http,
