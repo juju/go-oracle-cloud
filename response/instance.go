@@ -1,7 +1,5 @@
 package response
 
-// TODO(test this)
-
 type LaunchPlan struct {
 	Relationships []string   `json:"relationships,omitempty"`
 	Instances     []Instance `json:"instances"`
@@ -18,67 +16,70 @@ type AllInstanceNames struct {
 type List struct {
 }
 
-//todo(sgiulitti): still needs extensive testing but for now this should to the trick
-
 type Instance struct {
-	Domain                 string   `json:"domain"`
-	Placement_requirements []string `json:"placement_requirements"`
-	Ip                     string   `json:"ip"`
-	Fingerprint            string   `json:"fingerprint,omitempty"`
-	Site                   string   `json:"site,omitempty"`
-	Shape                  string   `json:"shape"`
-	//   	  "cluster": null,
-	//       "last_state_change_time": null,
-	//		 "error_exception": null,
-	Start_requested bool `json:"start_requested"`
-	// vethernets: null,
-	//       "cluster_uri": null,
-	// "target_node": null,
-	Imagelist           ImageList  `json:"imagelist,omitempty"` // (todo)
-	Image_format        string     `json:"image_format"`
-	Relationships       []string   `json:"relationships,omitempty"`
-	Availability_domain string     `json:"availability_domain"` // null
-	Networking          Networking `json:"networking"`
-	//  "seclist_associations": null,
-	Hostname          string      `json:"hostname"`
-	Quota_reservation interface{} `json:"quota_reservation,omitempty"` //null problem
-	Disk_attach       string      `json:"disk_attach,omitempty"`
-	//"suspend_file": null,
-	// node: null,
-	Resource_requirements ResourceRequirments `json:"resource_requirements"`
-	Virtio                interface{}         `json:"virtio,omitempty"` // null problem
-	Vnc                   string              `json:"vnc"`
-	Desired_state         string              `json:"desired_state"`
-	Storage_attachments   []Storage           `json:"storage_attachments,omitempty"`
-	Start_time            string              `json:"start_time"`
-	Label                 string              `json:"label,omitempty"`
-	Id                    string              `json:"id,omitempty"`
-	Priority              string              `json:"priority"`
-	Platform              string              `json:"platform"`
-	State                 string              `json:"state"`
-	Tags                  []string            `json:"tags,omitempty"`
-	//       "vnc_key": null,
-
-	Quota        string      `json:"quota"`
-	Entry        int         `json:"entry,omitempty"` // (todo)test
-	Error_reason string      `json:"error_reason,omitempty"`
-	SSHKeys      []string    `json:"sshkeys"`
-	Resolvers    interface{} `json:"resolvers,omitempty"` // null problem
-	Account      string      `json:"account"`
-	Name         string      `json:"name"`
-	Vcanble_id   string      `json:"vcable_id"`
-	Hypervisor   Hypervisor  `json:"hypervisor"`
-	Uri          string      `json:"uri"`
-	Reverse_dns  bool        `json:"reverse_dns"`
-	Attributes   Attributes  `json:"attributes"`
-	Boot_order   []int       `json:"boot_order"`
-	//"console": null,
-	Launch_context string `json:"launch_context"`
-	//       "delete_requested": null,
-	//      "tracking_id": null,
-	//"hypervisor_type": null,
-	//"last_seen": null
-
+	Domain                          string              `json:"domain"`
+	Placement_requirements          []string            `json:"placement_requirements"`
+	Ip                              string              `json:"ip"`
+	Fingerprint                     string              `json:"fingerprint,omitempty"`
+	Site                            string              `json:"site,omitempty"`
+	Last_state_change_time          interface{}         `json:"last_state_change_time,omitempty"`
+	Error_exception                 interface{}         `json:"error_exception,omitempty"`
+	Cluster                         interface{}         `json:"cluster,omitempty"`
+	Shape                           string              `json:"shape"`
+	Start_requested                 bool                `json:"start_requested"`
+	Vethernets                      interface{}         `json:"vethernets,omitempty"`
+	Imagelist                       string              `json:"imagelist,omitempty"`
+	Image_format                    string              `json:"image_format"`
+	Id                              string              `json:"id,omitempty"`
+	Cluster_uri                     interface{}         `json:"cluster_uri,omitempty"`
+	Relationships                   []string            `json:"relationships,omitempty"`
+	Target_node                     interface{}         `json:"target_node,omitempty"`
+	Availability_domain             interface{}         `json:"availability_domain,omitempty"`
+	Networking                      Networking          `json:"networking"`
+	Seclist_associations            interface{}         `json:"seclist_associations,omitempty"`
+	Hostname                        string              `json:"hostname"`
+	State                           string              `json:"state"`
+	Disk_attach                     string              `json:"disk_attach,omitempty"`
+	Label                           string              `json:"label,omitempty"`
+	Priority                        string              `json:"priority"`
+	Platform                        string              `json:"platform"`
+	Quota_reservation               interface{}         `json:"quota_reservation,omitempty"`
+	Suspend_file                    interface{}         `json:"suspend_file,omitempty"`
+	Node                            interface{}         `json:"node,omitempty"`
+	Resource_requirements           ResourceRequirments `json:"resource_requirements"`
+	Virtio                          interface{}         `json:"virtio,omitempty"`
+	Vnc                             string              `json:"vnc,omitempty"`
+	Desired_state                   string              `json:"desired_state"`
+	Storage_attachments             []Storage           `json:"storage_attachments,omitempty"`
+	Start_time                      string              `json:"start_time"`
+	Storage_attachment_associations []interface{}       `json:"storage_attachment_associations,omitempty"`
+	Quota                           string              `json:"quota"`
+	Vnc_key                         interface{}         `json:"vnc_key,omitempty"`
+	Numerical_priority              uint64              `json:"numerical_priority"`
+	Suspend_requested               bool                `json:"suspend_requested"`
+	Entry                           int                 `json:"entry"`
+	Error_reason                    string              `json:"error_reason,omitempty"`
+	Nat_associations                interface{}         `json:"nat_associations,omitempty"`
+	SSHKeys                         []string            `json:"sshkeys,omitemtpy"`
+	Tags                            []string            `json:"tags,omitempty"`
+	Resolvers                       interface{}         `json:"resolvers,omitempty"`
+	Metrics                         interface{}         `json:"metrics,omitempty"`
+	Account                         string              `json:"account"`
+	Node_uuid                       interface{}         `json:"node_uuid,omitempty"`
+	Name                            string              `json:"name"`
+	Vcanble_id                      interface{}         `json:"vcable_id,omitempty"`
+	Higgs                           interface{}         `json:"higgs,omitempty"`
+	Hypervisor                      Hypervisor          `json:"hypervisor"`
+	Uri                             string              `json:"uri"`
+	Console                         interface{}         `json:"console,omitempty"`
+	Reverse_dns                     bool                `json:"reverse_dns"`
+	Launch_context                  string              `json:"launch_context"`
+	Delete_requested                interface{}         `json:"delete_requested,omitempty"`
+	Tracking_id                     interface{}         `json:"tracking_id,omitempty"`
+	Hypervisor_type                 interface{}         `json:"hypervisor_type,omitempty"`
+	Attributes                      Attributes          `json:"attributes"`
+	Boot_order                      []int               `json:"boot_order,omitempty"`
+	Last_seen                       interface{}         `json:"last_seen,omitempty"`
 }
 
 type Networking struct {
@@ -86,11 +87,11 @@ type Networking struct {
 }
 
 type Nic struct {
-	Model     string   `json:"model,omitempty"`
-	Seclists  []string `json:"seclists"`
-	Dns       []string `json:"dns"`
-	Nat       string   `json:"nat"` //null
-	Vethernet string   `json:"vethernet"`
+	Model     string      `json:"model,omitempty"`
+	Seclists  []string    `json:"seclists"`
+	Dns       []string    `json:"dns"`
+	Nat       interface{} `json:"nat,omitempty"`
+	Vethernet string      `json:"vethernet"`
 }
 
 type Storage struct {
