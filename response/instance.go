@@ -138,13 +138,13 @@ type Vcable struct {
 }
 
 type ResourceRequirments struct {
-	Compressed_size   uint64 `json:"compressed_size"`
-	Is_root_ssd       bool   `json:"is_root_ssd"`
-	Ram               uint64 `json:"ram"`
-	Cpus              uint64 `json:"cpus"`
-	Root_disk_size    uint64 `json:root_disk_size"`
-	Io                uint64 `json:"io"`
-	Decompressed_size uint64 `json:"decompressed_size"`
-	Gpus              uint64 `json:"gpus"`
-	Ssd_data_size     uint64 `json:"ssd_data_size"`
+	Compressed_size   uint64  `json:"compressed_size"`
+	Is_root_ssd       bool    `json:"is_root_ssd"`
+	Ram               uint64  `json:"ram"`
+	Cpus              float64 `json:"cpus"`
+	Root_disk_size    uint64  `json:root_disk_size"`
+	Io                uint64  `json:"io"`
+	Decompressed_size uint64  `json:"decompressed_size"`
+	Gpus              uint64  `json:"gpus"`
+	Ssd_data_size     uint64  `json:"ssd_data_size"`
 }
