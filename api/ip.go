@@ -7,18 +7,18 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-// Retrieves details of the specified IP address association.
-func (c Client) IpAssociationsDetails(ip string) (resp response.IpAssociation, err error) {
+// IpAssociationDetails retrives details of the specified IP address association.
+func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	if ip == "" {
-		return resp, errors.New("go-oracle-cloud: The given ip is empty")
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: The given ip name is empty")
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipassociation/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, ip)
+		c.endpoint, c.identify, c.username, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -70,6 +70,18 @@ func (c Client) CreateIpAssociation(
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
+	}
+
+	if ipAddressReservation == "" {
+		return resp, errors.New("go-oracle-cloud: Empty ip address reservation")
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty ip name")
+	}
+
+	if vnic == "" {
+		return resp, errors.New("go-oracle-cloud: Empty vnic name")
 	}
 
 	// construct the body for the post request
@@ -168,19 +180,120 @@ func (c Client) UpdateIpAssociation(
 	params := response.IpAssociation{
 		IpAddressReservation: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, ipAddressReservation),
+
 		Vnic: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, vnic),
+
 		Name: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, newName),
 	}
 
-	url := fmt.Sprintf("%s/network/v1/ipassociation/Compute-%s/%s/%s", c.endpoint, c.identify, c.username, currentName)
+	url := fmt.Sprintf("%s/network/v1/ipassociation/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "PUT",
+		treat:  defaultTreat,
+		resp:   &resp,
+		body:   params,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// AllIp retrieves details of all the IP networks
+// that are available in the specified container.
+func (c Client) AllIp() (resp response.AllIp, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/",
+		c.endpoint, c.identify, c.username)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (c Client) IpDetails(name string) (resp response.Ip, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: The given ip name is empty")
+	}
+
+	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (c Client) CreateIp(
+	description string,
+	ipAddressPrefix string,
+	ipNetworkExchange string,
+	name string,
+	publicNaptEnabledFlag bool,
+	tags []string,
+) (resp response.Ip, err error) {
+
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if ipAddressPrefix == "" {
+		return resp, errors.New("go-oracle-cloud: Empty ipAddressPrefix")
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty name")
+	}
+
+	url := fmt.Sprintf("%s/network/v1/ipnetwork/", c.endpoint)
+
+	params := response.Ip{
+		Description:       description,
+		IpAddressPrefix:   ipAddressPrefix,
+		IpNetworkExchange: ipNetworkExchange,
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, name),
+		tags: tags,
+		PublicNaptEnabledFlag: publicNaptEnabledFlag,
+	}
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "POST",
 		treat:  defaultPostTreat,
 		resp:   &resp,
 		body:   params,
@@ -190,3 +303,35 @@ func (c Client) UpdateIpAssociation(
 
 	return resp, nil
 }
+
+func (c Client) DeleteIp(name string) (err error) {
+	if !c.isAuth() {
+		return ErrNotAuth
+	}
+
+	if name == "" {
+		return errors.New("go-oracle-cloud: The given ip name is empty")
+	}
+
+	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "DELETE",
+		treat:  defaultDeleteTreat,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+//TODO
+// func (c Client) UpdateIp(name string) (err error) {
+// 	if !c.isAuth() {
+//
+// 	}
+// }
