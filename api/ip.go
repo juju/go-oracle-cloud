@@ -7,8 +7,9 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-// IpAssociationDetails retrives details of the specified IP address association.
-func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, err error) {
+// IpAddressAssociation retrives details of the specified IP address association.
+func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddressAssociation, err error) {
+
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -35,8 +36,8 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 
 }
 
-// AllIpAssociation Retrieves details of the specified IP address association.
-func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
+// AllIpAddressAssociation Retrieves details of the specified IP address association.
+func (c Client) AllIpAddressAssociation() (resp response.AllIpAddressAssociation, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -58,15 +59,15 @@ func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 	return resp, nil
 }
 
-// CreateIpAssociation creates an IP address association
+// CreateIpAddressAssociation creates an IP address association
 // to associate an IP address reservation, a public IP address,
 // with a vNIC of an instance either while creating the instance
 // or when an instance is already running.
-func (c Client) CreateIpAssociation(
+func (c Client) CreateIpAddressAssociation(
 	ipAddressReservation string,
 	vnic string,
 	name string,
-) (resp response.IpAssociation, err error) {
+) (resp response.IpAddressAssociation, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -85,7 +86,7 @@ func (c Client) CreateIpAssociation(
 	}
 
 	// construct the body for the post request
-	params := response.IpAssociation{
+	params := response.IpAddressAssociation{
 		IpAddressReservation: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, ipAddressReservation),
 		Vnic: fmt.Sprintf("/Compute-%s/%s/%s",
@@ -111,9 +112,9 @@ func (c Client) CreateIpAssociation(
 	return resp, nil
 }
 
-// DeleteIpAssociation deletes the specified IP address association.
+// DeleteIpAddressAssociation deletes the specified IP address association.
 // Ensure that the IP address association is not being used before deleting it.
-func (c Client) DeleteIpAssociation(name string) (err error) {
+func (c Client) DeleteIpAddressAssociation(name string) (err error) {
 
 	if !c.isAuth() {
 		return ErrNotAuth
@@ -139,7 +140,7 @@ func (c Client) DeleteIpAssociation(name string) (err error) {
 	return nil
 }
 
-// UpdateIpAssociation updates the specified IP address association.
+// UpdateIpAddressAssociation updates the specified IP address association.
 // You can update values for the following parameters
 // of an IP address association: description, ipAddressReservation,
 // vnic, and tags. If you associate an IP reservation with a vNIC while
@@ -149,12 +150,12 @@ func (c Client) DeleteIpAssociation(name string) (err error) {
 // then to remove the IP reservation, update the instance orchestration.
 // Otherwise, whenever your instance orchestration is stopped and restarted,
 // the IP reservation will again be associated with the vNIC.
-func (c Client) UpdateIpAssociation(
+func (c Client) UpdateIpAddressAssociation(
 	currentName,
 	ipAddressReservation,
 	vnic,
 	newName string,
-) (resp response.IpAssociation, err error) {
+) (resp response.IpAddressAssociation, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -177,7 +178,7 @@ func (c Client) UpdateIpAssociation(
 	}
 
 	// construct the body for the post request
-	params := response.IpAssociation{
+	params := response.IpAddressAssociation{
 		IpAddressReservation: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, ipAddressReservation),
 
@@ -402,4 +403,301 @@ func (c Client) UpdateIp(
 	}
 
 	return resp, nil
+}
+
+// AllIpReservations Retrieves details of the IP reservations that are available
+func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/",
+		c.endpoint, c.identify, c.username)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// IpReservationDetails retrieves details of an IP reservation.
+// You can use this request to verify whether the
+// CreateIpReservation or PutIpReservatio were completed successfully.
+func (c Client) IpReservationDetails(name string) (resp response.IpReservation, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty name provided")
+	}
+
+	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+// CreateIpReservation creates an IP reservation.
+// After creating an IP reservation, you can associate it with
+// an instance by using the CrateIpAddressAssociation method
+func (c Client) CreateIpReservation(
+	currentName string,
+	newName string,
+	parentpool bool,
+	permanent bool,
+	tags []string,
+) (resp response.IpReservation, err error) {
+
+	if newName == "" {
+		newName = currentName
+	}
+
+	params := struct {
+		Permanent  bool     `json:"permanent"`
+		Tags       []string `json:"tags,omitempty"`
+		Name       string   `json:"name"`
+		Parentpool bool     `json:"parentpool"`
+	}{
+		Permanent: permanent,
+		Tags:      tags,
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, newName),
+		Parentpool: parentpool,
+	}
+
+	url := fmt.Sprintf("%s/ip/reservation/", c.endpoint)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		body:   &params,
+		verb:   "POST",
+		treat:  defaultPostTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// DeleteIpReservation deletes the ip reservation of a instance.
+// When you no longer need an IP reservation, you can delete it.
+// Ensure that no instance is using the IP reservation that you want to delete.
+func (c Client) DeleteIpReservation(name string) (err error) {
+	if !c.isAuth() {
+		return ErrNotAuth
+	}
+
+	if name == "" {
+		return errors.New("go-oracle-cloud: Empty name provided")
+	}
+
+	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "DELETE",
+		treat:  defaultDeleteTreat,
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// UpdateIpreservation changes the permanent field of an IP reservation
+// from false to true or vice versa.
+// You can use this command when, for example, you want to delete an
+// instance but retain its autoallocated public IP address as a permanent IP
+// reservation for use later with another instance. In such a case, before
+// deleting the instance, change the permanent field of the IP reservation
+// from false to true.
+// Note that if you change the permanent field of an IP reservation tofalse,
+// and if the reservation is not associated with an instance, then
+// the reservation will be deleted.
+// You can also update the tags that are used to identify the IP reservation.
+func (c Client) UpdateIpReservation(
+	currentName string,
+	newName string,
+	parentpool bool,
+	permanent bool,
+	tags []string,
+) (resp response.IpReservation, err error) {
+
+	if currentName == "" {
+		return resp, errors.New("go-oracle-cloud: Empty name provided")
+	}
+
+	if newName == "" {
+		newName = currentName
+	}
+
+	params := struct {
+		Permanent  bool     `json:"permanent"`
+		Tags       []string `json:"tags,omitempty"`
+		Name       string   `json:"name"`
+		Parentpool bool     `json:"parentpool"`
+	}{
+		Permanent: permanent,
+		Tags:      tags,
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, newName),
+		Parentpool: parentpool,
+	}
+
+	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, newName)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		body:   &params,
+		url:    url,
+		verb:   "PUT",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// IpAssociation retrieves the names of objects and subcontainers
+// that you can access in the specified container.
+func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := fmt.Sprintf("%s/ip/association/Compute-%s/%s/",
+		c.endpoint, c.identify, c.username)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+
+}
+
+// IpAssociationDetails retrieves details of the IP associations that are
+// available in the specified container
+func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty ip association name")
+	}
+
+	url := fmt.Sprintf("%s/ip/association/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// Creates an association between an IP address
+// and the vcable ID of an instance.
+func (c Client) CreateIpAssociation(
+	parentpool string,
+	vcable string,
+) (resp response.IpAssociation, err error) {
+
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	params := struct {
+		Parentpool string `json:"parentpool"`
+		Vcable     string `json:"vcable"`
+	}{
+		Parentpool: parentpool,
+		Vcable: fmt.Sprintf("Compute-%s/%s/%s",
+			c.identify, c.username, vcable),
+	}
+
+	url := fmt.Sprintf("%s/ip/ipassociation/", c.endpoint)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		body:   &params,
+		url:    url,
+		verb:   "POST",
+		treat:  defaultPostTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// Deletes the specified IP association
+func (c Client) DeleteIpAssociation(name string) (err error) {
+	if !c.isAuth() {
+		return ErrNotAuth
+	}
+
+	if name == "" {
+		return errors.New("go-oracle-cloud: Empty ip association name provided")
+	}
+
+	url := fmt.Sprintf("%s/ip/ipassociation/%s/%s/%s",
+		c.endpoint, c.identify, c.username, name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "DELETE",
+		treat:  defaultDeleteTreat,
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
