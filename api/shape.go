@@ -10,6 +10,7 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
+// ShapeDetails retrieves the CPU and memory details of the specified shape.
 func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -35,6 +36,7 @@ func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 	return resp, nil
 }
 
+// AllShapeDetails retrieves the CPU and memory details of all the available shapes.
 func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -52,5 +54,6 @@ func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
 	}); err != nil {
 		return resp, err
 	}
+
 	return resp, nil
 }

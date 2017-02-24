@@ -36,7 +36,8 @@ func (c Client) AddSHHKey(
 	}{
 		Enabled: enabled,
 		Key:     key,
-		Name:    fmt.Sprintf("/Compute-%s/%s/%s", c.identify, c.username, name),
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, name),
 	}
 
 	url := fmt.Sprintf("%s/%s/", c.endpoint, "sshkey")
@@ -52,6 +53,7 @@ func (c Client) AddSHHKey(
 		return resp, err
 	}
 
+	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -106,6 +108,7 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 		return resp, err
 	}
 
+	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -125,6 +128,10 @@ func (c Client) AllSSHKeyDetails() (resp response.AllSSH, err error) {
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
+	}
+
+	for key, _ := range resp.Result {
+		strip(&resp.Result[key].Name)
 	}
 
 	return resp, nil
@@ -180,7 +187,8 @@ func (c Client) UpdateSSHKey(
 	}{
 		Enabled: enabled,
 		Key:     key,
-		Name:    fmt.Sprintf("/Compute-%s/%s/%s", c.identify, c.username, name),
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, name),
 	}
 
 	url := fmt.Sprintf("%s/%s%s",
@@ -197,5 +205,6 @@ func (c Client) UpdateSSHKey(
 		return resp, err
 	}
 
+	strip(&resp.Name)
 	return resp, nil
 }
