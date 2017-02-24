@@ -6,13 +6,12 @@ Client library providing a simple interface with the oracle cloud IAAS rest api.
 ## Example client authentication
 
 ```go
-	package main
+package main
 
-	import (
-		"fmt"
-
-		oracle "github.com/hoenirvili/go-oracle-cloud/api"
-	)
+import (
+	"fmt"
+	oracle "github.com/hoenirvili/go-oracle-cloud/api"
+)
 
 func main() {
 	// create the configuration for the client
