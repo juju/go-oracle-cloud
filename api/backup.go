@@ -11,69 +11,109 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-type backupConfiguration struct {
-	VolumeUri            string   `json:"volumeUri"`
-	Name                 string   `json:"name"`
-	Enabled              bool     `json:"enabled"`
-	BackupRetentionCount uint64   `json:"backupRetentionCount"`
-	Interval             interval `json:"interval"`
-}
+// BackupConfigurationParams type used to feed up
+// the CreateBackupConfiguration function with params.
+type BackupConfigurationParams struct {
 
-type interval struct {
-	Hourly hourly `json:"Hourly"`
-}
+	// Description of this Backup Configuration
+	Description string `json:"description,omitempty"`
 
-// TODO(sgiulitti) add suport for this format also
-// {"DailyWeekly":{"daysOfWeek":["MONDAY"],"timeOfDay":"03:15","userTimeZone":"America/Los_Angeles"}}
-type hourly struct {
-	HourlyInterval uint64 `json:"hourlyInterval"`
+	// BackupRetentionCount represents how many backups to retain
+	// Minimum Value: 1
+	BackupRetentionCount uint32 `json:"backupRetentionCount"`
+
+	// Enabled when true, backups will automatically
+	// be generated based on the interval.
+	Enabled bool `json:"enabled"`
+
+	// Name is the name of the backup configuration
+	Name string `json:"name"`
+
+	// VolumeUri the complete URI of the storage volume
+	// that you want to backup.
+	VolumeUri string `json:"volumeUri"`
+
+	// Interval represents the interval in the backup configuration.
+	// There are two kinds of Intervals. Each Interval has its own JSON format.
+	// Your Interval field should look like one of the following:
+	//
+	// "interval":{
+	//   "Hourly":{
+	//     "hourlyInterval":2
+	//	 }
+	// }
+	//
+	//
+	// {"DailyWeekly":
+	// 	{
+	//	  "daysOfWeek":["MONDAY"],
+	//	  "timeOfDay":"03:15",
+	// 	  "userTimeZone":"America/Los_Angeles"
+	//  }
+	// }
+	// Days of the week is any day of the week
+	// fully capitalized (MONDAY, TUESDAY, etc).
+	// The user time zone is any IANA user timezone.
+	//For example user time zones see List of IANA time zones.
+	Interval interface{} `json:"interval"`
 }
 
 // CrreateBackupConfiguration creates a new backup configuration.
 // Requires authorization to create backup configurations as well
 // as appropriate authorization to create snapshots from the target volume.
 func (c Client) CreateBackupConfiguration(
-	volumeName, backUpName string,
-	enabled bool,
-	backupRetentionCount, hourlyInterval uint64,
+	p BackupConfigurationParams,
 ) (resp response.BackupConfiguration, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/backupservice/v1/configuration/", c.endpoint)
+	url := fmt.Sprintf(
+		"%s/backupservice/v1/configuration/", c.endpoint)
 
-	if backUpName == "" {
-		return resp, errors.New("go-oracle-cloud: Cannot create backup configuration with no name")
+	if p.Name == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty backup configuration name",
+		)
 	}
 
-	backupConfiguration := backupConfiguration{
-		VolumeUri: fmt.Sprintf("%s/storage/volume/Compute-%s/%s/%s",
-			c.endpoint, c.identify, c.username, volumeName),
-
-		Name:                 backUpName,
-		Enabled:              enabled,
-		BackupRetentionCount: backupRetentionCount,
-		Interval: interval{
-			Hourly: hourly{
-				HourlyInterval: hourlyInterval,
-			},
-		},
-	}
+	p.Name = fmt.Sprintf("/Compute-%s/%s/%s",
+		c.identify, c.username, p.Name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "POST",
-		body:   &backupConfiguration,
-		treat:  defaultPostTreat,
+		body:   &p,
 		resp:   &resp,
+		treat: func(resp *http.Response) (err error) {
+			switch resp.StatusCode {
+			case http.StatusCreated:
+				return nil
+			case http.StatusBadRequest:
+				return errors.New(
+					"go-oracle-cloud: Invalid backup configuration input. Volume does not exist or is not online",
+				)
+			case http.StatusUnauthorized:
+				return errors.New("go-oracle-cloud: Unauthorized")
+			case http.StatusInternalServerError:
+				return errors.New(
+					"go-oracle-cloud: The server encountered an error handling this request.",
+				)
+			default:
+				return fmt.Errorf(
+					"go-oracle-cloud: Error api response %d %s",
+					resp.StatusCode, dumpApiError(resp.Body),
+				)
+			}
+		},
 	}); err != nil {
 		return resp, err
 	}
 
+	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -87,45 +127,47 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: Cannot delete a backup configuration with empty name")
+		return errors.New(
+			"go-oracle-cloud: Empty backup configuration name",
+		)
 	}
 
 	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
 		c.endpoint, c.identify, c.username, name)
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
 		treat: func(resp *http.Response) (err error) {
-			if resp.StatusCode != http.StatusNoContent {
-				switch resp.StatusCode {
-				case http.StatusUnauthorized:
-					return fmt.Errorf(
-						"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
-					)
+			switch resp.StatusCode {
+			case http.StatusNoContent:
+				return nil
+			case http.StatusUnauthorized:
+				return errors.New(
+					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
+				)
 
-				case http.StatusNotFound:
-					return fmt.Errorf(
-						"go-oracle-cloud: The URL does not refer to a valid resource",
-					)
+			case http.StatusNotFound:
+				return errors.New(
+					"go-oracle-cloud: The URL does not refer to a valid resource",
+				)
 
-				case http.StatusConflict:
-					return fmt.Errorf(
-						"go-oracle-cloud: The backup configuration cannot be deleted due to associated backups or restores.",
-					)
-				case http.StatusInternalServerError:
-					return fmt.Errorf(
-						"go-oracle-cloud: The server encountered an error handling this request.",
-					)
-				default:
-					return fmt.Errorf(
-						"go-oracle-cloud: Error api response %d %s",
-						resp.StatusCode, dumpApiError(resp.Body),
-					)
-				}
+			case http.StatusConflict:
+				return errors.New(
+					"go-oracle-cloud: The backup configuration cannot be deleted due to associated backups or restores.",
+				)
+			case http.StatusInternalServerError:
+				return errors.New(
+					"go-oracle-cloud: The server encountered an error handling this request.",
+				)
+			default:
+				return fmt.Errorf(
+					"go-oracle-cloud: Error api response %d %s",
+					resp.StatusCode, dumpApiError(resp.Body),
+				)
 			}
-			return nil
 		},
 	}); err != nil {
 		return err
@@ -138,13 +180,17 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 // backup configuration. You can use this request to verify whether
 // the CreateBackupConfiguration and UpdateBackupConfiguration
 // requests were completed successfully.
-func (c Client) BackupConfigurationDetails(name string) (resp response.BackupConfiguration, err error) {
+func (c Client) BackupConfigurationDetails(
+	name string,
+) (resp response.BackupConfiguration, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Cannot return details of a empty backup configuration name")
+		return resp, errors.New(
+			"go-oracle-cloud: Empty backup configuration name",
+		)
 	}
 
 	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
@@ -156,11 +202,37 @@ func (c Client) BackupConfigurationDetails(name string) (resp response.BackupCon
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
-		resp:   &resp,
+		treat: func(resp *http.Response) (err error) {
+			switch resp.StatusCode {
+			case http.StatusOK:
+				return nil
+			case http.StatusUnauthorized:
+				return errors.New(
+					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
+				)
+
+			case http.StatusNotFound:
+				return errors.New(
+					"go-oracle-cloud: The URL does not refer to a valid resource",
+				)
+
+			case http.StatusInternalServerError:
+				return errors.New(
+					"go-oracle-cloud: The server encountered an error handling this request.",
+				)
+			default:
+				return fmt.Errorf(
+					"go-oracle-cloud: Error api response %d %s",
+					resp.StatusCode, dumpApiError(resp.Body),
+				)
+			}
+		},
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Name)
 
 	return resp, nil
 }
@@ -179,8 +251,27 @@ func (c Client) AllBackupConfiguration() (resp []response.BackupConfiguration, e
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
-		resp:   &resp,
+		treat: func(resp *http.Response) (err error) {
+			switch resp.StatusCode {
+			case http.StatusOK:
+				return nil
+			case http.StatusUnauthorized:
+				return errors.New(
+					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
+				)
+			case http.StatusInternalServerError:
+				return errors.New(
+					"go-oracle-cloud: The server encountered an error handling this request.",
+				)
+			default:
+				return fmt.Errorf(
+					"go-oracle-cloud: Error api response %d %s",
+					resp.StatusCode, dumpApiError(resp.Body),
+				)
+			}
+		},
+
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -194,50 +285,53 @@ func (c Client) AllBackupConfiguration() (resp []response.BackupConfiguration, e
 // for this operation. The following fields are unmodifiable:
 // volumeName, runAsUser, name.
 func (c Client) UpdateBackupConfiguration(
-	backUpName, volumeName, description string,
-	enabled bool,
-	hourlyInterval, backupRetentionCount uint64,
+	p BackupConfigurationParams,
+	newName string,
 ) (resp response.BackupConfiguration, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, backUpName)
-
-	backupConfiguration := struct {
-		RunAsUser            string   `json:"runAsUser"`
-		VolumeUri            string   `json:"volumeUri"`
-		Name                 string   `json:"name"`
-		Enabled              bool     `json:"enabled"`
-		BackupRetentionCount uint64   `json:"backupRetentionCount"`
-		Interval             interval `json:"interval"`
-		Description          string   `json:"description,omitempty"`
-	}{
-		RunAsUser: fmt.Sprintf("/Compute-%s/%s", c.identify, c.username),
-		VolumeUri: fmt.Sprintf("%s/storage/volume/Compute-%s/%s/%s",
-			c.endpoint, c.identify, c.username, volumeName),
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, backUpName),
-
-		Enabled:              enabled,
-		BackupRetentionCount: backupRetentionCount,
-		Interval: interval{
-			Hourly: hourly{
-				HourlyInterval: hourlyInterval,
-			},
-		},
-		Description: description,
+	if p.Name == "" {
+		errors.New("go-oracle-cloud: Empty backup configuration name")
 	}
+
+	if newName == "" {
+		newName = p.Name
+	}
+
+	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, p.Name)
+
+	p.Name = fmt.Sprintf("/Compute-%s/%s/%s",
+		c.identify, c.username, newName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "PUT",
-		body:   &backupConfiguration,
-		treat:  defaultPostTreat,
-		resp:   &resp,
+		body:   &p,
+		treat: func(resp *http.Response) (err error) {
+			switch resp.StatusCode {
+			case http.StatusOK:
+				return nil
+			case http.StatusUnauthorized:
+				return errors.New(
+					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
+				)
+			case http.StatusInternalServerError:
+				return errors.New(
+					"go-oracle-cloud: The server encountered an error handling this request.",
+				)
+			default:
+				return fmt.Errorf(
+					"go-oracle-cloud: Error api response %d %s",
+					resp.StatusCode, dumpApiError(resp.Body),
+				)
+			}
+		},
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

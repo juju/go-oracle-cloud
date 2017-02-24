@@ -1,6 +1,9 @@
+// Copyright 2017 Canonical Ltd.
+// Licensed under the AGPLv3, see LICENCE file for details.
+
 package response
 
-// A security list is a group of one or more instances
+// SecList a security list is a group of one or more instances
 // that you can specify as the destination or source
 // in a security rule. Instances within a security list
 // can communicate fully with one another on all ports.
@@ -36,6 +39,8 @@ type SecList struct {
 	Uri string `json:"uri"`
 }
 
+// AllSecList type that is filled with all the
+// security list that are in the account declared
 type AllSecList struct {
 	Result []SecList `json:"result,omitempty"`
 }

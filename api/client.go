@@ -15,10 +15,13 @@ import (
 type Config struct {
 	// Identify will hold the oracle cloud client identify endpoint name
 	Identify string
+
 	// Username will hold the username oracle cloud client account
 	Username string
+
 	// Password will be the password of the orcale cloud client account
 	Password string
+
 	// Endpoint will hold the base url endpoint of the oracle cloud api
 	Endpoint string
 }
@@ -53,18 +56,22 @@ func (c Config) validate() error {
 // password in order to comunicate with the oracle
 // cloud provider
 type Client struct {
+	// identify the intentity endpoint
 	identify string
+	// the username of the oracle account
 	username string
+	// the password of the oracle account
 	password string
-	cookie   *http.Cookie
-	endpoint string
-
-	// internal http client
-	http http.Client
 	// internal http cookie
 	// this cookie will be generated based on the client connection
+	cookie *http.Cookie
+	// the endpoint of the oracle account
+	endpoint string
+	// internal http client
+	http http.Client
 }
 
+// NewClient returns a new client based on the cfg provided
 func NewClient(cfg Config) (*Client, error) {
 	var err error
 	if err = cfg.validate(); err != nil {
@@ -82,6 +89,8 @@ func NewClient(cfg Config) (*Client, error) {
 	return cli, nil
 }
 
+// isAuth returns true if the cookie is set and present
+// or false if not
 func (c Client) isAuth() bool {
 	if c.cookie == nil {
 		return false

@@ -16,23 +16,34 @@ import (
 // to a virtual NIC set. Each security rule may refer to a virtual
 // NIC set in either the source or destination.See Workflow for
 // After creating an ACL, you can associate it to one or more virtual NIC sets.
-func (c Client) CreateAcl(name string, description string) (resp response.Acl, err error) {
+func (c Client) CreateAcl(
+	name string,
+	description string,
+	enabledFlag bool,
+	tags []string,
+) (resp response.Acl, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Cannot create acl because name provided is empty")
+		return resp, errors.New(
+			"go-oracle-cloud: Cannot create acl because name provided is empty",
+		)
 	}
 
-	url := fmt.Sprintf("%s/network/v1/acl", c.endpoint)
+	url := fmt.Sprintf("%s/network/v1/acl/", c.endpoint)
 
 	acl := struct {
-		Name        string `json:"name"`
-		Description string `json:"description,omitempty"`
+		Name        string   `json:"name"`
+		Description string   `json:"description,omitempty"`
+		EnabledFlag bool     `json:"enabledFlag"`
+		Tags        []string `json:"tags,omitempty"`
 	}{
 		Name:        name,
 		Description: description,
+		EnabledFlag: enabledFlag,
+		Tags:        tags,
 	}
 
 	if err = request(paramsRequest{
@@ -46,6 +57,8 @@ func (c Client) CreateAcl(name string, description string) (resp response.Acl, e
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Name)
 
 	return resp, nil
 }
@@ -109,6 +122,10 @@ func (c Client) AllAcl() (resp response.AllAcl, err error) {
 		return resp, err
 	}
 
+	for key, _ := range resp.Result {
+		strip(&resp.Result[key].Name)
+	}
+
 	return resp, nil
 }
 
@@ -136,6 +153,8 @@ func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 		return resp, err
 	}
 
+	strip(&resp.Name)
+
 	return resp, nil
 }
 
@@ -143,23 +162,37 @@ func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 // You can also disable an ACL by setting the value of the enabledFlag to false.
 // When you disable an ACL, it also disables the flow of traffic
 // allowed by the security rules in scope of the ACL.
-func (c Client) UpdateAcl(name string, description string, enableFlag bool, tags []string) (resp response.Acl, err error) {
+func (c Client) UpdateAcl(
+	currentName string,
+	newName string,
+	description string,
+	enableFlag bool,
+	tags []string,
+) (resp response.Acl, err error) {
+
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Cannot create acl because name provided is empty")
+	if currentName == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: acl name provided is empty",
+		)
+	}
+
+	if newName == "" {
+		newName = currentName
 	}
 
 	url := fmt.Sprintf("%s/network/v1/acl/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+		c.endpoint, c.identify, c.username, currentName)
 
 	acl := response.Acl{
 		Description: description,
-		Name:        url,
-		EnableFlag:  enableFlag,
-		Tags:        tags,
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, newName),
+		EnableFlag: enableFlag,
+		Tags:       tags,
 	}
 
 	if err = request(paramsRequest{
@@ -173,6 +206,8 @@ func (c Client) UpdateAcl(name string, description string, enableFlag bool, tags
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Name)
 
 	return resp, nil
 }

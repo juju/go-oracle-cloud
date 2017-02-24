@@ -19,6 +19,9 @@ type AllInstanceNames struct {
 type List struct {
 }
 
+// Instance represents an Oracle Compute Cloud Service
+// instance is a virtual machine running a specific
+// operating system and with CPU and memory resources that you specify.
 type Instance struct {
 	Domain                          string              `json:"domain"`
 	Placement_requirements          []string            `json:"placement_requirements"`
@@ -33,7 +36,6 @@ type Instance struct {
 	Vethernets                      interface{}         `json:"vethernets,omitempty"`
 	Imagelist                       string              `json:"imagelist,omitempty"`
 	Image_format                    string              `json:"image_format"`
-	Id                              string              `json:"id,omitempty"`
 	Cluster_uri                     interface{}         `json:"cluster_uri,omitempty"`
 	Relationships                   []string            `json:"relationships,omitempty"`
 	Target_node                     interface{}         `json:"target_node,omitempty"`

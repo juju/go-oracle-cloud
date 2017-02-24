@@ -36,8 +36,9 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 		return resp, err
 	}
 
+	strip(&resp.Name)
+	strip(&resp.Accounttype)
 	return resp, nil
-
 }
 
 // AllAccountDetails retrives details of the accounts that are in the
@@ -62,6 +63,11 @@ func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
 		return resp, err
 	}
 
+	for key, _ := range resp.Result {
+		strip(&resp.Result[key].Name)
+		strip(&resp.Result[key].Accounttype)
+	}
+
 	return resp, nil
 }
 
@@ -84,6 +90,10 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 		resp:      &resp,
 	}); err != nil {
 		return resp, err
+	}
+
+	for key, _ := range resp.Result {
+		strip(&resp.Result[key])
 	}
 
 	return resp, nil
@@ -111,6 +121,9 @@ func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 		return resp, err
 	}
 
-	return resp, nil
+	for key, _ := range resp.Result {
+		strip(&resp.Result[key])
+	}
 
+	return resp, nil
 }

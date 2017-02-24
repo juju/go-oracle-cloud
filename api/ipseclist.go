@@ -7,15 +7,23 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-// Creates a security IP list.
-// Note that, after creating a security IP list, you can add additional
-// IP addresses to the list by using the CreateIpSecList again with just
-// the additional IP addresses.
-func (c Client) CreateIpSecList(
+// CreateSecIpList a security IP list. Note that, after creating a
+// security IP list, you can add additional IP addresses to the list
+// by using the CreateIpSecList again with just the additional IP addresses
+// description is a description of the security IP list.
+// name is the name of the SecIpList you wish to create
+// secipentries a comma-separated list of the subnets
+// (in CIDR format) or IPv4 addresses for which you want
+// to create this security IP list.
+// For example, to create a security IP list containing the
+// IP addresses 203.0.113.1 and 203.0.113.2, enter one of the following:
+// 203.0.113.0/30
+// 203.0.113.1, 203.0.113.2
+func (c Client) CreateSecIpList(
 	description string,
 	name string,
 	secipentries []string,
-) (resp response.IpSecList, err error) {
+) (resp response.SecIpList, err error) {
 
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -24,6 +32,12 @@ func (c Client) CreateIpSecList(
 	if name == "" {
 		return resp, errors.New(
 			"go-oracle-cloud: Empty secure ip list name",
+		)
+	}
+
+	if secipentries == nil || len(secipentries) == 0 {
+		return resp, errors.New(
+			"go-oracle-cloud: Slice secure ip entries nil or empty",
 		)
 	}
 
@@ -52,19 +66,21 @@ func (c Client) CreateIpSecList(
 		return resp, err
 	}
 
+	strip(&resp.Name)
+
 	return resp, nil
 }
 
-// Deletes the specified security IP list. No response is returned.
+// DeleteSecIpList deletes the specified security IP list. No response is returned.
 // You can't delete system-provided security application that are
 // available in the /oracle/public container.
-func (c Client) DeleteIpSecList(name string) (err error) {
+func (c Client) DeleteSecIpList(name string) (err error) {
 	if !c.isAuth() {
 		return ErrNotAuth
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: Empty sec ip list name")
+		return errors.New("go-oracle-cloud: Empty secure ip list name")
 	}
 
 	url := fmt.Sprintf("%s/seciplist/Compute-%s/%s/%s",
@@ -83,10 +99,10 @@ func (c Client) DeleteIpSecList(name string) (err error) {
 	return nil
 }
 
-// IpSecListDetail retrieves information about the specified security IP list.
-// You can use this request to verify whether CreateIpSecList
-// and UpdateIpSecList operations were completed successfully.
-func (c Client) IpSecListDetail(name string) (resp response.IpSecList, err error) {
+// SecIpListDetail retrieves information about the specified security IP list.
+// You can use this request to verify whether CreateSecIpList
+// or UpdateSecIpList operations were completed successfully.
+func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -110,10 +126,12 @@ func (c Client) IpSecListDetail(name string) (resp response.IpSecList, err error
 		return resp, err
 	}
 
+	strip(&resp.Name)
 	return resp, nil
 }
 
-func (c Client) AllIpSecList() (resp response.AllIpSecList, err error) {
+// AllSecIpList retrieves details of the security IP lists that are in the account
+func (c Client) AllSecIpList() (resp response.AllSecIpList, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -131,32 +149,44 @@ func (c Client) AllIpSecList() (resp response.AllIpSecList, err error) {
 		return resp, err
 	}
 
+	for key, _ := range resp.Result {
+		strip(&resp.Result[key].Name)
+	}
+
 	return resp, nil
 }
 
-// Updates IP addresses and description of the specified security IP list.
-// Note that this command replaces the values in the secipentries and
-// description fields with the new values that you specify.
-// To add one or more IP addresses to the existing list, run
-// the add seciplist command and specify just the additional IP addresses.
-func (c Client) UpdateIpSecList(
+// UpdateSecIpList updates IP addresses and description of
+// the specified security IP list. Note that this command replaces
+// the values in the secipentries and description fields with
+// the new values that you specify. To add one or more IP addresses
+// to the existing list, run the add seciplist command and
+// specify just the additional IP addresses.
+func (c Client) UpdateSecIpList(
 	description string,
 	currentName string,
 	newName string,
 	secipentries []string,
-) (resp response.IpSecList, err error) {
+) (resp response.SecIpList, err error) {
+
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
 	if currentName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty current ip sec list name",
+			"go-oracle-cloud: Empty current secure ip list name",
 		)
 	}
 
 	if newName == "" {
 		newName = currentName
+	}
+
+	if secipentries == nil || len(secipentries) == 0 {
+		return resp, errors.New(
+			"go-oracle-cloud: Slice secure ip entries nil or empty",
+		)
 	}
 
 	params := struct {
@@ -186,5 +216,4 @@ func (c Client) UpdateIpSecList(
 	}
 
 	return resp, nil
-
 }

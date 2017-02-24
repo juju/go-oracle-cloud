@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 // treatStatus will be used as a callback to custom check the response
@@ -158,4 +159,18 @@ func request(cfg paramsRequest) (err error) {
 	}
 
 	return nil
+}
+
+// strip strips all metadata from a string
+// the string passed must be a valid address of the form
+// /Compute-indentify/someUser@gmail.com/someResourceName
+// After the call data is modified and stripped and returned
+// only with someResourceName
+func strip(data *string) {
+	if data == nil || *data == "" {
+		return
+	}
+
+	list := strings.Split(*data, "/")
+	*data = list[len(list)-1]
 }

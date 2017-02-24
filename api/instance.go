@@ -6,23 +6,25 @@ package api
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
 // DeleteInstance shuts down an instance and removes it permanently
 // from the system.
-func (c Client) DeleteInstance(uuid string) (err error) {
+// Example of name f653a677-b566-4f92-8e93-71d47b364119
+func (c Client) DeleteInstance(name string) (err error) {
 	if !c.isAuth() {
 		return ErrNotAuth
 	}
 
-	if uuid == "" {
-		return errors.New("go-oracle-cloud: uuid provided is empty")
+	if name == "" {
+		return errors.New("go-oracle-cloud: Empty instance name")
 	}
 
 	url := fmt.Sprintf("%s/instance/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, uuid)
+		c.endpoint, c.identify, c.username, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -60,17 +62,26 @@ func (c Client) AllInstances() (resp response.AllInstance, err error) {
 		return resp, err
 	}
 
+	for key, _ := range resp.Result {
+		strip(&resp.Result[key].Imagelist)
+		for alt, _ := range resp.Result[key].SSHKeys {
+			strip(&resp.Result[key].SSHKeys[alt])
+		}
+		list := strings.Split(resp.Result[key].Name, "/")
+		resp.Result[key].Name = list[len(list)-2] + "/" + list[len(list)-1]
+	}
 	return resp, nil
 }
 
 // InstanceDetails retrieves details of the specified instance.
-func (c Client) InstanceDetails(uuid string) (resp response.Instance, err error) {
+// Name is the form of dev-name/uuid
+func (c Client) InstanceDetails(name string) (resp response.Instance, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
 	url := fmt.Sprintf("%s/instance/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, uuid)
+		c.endpoint, c.identify, c.username, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -82,6 +93,13 @@ func (c Client) InstanceDetails(uuid string) (resp response.Instance, err error)
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Imagelist)
+	for alt, _ := range resp.SSHKeys {
+		strip(&resp.SSHKeys[alt])
+	}
+	list := strings.Split(resp.Name, "/")
+	resp.Name = list[len(list)-2] + "/" + list[len(list)-1]
 
 	return resp, nil
 }
