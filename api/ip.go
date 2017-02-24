@@ -388,7 +388,7 @@ func (c Client) UpdateIp(
 			c.identify, c.username, ipNetworkExchange),
 
 		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, currentName),
+			c.identify, c.username, newName),
 		Tags: tags,
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
 	}
