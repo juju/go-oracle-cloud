@@ -11,7 +11,7 @@ import (
 )
 
 // AccountDetails retrieves details of the specified account.
-// example of deafult name account that oracle provider has: default, cloud_storage.
+// example of default name account that oracle provider has: default, cloud_storage.
 func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth

@@ -31,7 +31,7 @@ func (c *Client) Authenticate() (err error) {
 		verb:   "POST",
 		body:   auth,
 		treat: func(resp *http.Response) (err error) {
-			// if the operation is successfull then we will recive 204 http status
+			// if the operation is successful then we will recive 204 http status
 			// if this is not the case then we should stop and return a friendly error
 			if resp.StatusCode != http.StatusNoContent {
 				return fmt.Errorf(

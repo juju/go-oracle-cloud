@@ -10,7 +10,7 @@ import (
 	"net/url"
 )
 
-// Config represents the significat details that a client
+// Config represents the significant details that a client
 // needs in order to interact with the oracle cloud api.
 type Config struct {
 	// Identify will hold the oracle cloud client identify endpoint name
