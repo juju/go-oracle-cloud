@@ -127,7 +127,7 @@ type Network struct {
 	Model          string   `json:"model,omitempty"`
 	Vethernet_type string   `json:"vethernet_type"`
 	Id             string   `json:"id"`
-	Dhcp_options   []string `json"dhcp_options,omitempty"`
+	Dhcp_options   []string `json:"dhcp_options,omitempty"`
 }
 
 type Vcable struct {
@@ -145,7 +145,7 @@ type ResourceRequirments struct {
 	Is_root_ssd       bool    `json:"is_root_ssd"`
 	Ram               uint64  `json:"ram"`
 	Cpus              float64 `json:"cpus"`
-	Root_disk_size    uint64  `json:root_disk_size"`
+	Root_disk_size    uint64  `json:"root_disk_size"`
 	Io                uint64  `json:"io"`
 	Decompressed_size uint64  `json:"decompressed_size"`
 	Gpus              uint64  `json:"gpus"`

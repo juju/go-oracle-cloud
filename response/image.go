@@ -6,7 +6,7 @@ package response
 type ImageList struct {
 	Default     uint64    `json:"default"`
 	Description string    `json:"description,omitempty"`
-	Entries     []Entries `json:"entries",omitempty`
+	Entries     []Entries `json:"entries,omitempty"`
 	Uri         string    `json:"uri"`
 	Name        string    `json:"name"`
 }

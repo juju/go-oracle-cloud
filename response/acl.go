@@ -12,5 +12,5 @@ type Acl struct {
 }
 
 type AllAcl struct {
-	Result []Acl `json:"result"`
+	Result []Acl `json:"result,omitempty"`
 }

@@ -28,11 +28,11 @@ func (c Client) CreateAcl(name string, description string) (resp response.Acl, e
 	url := fmt.Sprintf("%s/network/v1/acl", c.endpoint)
 
 	acl := struct {
-		name        string `json:"name"`
-		description string `json:"description,omitempty"`
+		Name        string `json:"name"`
+		Description string `json:"description,omitempty"`
 	}{
-		name:        name,
-		description: description,
+		Name:        name,
+		Description: description,
 	}
 
 	if err = request(paramsRequest{
