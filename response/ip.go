@@ -3,21 +3,6 @@
 
 package response
 
-// IpAddressAssociation IP address association
-// to associate an IP address reservation
-type IpAddressAssociation struct {
-	Name                 string   `json:"name"`
-	Uri                  string   `json:"uri"`
-	Description          string   `json:"description,omitempty"`
-	Tags                 []string `json:"tags,omitempty"`
-	Vnic                 string   `json:"vnic"`
-	IpAddressReservation string   `json:"ipAddressReservation"`
-}
-
-type AllIpAddressAssociation struct {
-	Result []IpAddressAssociation `json:"result,omitempty"`
-}
-
 // An IP network allows you to define an IP subnet in your account.
 // The size of the IP subnet and the set IP addresses in the subnet
 // are determined by the IP address prefix that you specify while creating
@@ -75,40 +60,9 @@ type Ip struct {
 	Uri string `json:"uri"`
 }
 
+// AllIp holds a slice of all ip networks in the
+// oracle cloud account
 type AllIp struct {
 	Result []Ip `json:"result,omitempty"`
 }
 
-type IpReservation struct {
-	Account    string   `json:"account"`
-	Ip         string   `json:"ip"`
-	Name       string   `json:"name"`
-	Parentpool string   `json:"parentpool"`
-	Quota      string   `json:"quota"`
-	Tags       []string `json:"tags,omitempty"`
-	Uri        string   `json:"uri"`
-	Used       bool     `json:"used"`
-}
-
-type AllIpReservation struct {
-	Result []IpReservation `json:"result,omitmepty"`
-}
-
-// IpAssociation is a link between an IP reservation
-// and the vcable of an instance. A vcable is an attachment
-// point to a specific network interface of an instance.
-// A vcable is created automatically when an instance is created
-// and is deleted when the instance is deleted.
-type IpAssociation struct {
-	Account     string `json:"account"`
-	Ip          string `json:"ip"`
-	Name        string `json:"name"`
-	Parentpool  string `json:"parentpool"`
-	Reservation string `json:"reservation"`
-	Uri         string `json:"uri"`
-	Vcable      string `json:"vcable"`
-}
-
-type AllIpAssociation struct {
-	Result []IpAssociation `json:"result,omitempty"`
-}

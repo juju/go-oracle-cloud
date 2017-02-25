@@ -338,5 +338,6 @@ func (c Client) UpdateBackupConfiguration(
 		return resp, err
 	}
 
+	strip(&resp.Name)
 	return resp, nil
 }

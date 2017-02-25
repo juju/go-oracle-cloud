@@ -40,7 +40,8 @@ func (c Client) CreateAcl(
 		EnabledFlag bool     `json:"enabledFlag"`
 		Tags        []string `json:"tags,omitempty"`
 	}{
-		Name:        name,
+		Name: fmt.Sprintf("/Compute-%s/%s/%s",
+			c.identify, c.username, name),
 		Description: description,
 		EnabledFlag: enabledFlag,
 		Tags:        tags,

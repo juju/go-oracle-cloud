@@ -33,6 +33,9 @@ func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddres
 	}); err != nil {
 		return resp, err
 	}
+	strip(&resp.IpAddressReservation)
+	strip(&resp.Vnic)
+	strip(&resp.Name)
 
 	return resp, nil
 
@@ -58,6 +61,13 @@ func (c Client) AllIpAddressAssociation() (resp response.AllIpAddressAssociation
 		return resp, err
 	}
 
+	for key := range resp.Result {
+		strip(&resp.Result[key].IpAddressReservation)
+		strip(&resp.Result[key].Vnic)
+		strip(&resp.Result[key].Name)
+
+	}
+
 	return resp, nil
 }
 
@@ -66,9 +76,11 @@ func (c Client) AllIpAddressAssociation() (resp response.AllIpAddressAssociation
 // with a vNIC of an instance either while creating the instance
 // or when an instance is already running.
 func (c Client) CreateIpAddressAssociation(
+	description string,
 	ipAddressReservation string,
 	vnic string,
 	name string,
+	tags []string,
 ) (resp response.IpAddressAssociation, err error) {
 
 	if !c.isAuth() {
@@ -95,6 +107,8 @@ func (c Client) CreateIpAddressAssociation(
 			c.identify, c.username, vnic),
 		Name: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, name),
+		Tags:        tags,
+		Description: description,
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipassociation/", c.endpoint)
@@ -111,6 +125,10 @@ func (c Client) CreateIpAddressAssociation(
 		return resp, err
 	}
 
+	strip(&resp.IpAddressReservation)
+	strip(&resp.Vnic)
+	strip(&resp.Name)
+
 	return resp, nil
 }
 
@@ -123,7 +141,7 @@ func (c Client) DeleteIpAddressAssociation(name string) (err error) {
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: The given name is empty")
+		return errors.New("go-oracle-cloud: Empty ip address association name")
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipassociation/Compute-%s/%s/%s",

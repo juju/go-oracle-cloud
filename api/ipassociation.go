@@ -1,5 +1,6 @@
 // Copyright 2017 Canonical Ltd.
 // Licensed under the AGPLv3, see LICENCE file for details.
+
 package api
 
 import (
@@ -9,7 +10,7 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-// IpAssociation retrieves the names of objects and subcontainers
+// AllIpAssociation retrieves the names of objects and subcontainers
 // that you can access in the specified container.
 func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 	if !c.isAuth() {
@@ -28,6 +29,13 @@ func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
+	}
+
+	for key := range resp.Result {
+		strip(&resp.Result[key].Account)
+		strip(&resp.Result[key].Name)
+		strip(&resp.Result[key].Vcable)
+		strip(&resp.Result[key].Reservation)
 	}
 
 	return resp, nil
@@ -58,6 +66,11 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Account)
+	strip(&resp.Name)
+	strip(&resp.Vcable)
+	strip(&resp.Reservation)
 
 	return resp, nil
 }
@@ -96,10 +109,14 @@ func (c Client) CreateIpAssociation(
 		return resp, err
 	}
 
+	strip(&resp.Account)
+	strip(&resp.Name)
+	strip(&resp.Vcable)
+	strip(&resp.Reservation)
 	return resp, nil
 }
 
-// Deletes the specified IP association
+// Deletes the specified IP association with the name
 func (c Client) DeleteIpAssociation(name string) (err error) {
 	if !c.isAuth() {
 		return ErrNotAuth

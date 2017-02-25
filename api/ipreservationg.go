@@ -29,6 +29,11 @@ func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
 		return resp, err
 	}
 
+	for key := range resp.Result {
+		strip(&resp.Result[key].Account)
+		strip(&resp.Result[key].Name)
+		strip(&resp.Result[key].Parentpool)
+	}
 	return resp, nil
 }
 
@@ -57,6 +62,10 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Account)
+	strip(&resp.Name)
+	strip(&resp.Parentpool)
 	return resp, nil
 }
 
@@ -66,10 +75,26 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 func (c Client) CreateIpReservation(
 	currentName string,
 	newName string,
-	parentpool bool,
+	parentpool string,
 	permanent bool,
 	tags []string,
 ) (resp response.IpReservation, err error) {
+
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if currentName == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty curret ip reservation name",
+		)
+	}
+
+	if parentpool == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty pool of public IP addresses",
+		)
+	}
 
 	if newName == "" {
 		newName = currentName
@@ -79,13 +104,13 @@ func (c Client) CreateIpReservation(
 		Permanent  bool     `json:"permanent"`
 		Tags       []string `json:"tags,omitempty"`
 		Name       string   `json:"name"`
-		Parentpool bool     `json:"parentpool"`
+		Parentpool string   `json:"parentpool"`
 	}{
 		Permanent: permanent,
 		Tags:      tags,
 		Name: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, newName),
-		Parentpool: parentpool,
+		Parentpool: fmt.Sprintf("/oracle/public/%s", parentpool),
 	}
 
 	url := fmt.Sprintf("%s/ip/reservation/", c.endpoint)
@@ -102,6 +127,9 @@ func (c Client) CreateIpReservation(
 		return resp, err
 	}
 
+	strip(&resp.Account)
+	strip(&resp.Name)
+	strip(&resp.Parentpool)
 	return resp, nil
 }
 
@@ -146,13 +174,15 @@ func (c Client) DeleteIpReservation(name string) (err error) {
 func (c Client) UpdateIpReservation(
 	currentName string,
 	newName string,
-	parentpool bool,
+	parentpool string,
 	permanent bool,
 	tags []string,
 ) (resp response.IpReservation, err error) {
 
 	if currentName == "" {
-		return resp, errors.New("go-oracle-cloud: Empty name provided")
+		return resp, errors.New(
+			"go-oracle-cloud: Empty ip reservation name provided",
+		)
 	}
 
 	if newName == "" {
@@ -163,17 +193,17 @@ func (c Client) UpdateIpReservation(
 		Permanent  bool     `json:"permanent"`
 		Tags       []string `json:"tags,omitempty"`
 		Name       string   `json:"name"`
-		Parentpool bool     `json:"parentpool"`
+		Parentpool string   `json:"parentpool"`
 	}{
 		Permanent: permanent,
 		Tags:      tags,
 		Name: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, newName),
-		Parentpool: parentpool,
+		Parentpool: fmt.Sprintf("/oracle/public/%s", parentpool),
 	}
 
 	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, newName)
+		c.endpoint, c.identify, c.username, currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -186,6 +216,10 @@ func (c Client) UpdateIpReservation(
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Account)
+	strip(&resp.Name)
+	strip(&resp.Parentpool)
 
 	return resp, nil
 }

@@ -31,10 +31,16 @@ func (c Client) AllIp() (resp response.AllIp, err error) {
 		return resp, err
 	}
 
+	for key := range resp.Result {
+		strip(&resp.Result[key].Name)
+		strip(&resp.Result[key].IpNetworkExchange)
+	}
+
 	return resp, nil
 }
 
-// IpDetails retrives
+// IpDetails retrives details of a an IP network
+// that is available in the oracle account
 func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
@@ -58,9 +64,18 @@ func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 		return resp, err
 	}
 
+	strip(&resp.Name)
+	strip(&resp.IpNetworkExchange)
+
 	return resp, nil
 }
 
+// CreateIp creates an IP network. An IP network allows you to define
+// an IP subnet in your account. With an IP network you can isolate
+// instances by creating separate IP networks and adding instances
+// to specific networks. Traffic can flow between instances within
+// the same IP network, but by default each network is isolated
+// from other networks and from the public Internet.
 func (c Client) CreateIp(
 	description string,
 	ipAddressPrefix string,
@@ -79,7 +94,7 @@ func (c Client) CreateIp(
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Empty name")
+		return resp, errors.New("go-oracle-cloud: Empty ip network name")
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipnetwork/", c.endpoint)
@@ -89,8 +104,10 @@ func (c Client) CreateIp(
 		IpAddressPrefix: ipAddressPrefix,
 		IpNetworkExchange: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, ipNetworkExchange),
+
 		Name: fmt.Sprintf("/Compute-%s/%s/%s",
 			c.identify, c.username, name),
+
 		Tags: tags,
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
 	}
@@ -107,16 +124,20 @@ func (c Client) CreateIp(
 		return resp, err
 	}
 
+	strip(&resp.Name)
+	strip(&resp.IpNetworkExchange)
+
 	return resp, nil
 }
 
+// DeleteIp deletes an IP network with a given name
 func (c Client) DeleteIp(name string) (err error) {
 	if !c.isAuth() {
 		return ErrNotAuth
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: The given ip name is empty")
+		return errors.New("go-oracle-cloud: Empty ip network name")
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
@@ -155,10 +176,10 @@ func (c Client) DeleteIp(name string) (err error) {
 // to instances remain valid in the updated IP network.
 func (c Client) UpdateIp(
 	currentName string,
+	newName string,
 	description string,
 	ipNetworkExchange string,
 	ipAddressPrefix string,
-	newName string,
 	publicNaptEnabledFlag bool,
 	tags []string,
 ) (resp response.Ip, err error) {
@@ -168,11 +189,11 @@ func (c Client) UpdateIp(
 	}
 
 	if currentName == "" {
-		return resp, errors.New("go-oracle-cloud: Given name is empty")
+		return resp, errors.New("go-oracle-cloud: Empty network ip name")
 	}
 
 	if ipAddressPrefix == "" {
-		return resp, errors.New("go-oracle-cloud: Given ip address prefix is empty")
+		return resp, errors.New("go-oracle-cloud: Empty ipAddressPrefix ")
 	}
 
 	if newName == "" {
@@ -205,6 +226,9 @@ func (c Client) UpdateIp(
 	}); err != nil {
 		return resp, err
 	}
+
+	strip(&resp.Name)
+	strip(&resp.IpNetworkExchange)
 
 	return resp, nil
 }
