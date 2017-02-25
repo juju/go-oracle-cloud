@@ -2,7 +2,7 @@
 
 Client library providing a simple interface with the oracle cloud IAAS rest api.
 
-[![GoDoc](https://godoc.org/github.com/hoenirvili/go-oracle-cloud?status.svg)](https://godoc.org/github.com/hoenirvili/go-oracle-cloud) [![Go Report Card](https://goreportcard.com/badge/github.com/hoenirvili/go-oracle-cloud)](https://goreportcard.com/report/github.com/hoenirvili/go-oracle-cloud)
+[![Build Status](https://travis-ci.org/hoenirvili/go-oracle-cloud.svg?branch=master)](https://travis-ci.org/hoenirvili/go-oracle-cloud) [![GoDoc](https://godoc.org/github.com/hoenirvili/go-oracle-cloud?status.svg)](https://godoc.org/github.com/hoenirvili/go-oracle-cloud) [![Go Report Card](https://goreportcard.com/badge/github.com/hoenirvili/go-oracle-cloud)](https://goreportcard.com/report/github.com/hoenirvili/go-oracle-cloud)
 
 ## Example client authentication
 
