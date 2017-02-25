@@ -10,14 +10,15 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-func (c Client) VritualVnc(name string) (resp response.Vnc, err error) {
+// VirtualNic retrives a virtual nic with that has a given name
+func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
 	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Vitual NIC name provided is empty",
+			"go-oracle-cloud: Empty virtual nic name",
 		)
 	}
 
@@ -35,10 +36,12 @@ func (c Client) VritualVnc(name string) (resp response.Vnc, err error) {
 		return resp, err
 	}
 
+	strip(&resp.Name)
 	return resp, nil
 }
 
-func (c Client) AllVritualVnc() (resp response.AllVnc, err error) {
+// AllVirtualNic returns all virtual nic that are in the oracle account
+func (c Client) AllVirtualNic() (resp response.AllVirtualNic, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -55,6 +58,10 @@ func (c Client) AllVritualVnc() (resp response.AllVnc, err error) {
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
+	}
+
+	for key := range resp.Result {
+		strip(&resp.Result[key].Name)
 	}
 
 	return resp, nil
