@@ -1,5 +1,6 @@
 // Copyright 2017 Canonical Ltd.
 // Licensed under the AGPLv3, see LICENCE file for details.
+
 package response
 
 // Acl an access control list (ACL) is a collection

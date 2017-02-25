@@ -13,6 +13,7 @@ package response
 // either statically or dynamically, depending on your business needs.
 // So you have complete control over the IP addresses assigned to your instances
 type Ip struct {
+
 	// Description of the object.
 	Description string `json:"description,omitempty"`
 
@@ -65,4 +66,3 @@ type Ip struct {
 type AllIp struct {
 	Result []Ip `json:"result,omitempty"`
 }
-
