@@ -41,7 +41,7 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	return resp, nil
 }
 
-// AllAccountDetails retrives details of the accounts that are in the
+// AllAccountDetais retrives details of the accounts that are in the
 // specified identity domain. You can use this HTTP request to
 // get details of the account that you must specify while creating a machine image.
 func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
@@ -63,7 +63,7 @@ func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
 		return resp, err
 	}
 
-	for key, _ := range resp.Result {
+	for key := range resp.Result {
 		strip(&resp.Result[key].Name)
 		strip(&resp.Result[key].Accounttype)
 	}
@@ -92,7 +92,7 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 		return resp, err
 	}
 
-	for key, _ := range resp.Result {
+	for key := range resp.Result {
 		strip(&resp.Result[key])
 	}
 
@@ -121,7 +121,7 @@ func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 		return resp, err
 	}
 
-	for key, _ := range resp.Result {
+	for key := range resp.Result {
 		strip(&resp.Result[key])
 	}
 

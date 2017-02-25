@@ -39,8 +39,8 @@ func (c Client) ImageListDetails(
 	}
 
 	strip(&resp.Name)
-	for key, _ := range resp.Entries {
-		for alt, _ := range resp.Entries[key].Machineimages {
+	for key := range resp.Entries {
+		for alt := range resp.Entries[key].Machineimages {
 			strip(&resp.Entries[key].Machineimages[alt])
 		}
 	}
@@ -69,11 +69,11 @@ func (c Client) AllImageList() (resp response.AllImageList, err error) {
 		return resp, err
 	}
 
-	for key, _ := range resp.Result {
+	for key := range resp.Result {
 		strip(&resp.Result[key].Name)
 
-		for alt, _ := range resp.Result[key].Entries {
-			for alk, _ := range resp.Result[key].Entries[alt].Machineimages {
+		for alt := range resp.Result[key].Entries {
+			for alk := range resp.Result[key].Entries[alt].Machineimages {
 				strip(&resp.Result[key].Entries[alt].Machineimages[alk])
 			}
 		}
@@ -147,8 +147,8 @@ func (c Client) CreateImageList(
 	}
 
 	strip(&resp.Name)
-	for key, _ := range resp.Entries {
-		for alt, _ := range resp.Entries[key].Machineimages {
+	for key := range resp.Entries {
+		for alt := range resp.Entries[key].Machineimages {
 			strip(&resp.Entries[key].Machineimages[alt])
 		}
 	}
@@ -234,8 +234,8 @@ func (c Client) UpdateImageList(
 	}
 
 	strip(&resp.Name)
-	for key, _ := range resp.Entries {
-		for alt, _ := range resp.Entries[key].Machineimages {
+	for key := range resp.Entries {
+		for alt := range resp.Entries[key].Machineimages {
 			strip(&resp.Entries[key].Machineimages[alt])
 		}
 	}

@@ -30,7 +30,7 @@ func (c Client) ImageListEntry(
 		)
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%d",
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%s",
 		c.endpoint, c.identify, c.username, name, version)
 
 	if err = request(paramsRequest{
@@ -44,7 +44,7 @@ func (c Client) ImageListEntry(
 		return resp, err
 	}
 
-	for key, _ := range resp.Machineimages {
+	for key := range resp.Machineimages {
 		strip(&resp.Machineimages[key])
 	}
 
@@ -72,7 +72,7 @@ func (c Client) DeleteImageListEntry(
 		)
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%d",
+	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%s",
 		c.endpoint, c.identify, c.username, name, version)
 
 	if err = request(paramsRequest{
@@ -154,13 +154,13 @@ func (c Client) AddImageListEntry(
 	}
 
 	strip(&resp.Imagelist.Name)
-	for key, _ := range resp.Imagelist.Entries {
-		for alt, _ := range resp.Imagelist.Entries[key].Machineimages {
+	for key := range resp.Imagelist.Entries {
+		for alt := range resp.Imagelist.Entries[key].Machineimages {
 			strip(&resp.Imagelist.Entries[key].Machineimages[alt])
 		}
 	}
 
-	for key, _ := range resp.Machineimages {
+	for key := range resp.Machineimages {
 		strip(&resp.Machineimages[key])
 	}
 

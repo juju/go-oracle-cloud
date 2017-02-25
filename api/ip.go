@@ -1,5 +1,6 @@
 // Copyright 2017 Canonical Ltd.
 // Licensed under the AGPLv3, see LICENCE file for details.
+
 package api
 
 import (
@@ -33,6 +34,7 @@ func (c Client) AllIp() (resp response.AllIp, err error) {
 	return resp, nil
 }
 
+// IpDetails retrives
 func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth

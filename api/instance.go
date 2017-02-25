@@ -62,9 +62,9 @@ func (c Client) AllInstances() (resp response.AllInstance, err error) {
 		return resp, err
 	}
 
-	for key, _ := range resp.Result {
+	for key := range resp.Result {
 		strip(&resp.Result[key].Imagelist)
-		for alt, _ := range resp.Result[key].SSHKeys {
+		for alt := range resp.Result[key].SSHKeys {
 			strip(&resp.Result[key].SSHKeys[alt])
 		}
 		list := strings.Split(resp.Result[key].Name, "/")
@@ -95,7 +95,7 @@ func (c Client) InstanceDetails(name string) (resp response.Instance, err error)
 	}
 
 	strip(&resp.Imagelist)
-	for alt, _ := range resp.SSHKeys {
+	for alt := range resp.SSHKeys {
 		strip(&resp.SSHKeys[alt])
 	}
 	list := strings.Split(resp.Name, "/")

@@ -58,7 +58,7 @@ type BackupConfigurationParams struct {
 	Interval interface{} `json:"interval"`
 }
 
-// CrreateBackupConfiguration creates a new backup configuration.
+// CreateBackupConfiguration creates a new backup configuration.
 // Requires authorization to create backup configurations as well
 // as appropriate authorization to create snapshots from the target volume.
 func (c Client) CreateBackupConfiguration(
@@ -100,7 +100,7 @@ func (c Client) CreateBackupConfiguration(
 				return errors.New("go-oracle-cloud: Unauthorized")
 			case http.StatusInternalServerError:
 				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request.",
+					"go-oracle-cloud: The server encountered an error handling this request",
 				)
 			default:
 				return fmt.Errorf(
@@ -156,11 +156,11 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 
 			case http.StatusConflict:
 				return errors.New(
-					"go-oracle-cloud: The backup configuration cannot be deleted due to associated backups or restores.",
+					"go-oracle-cloud: The backup configuration cannot be deleted due to associated backups or restores",
 				)
 			case http.StatusInternalServerError:
 				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request.",
+					"go-oracle-cloud: The server encountered an error handling this request",
 				)
 			default:
 				return fmt.Errorf(
@@ -218,7 +218,7 @@ func (c Client) BackupConfigurationDetails(
 
 			case http.StatusInternalServerError:
 				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request.",
+					"go-oracle-cloud: The server encountered an error handling this request",
 				)
 			default:
 				return fmt.Errorf(
@@ -261,7 +261,7 @@ func (c Client) AllBackupConfiguration() (resp []response.BackupConfiguration, e
 				)
 			case http.StatusInternalServerError:
 				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request.",
+					"go-oracle-cloud: The server encountered an error handling this request",
 				)
 			default:
 				return fmt.Errorf(
@@ -293,7 +293,9 @@ func (c Client) UpdateBackupConfiguration(
 	}
 
 	if p.Name == "" {
-		errors.New("go-oracle-cloud: Empty backup configuration name")
+		return resp, errors.New(
+			"go-oracle-cloud: Empty backup configuration name",
+		)
 	}
 
 	if newName == "" {
@@ -322,7 +324,7 @@ func (c Client) UpdateBackupConfiguration(
 				)
 			case http.StatusInternalServerError:
 				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request.",
+					"go-oracle-cloud: The server encountered an error handling this request",
 				)
 			default:
 				return fmt.Errorf(

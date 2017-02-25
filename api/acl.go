@@ -122,7 +122,7 @@ func (c Client) AllAcl() (resp response.AllAcl, err error) {
 		return resp, err
 	}
 
-	for key, _ := range resp.Result {
+	for key := range resp.Result {
 		strip(&resp.Result[key].Name)
 	}
 
