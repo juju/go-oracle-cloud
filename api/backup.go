@@ -113,7 +113,7 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 		)
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["backupconfiguration"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["backupconfiguration"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -145,7 +145,7 @@ func (c Client) BackupConfigurationDetails(
 		)
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["backupconfiguration"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["backupconfiguration"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -206,7 +206,7 @@ func (c Client) UpdateBackupConfiguration(
 		p.Name = currentName
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["backupconfiguration"], currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["backupconfiguration"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,

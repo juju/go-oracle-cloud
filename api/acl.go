@@ -34,7 +34,7 @@ func (c Client) CreateAcl(
 
 	url := fmt.Sprintf("%s/", c.endpoints["acl"])
 
-	acl := struct {
+	params := struct {
 		Name        string   `json:"name"`
 		Description string   `json:"description,omitempty"`
 		EnabledFlag bool     `json:"enabledFlag"`
@@ -51,7 +51,7 @@ func (c Client) CreateAcl(
 		cookie: c.cookie,
 		url:    url,
 		verb:   "POST",
-		body:   &acl,
+		body:   &params,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -82,7 +82,7 @@ func (c Client) DeleteAcl(name string) (err error) {
 		return ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["acl"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["acl"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -130,7 +130,7 @@ func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 		)
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["acl"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["acl"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -178,7 +178,7 @@ func (c Client) UpdateAcl(
 		Tags:        tags,
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["acl"], currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["acl"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,

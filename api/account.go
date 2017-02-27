@@ -21,8 +21,7 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 		return resp, errors.New("go-oracle-cloud: empty account name")
 	}
 
-	url := fmt.Sprintf("%s/Compute-%s/%s",
-		c.endpoints["account"], c.identify, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["account"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -80,7 +79,6 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 	}
 
 	return resp, nil
-
 }
 
 // DirectoryAccount retrieves the names of containers

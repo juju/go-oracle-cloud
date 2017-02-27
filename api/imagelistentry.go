@@ -6,7 +6,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
@@ -32,10 +31,9 @@ func (c Client) ImageListEntryDetails(
 		)
 	}
 
-	fmt.Println(c.endpoints["imagelistentries"])
-	url := fmt.Sprintf("")
-	fmt.Println(url)
-	os.Exit(1)
+	url := fmt.Sprintf("%s%s/entry/%s",
+		c.endpoints["imagelistentries"], name, version)
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -70,8 +68,8 @@ func (c Client) DeleteImageListEntry(
 		)
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%s",
-		c.endpoint, c.identify, c.username, name, version)
+	url := fmt.Sprintf("%s%s/entry/%s",
+		c.endpoints["imagelistentries"], name, version)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -126,8 +124,8 @@ func (c Client) AddImageListEntry(
 		Version:       version,
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s/entry/%s",
+		c.endpoints["imagelistentries"], name, version)
 
 	if err = request(paramsRequest{
 		client: &c.http,
