@@ -32,7 +32,7 @@ func (c Client) CreateAcl(
 		)
 	}
 
-	url := fmt.Sprintf("%s/network/v1/acl/", c.endpoint)
+	url := fmt.Sprintf("%s/", c.endpoints["acl"])
 
 	acl := struct {
 		Name        string   `json:"name"`
@@ -52,7 +52,6 @@ func (c Client) CreateAcl(
 		url:    url,
 		verb:   "POST",
 		body:   &acl,
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -83,15 +82,13 @@ func (c Client) DeleteAcl(name string) (err error) {
 		return ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/network/v1/acl/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s/%s", c.endpoints["acl"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -106,15 +103,13 @@ func (c Client) AllAcl() (resp response.AllAcl, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/network/v1/acl/Compute-%s",
-		c.endpoint, c.identify)
+	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["acl"], c.identify)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -130,18 +125,18 @@ func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Cannot list acl details because name provided is empty")
+		return resp, errors.New(
+			"go-oracle-cloud: Cannot list acl details because name provided is empty",
+		)
 	}
 
-	url := fmt.Sprintf("%s/network/v1/acl/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s/%s", c.endpoints["acl"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -176,23 +171,21 @@ func (c Client) UpdateAcl(
 		newName = currentName
 	}
 
-	acl := response.Acl{
+	params := response.Acl{
 		Description: description,
 		Name:        newName,
 		EnableFlag:  enableFlag,
 		Tags:        tags,
 	}
 
-	url := fmt.Sprintf("%s/network/v1/acl/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, currentName)
+	url := fmt.Sprintf("%s/%s", c.endpoints["acl"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "PUT",
-		body:   &acl,
-		treat:  defaultTreat,
+		body:   &params,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

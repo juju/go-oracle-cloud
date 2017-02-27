@@ -24,7 +24,6 @@ func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -53,7 +52,6 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -113,7 +111,6 @@ func (c Client) CreateIpReservation(
 		url:    url,
 		body:   &params,
 		verb:   "POST",
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -142,7 +139,6 @@ func (c Client) DeleteIpReservation(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -199,7 +195,6 @@ func (c Client) UpdateIpReservation(
 		body:   &params,
 		url:    url,
 		verb:   "PUT",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

@@ -29,7 +29,6 @@ func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddres
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -53,7 +52,6 @@ func (c Client) AllIpAddressAssociation() (resp response.AllIpAddressAssociation
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -106,7 +104,6 @@ func (c Client) CreateIpAddressAssociation(
 		cookie: c.cookie,
 		url:    url,
 		verb:   "POST",
-		treat:  defaultPostTreat,
 		resp:   &resp,
 		body:   params,
 	}); err != nil {
@@ -136,7 +133,6 @@ func (c Client) DeleteIpAddressAssociation(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -196,7 +192,6 @@ func (c Client) UpdateIpAddressAssociation(
 		cookie: c.cookie,
 		url:    url,
 		verb:   "PUT",
-		treat:  defaultTreat,
 		resp:   &resp,
 		body:   params,
 	}); err != nil {

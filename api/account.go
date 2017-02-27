@@ -29,7 +29,6 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -38,22 +37,21 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	return resp, nil
 }
 
-// AllAccountDetais retrives details of the accounts that are in the
+// AllAccount retrives details of the accounts that are in the
 // specified identity domain. You can use this HTTP request to
 // get details of the account that you must specify while creating a machine image.
-func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
+func (c Client) AllAccount() (resp response.AllAccount, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/Compute-%s/", endpoints["acount"], c.identify)
+	url := fmt.Sprintf("%s/Compute-%s/", endpoints["account"], c.identify)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -76,7 +74,6 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 		cookie:    c.cookie,
 		verb:      "GET",
 		url:       url,
-		treat:     defaultTreat,
 		resp:      &resp,
 	}); err != nil {
 		return resp, err
@@ -94,7 +91,7 @@ func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := c.endpoints["account"]
+	url := c.endpoints["account"] + "/"
 
 	if err = request(paramsRequest{
 		directory: true,
@@ -102,7 +99,6 @@ func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 		cookie:    c.cookie,
 		verb:      "GET",
 		url:       url,
-		treat:     defaultTreat,
 		resp:      &resp,
 	}); err != nil {
 		return resp, err

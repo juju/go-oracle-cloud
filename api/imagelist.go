@@ -33,7 +33,6 @@ func (c Client) ImageListDetails(
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -57,7 +56,6 @@ func (c Client) AllImageList() (resp response.AllImageList, err error) {
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -83,7 +81,6 @@ func (c Client) AllImageListNames() (resp response.DirectoryNames, err error) {
 		cookie:    c.cookie,
 		verb:      "GET",
 		url:       url,
-		treat:     defaultTreat,
 		resp:      &resp,
 	}); err != nil {
 		return resp, err
@@ -122,7 +119,6 @@ func (c Client) CreateImageList(
 		verb:   "POST",
 		url:    url,
 		body:   &params,
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -151,7 +147,6 @@ func (c Client) DeleteImageList(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -202,7 +197,6 @@ func (c Client) UpdateImageList(
 		verb:   "PUT",
 		url:    url,
 		body:   &params,
-		treat:  defaultTreat,
 	}); err != nil {
 		return resp, err
 	}

@@ -25,7 +25,6 @@ func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -54,7 +53,6 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -90,7 +88,6 @@ func (c Client) CreateIpAssociation(
 		body:   &params,
 		url:    url,
 		verb:   "POST",
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -117,7 +114,6 @@ func (c Client) DeleteIpAssociation(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}

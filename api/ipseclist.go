@@ -62,7 +62,6 @@ func (c Client) CreateSecIpList(
 		url:    url,
 		body:   &params,
 		verb:   "POST",
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -91,7 +90,6 @@ func (c Client) DeleteSecIpList(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -121,7 +119,6 @@ func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 	}); err != nil {
 		return resp, err
 	}
@@ -143,7 +140,6 @@ func (c Client) AllSecIpList() (resp response.AllSecIpList, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 	}); err != nil {
 		return resp, err
 	}
@@ -203,7 +199,6 @@ func (c Client) UpdateSecIpList(
 		url:    url,
 		body:   &params,
 		verb:   "PUT",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

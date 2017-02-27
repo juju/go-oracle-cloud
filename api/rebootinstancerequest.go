@@ -48,7 +48,6 @@ func (c Client) CreateRebootInstanceRequest(
 		body:   &params,
 		verb:   "POST",
 		url:    url,
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -76,7 +75,6 @@ func (c Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
 		cookie: c.cookie,
 		verb:   "DELETE",
 		url:    url,
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -108,7 +106,6 @@ func (c Client) RebootInstanceRequestDetails(
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -131,7 +128,6 @@ func (c Client) AllRebootInstanceRequest() (resp response.AllRebootInstanceReque
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

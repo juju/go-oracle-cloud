@@ -25,7 +25,6 @@ func (c Client) AllIp() (resp response.AllIp, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -53,7 +52,6 @@ func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -105,7 +103,6 @@ func (c Client) CreateIp(
 		cookie: c.cookie,
 		url:    url,
 		verb:   "POST",
-		treat:  defaultPostTreat,
 		resp:   &resp,
 		body:   params,
 	}); err != nil {
@@ -133,7 +130,6 @@ func (c Client) DeleteIp(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -202,7 +198,6 @@ func (c Client) UpdateIp(
 		cookie: c.cookie,
 		url:    url,
 		verb:   "PUT",
-		treat:  defaultTreat,
 		resp:   &resp,
 		body:   params,
 	}); err != nil {

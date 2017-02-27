@@ -7,8 +7,8 @@ type Account struct {
 	Credentials      map[string]string `json:"credentials,omitempty"`
 	Description      string            `json:"description,omitempty"`
 	Accounttype      string            `json:"accounttype,omitempty"`
-	Name             string            `json:"name,omitempty"`
-	Uri              string            `json:"uri,omitempty"`
+	Name             string            `json:"name"`
+	Uri              string            `json:"uri"`
 	Objectproperties map[string]string `json:"objectproperties,omitempty"`
 }
 

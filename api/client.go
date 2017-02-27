@@ -119,10 +119,7 @@ func (c *Client) RefreshCookie() (err error) {
 		url:    url,
 		treat: func(resp *http.Response) (err error) {
 			if resp.StatusCode != http.StatusNoContent {
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
+				return dumpApiError(resp)
 			}
 
 			// take the new refresh cookies

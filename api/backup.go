@@ -6,7 +6,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"net/http"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
@@ -38,24 +37,34 @@ type BackupConfigurationParams struct {
 	// Your Interval field should look like one of the following:
 	//
 	// "interval":{
-	//   "Hourly":{
+	//    "Hourly":{
 	//     "hourlyInterval":2
-	//	 }
-	// }
-	//
-	//
-	// {"DailyWeekly":
-	// 	{
-	//	  "daysOfWeek":["MONDAY"],
-	//	  "timeOfDay":"03:15",
-	// 	  "userTimeZone":"America/Los_Angeles"
+	//	  }
 	//  }
+	//
+	//
+	// {
+	//   "DailyWeekly": {
+	//	   "daysOfWeek":["MONDAY"],
+	//	   "timeOfDay":"03:15",
+	// 	   "userTimeZone":"America/Los_Angeles"
+	//    }
 	// }
 	// Days of the week is any day of the week
 	// fully capitalized (MONDAY, TUESDAY, etc).
 	// The user time zone is any IANA user timezone.
 	//For example user time zones see List of IANA time zones.
 	Interval interface{} `json:"interval"`
+}
+
+func (c BackupConfigurationParams) validate() (err error) {
+	if c.Name == "" {
+		return errors.New(
+			"go-oracle-cloud: Empty backup configuration name",
+		)
+	}
+
+	return nil
 }
 
 // CreateBackupConfiguration creates a new backup configuration.
@@ -69,14 +78,11 @@ func (c Client) CreateBackupConfiguration(
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf(
-		"%s/backupservice/v1/configuration/", c.endpoint)
-
-	if p.Name == "" {
-		return resp, errors.New(
-			"go-oracle-cloud: Empty backup configuration name",
-		)
+	if err = p.validate(); err != nil {
+		return resp, ErrNotAuth
 	}
+
+	url := c.endpoints["backupconfiguration"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -85,27 +91,6 @@ func (c Client) CreateBackupConfiguration(
 		verb:   "POST",
 		body:   &p,
 		resp:   &resp,
-		treat: func(resp *http.Response) (err error) {
-			switch resp.StatusCode {
-			case http.StatusCreated:
-				return nil
-			case http.StatusBadRequest:
-				return errors.New(
-					"go-oracle-cloud: Invalid backup configuration input. Volume does not exist or is not online",
-				)
-			case http.StatusUnauthorized:
-				return errors.New("go-oracle-cloud: Unauthorized")
-			case http.StatusInternalServerError:
-				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request",
-				)
-			default:
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
-		},
 	}); err != nil {
 		return resp, err
 	}
@@ -128,43 +113,13 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 		)
 	}
 
-	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s/%s", c.endpoints["backupconfiguration"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat: func(resp *http.Response) (err error) {
-			switch resp.StatusCode {
-			case http.StatusNoContent:
-				return nil
-			case http.StatusUnauthorized:
-				return errors.New(
-					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
-				)
-
-			case http.StatusNotFound:
-				return errors.New(
-					"go-oracle-cloud: The URL does not refer to a valid resource",
-				)
-
-			case http.StatusConflict:
-				return errors.New(
-					"go-oracle-cloud: The backup configuration cannot be deleted due to associated backups or restores",
-				)
-			case http.StatusInternalServerError:
-				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request",
-				)
-			default:
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
-		},
 	}); err != nil {
 		return err
 	}
@@ -179,6 +134,7 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 func (c Client) BackupConfigurationDetails(
 	name string,
 ) (resp response.BackupConfiguration, err error) {
+
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
@@ -189,41 +145,14 @@ func (c Client) BackupConfigurationDetails(
 		)
 	}
 
-	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name,
-	)
+	url := fmt.Sprintf("%s/%s", c.endpoints["backupconfiguration"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat: func(resp *http.Response) (err error) {
-			switch resp.StatusCode {
-			case http.StatusOK:
-				return nil
-			case http.StatusUnauthorized:
-				return errors.New(
-					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
-				)
-
-			case http.StatusNotFound:
-				return errors.New(
-					"go-oracle-cloud: The URL does not refer to a valid resource",
-				)
-
-			case http.StatusInternalServerError:
-				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request",
-				)
-			default:
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
-		},
-		resp: &resp,
+		resp:   &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -234,38 +163,19 @@ func (c Client) BackupConfigurationDetails(
 // AllBackupConfiguration retrieves details for all backup
 // configuration objects the current user has permission to access
 func (c Client) AllBackupConfiguration() (resp []response.BackupConfiguration, err error) {
+
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/backupservice/v1/configuration/", c.endpoint)
+	url := c.endpoints["backupconfiguration"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat: func(resp *http.Response) (err error) {
-			switch resp.StatusCode {
-			case http.StatusOK:
-				return nil
-			case http.StatusUnauthorized:
-				return errors.New(
-					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
-				)
-			case http.StatusInternalServerError:
-				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request",
-				)
-			default:
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
-		},
-
-		resp: &resp,
+		resp:   &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -280,26 +190,23 @@ func (c Client) AllBackupConfiguration() (resp []response.BackupConfiguration, e
 // volumeName, runAsUser, name.
 func (c Client) UpdateBackupConfiguration(
 	p BackupConfigurationParams,
-	newName string,
+	currentName string,
 ) (resp response.BackupConfiguration, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	if p.Name == "" {
+	if currentName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty backup configuration name",
+			"go-oracle-cloud: Empty backup configuration current name",
 		)
 	}
 
-	if newName == "" {
-		newName = p.Name
+	if p.Name == "" {
+		p.Name = currentName
 	}
 
-	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, p.Name)
-
-	p.Name = newName
+	url := fmt.Sprintf("%s/%s", c.endpoints["backupconfiguration"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -307,26 +214,7 @@ func (c Client) UpdateBackupConfiguration(
 		url:    url,
 		verb:   "PUT",
 		body:   &p,
-		treat: func(resp *http.Response) (err error) {
-			switch resp.StatusCode {
-			case http.StatusOK:
-				return nil
-			case http.StatusUnauthorized:
-				return errors.New(
-					"go-oracle-cloud: Cannot delete backup because the account does not have authorisation for doing this",
-				)
-			case http.StatusInternalServerError:
-				return errors.New(
-					"go-oracle-cloud: The server encountered an error handling this request",
-				)
-			default:
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
-			}
-		},
-		resp: &resp,
+		resp:   &resp,
 	}); err != nil {
 		return resp, err
 	}

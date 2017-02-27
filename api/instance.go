@@ -30,7 +30,6 @@ func (c Client) DeleteInstance(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -55,7 +54,6 @@ func (c Client) AllInstances() (resp response.AllInstance, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -79,7 +77,6 @@ func (c Client) InstanceDetails(name string) (resp response.Instance, err error)
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -104,7 +101,6 @@ func (c Client) AllInstanceNames() (resp response.DirectoryNames, err error) {
 		cookie:    c.cookie,
 		url:       url,
 		verb:      "GET",
-		treat:     defaultTreat,
 		resp:      &resp,
 	}); err != nil {
 		return resp, err

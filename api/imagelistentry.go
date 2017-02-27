@@ -39,7 +39,6 @@ func (c Client) ImageListEntry(
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -77,7 +76,6 @@ func (c Client) DeleteImageListEntry(
 		cookie: c.cookie,
 		verb:   "DELETE",
 		url:    url,
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -134,7 +132,6 @@ func (c Client) AddImageListEntry(
 		cookie: c.cookie,
 		verb:   "POST",
 		url:    url,
-		treat:  defaultPostTreat,
 		resp:   &resp,
 		body:   &params,
 	}); err != nil {

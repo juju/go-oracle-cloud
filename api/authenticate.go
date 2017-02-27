@@ -34,10 +34,7 @@ func (c *Client) Authenticate() (err error) {
 			// if the operation is successful then we will recive 204 http status
 			// if this is not the case then we should stop and return a friendly error
 			if resp.StatusCode != http.StatusNoContent {
-				return fmt.Errorf(
-					"go-oracle-cloud: Error api response %d %s",
-					resp.StatusCode, dumpApiError(resp.Body),
-				)
+				return dumpApiError(resp)
 			}
 
 			// the orcale api uses cookies to manage sessions

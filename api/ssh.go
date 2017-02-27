@@ -46,7 +46,6 @@ func (c Client) AddSHHKey(
 		url:    url,
 		verb:   "POST",
 		body:   &ssh,
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -72,7 +71,6 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -97,7 +95,6 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -119,7 +116,6 @@ func (c Client) AllSSHKeyDetails() (resp response.AllSSH, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -143,7 +139,6 @@ func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 		cookie:    c.cookie,
 		url:       url,
 		verb:      "GET",
-		treat:     defaultTreat,
 		resp:      &resp,
 	}); err != nil {
 		return resp, err
@@ -195,7 +190,6 @@ func (c Client) UpdateSSHKey(
 		body:   &ssh,
 		url:    url,
 		verb:   "PUT",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

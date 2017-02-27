@@ -13,12 +13,13 @@ import (
 	"os"
 )
 
+// endoiints map for every resource in the oracle iaas api:w
 var endpoints = map[string]string{
 	"account":               "%s/account",
 	"acl":                   "%s/network/v1/acl",
 	"authenticate":          "%s/authenticate/",
 	"backupconfiguration":   "%s/backupservice/v1/configuration",
-	"backups":               "%s/backupservice/v1/backup",
+	"backup":                "%s/backupservice/v1/backup",
 	"imagelistentries":      "%s/imagelist/%s/entry",
 	"imagelists":            "%s/imagelist",
 	"instanceconsole":       "%s/instanceconsole",
@@ -72,34 +73,27 @@ func debugTreat(resp *http.Response) (err error) {
 	return nil
 }
 
+// defaultTreat used in post, put, delete and get requests
 func defaultTreat(resp *http.Response) (err error) {
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf(
-			"go-oracle-cloud: Error api response %d %s",
-			resp.StatusCode, dumpApiError(resp.Body),
-		)
+	switch resp.StatusCode {
+	// this is the case when if we have such status
+	// we return nil
+	case http.StatusOK, http.StatusCreated, http.StatusNoContent:
+		return nil
+	case http.StatusBadRequest:
+		return ErrBadRequest
+	case http.StatusUnauthorized:
+		return ErrUnathorized
+	case http.StatusInternalServerError:
+		return ErrInternalApi
+	case http.StatusConflict:
+		return ErrStatusConflict
+	case http.StatusNotFound:
+		return ErrNotFound
+	// any other error
+	default:
+		return dumpApiError(resp)
 	}
-	return nil
-}
-
-func defaultPostTreat(resp *http.Response) (err error) {
-	if resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf(
-			"go-oracle-cloud: Error api response %d %s",
-			resp.StatusCode, dumpApiError(resp.Body),
-		)
-	}
-	return nil
-}
-
-func defaultDeleteTreat(resp *http.Response) (err error) {
-	if resp.StatusCode != http.StatusNoContent {
-		return fmt.Errorf(
-			"go-oracle-cloud: Error api response %d %s",
-			resp.StatusCode, dumpApiError(resp.Body),
-		)
-	}
-	return nil
 }
 
 // paramsRequest used to fill up the params for the request function
@@ -186,8 +180,13 @@ func request(cfg paramsRequest) (err error) {
 
 	// if we have a special treat function
 	// let the caller treat the response
+	// if we don't have one execute the default one
 	if cfg.treat != nil {
 		if err = cfg.treat(resp); err != nil {
+			return err
+		}
+	} else {
+		if err = defaultTreat(resp); err != nil {
 			return err
 		}
 	}

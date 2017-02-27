@@ -48,7 +48,6 @@ func (c Client) CreateSecList(
 		url:    url,
 		body:   &params,
 		verb:   "POST",
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -75,7 +74,6 @@ func (c Client) DeleteSecList(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -98,7 +96,6 @@ func (c Client) AllSecList() (resp response.AllSecList, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 
@@ -122,7 +119,6 @@ func (c Client) SecListDetails(name string) (resp response.SecList, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -180,7 +176,6 @@ func (c Client) UpdateSecList(
 		url:    url,
 		body:   &params,
 		verb:   "PUT",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

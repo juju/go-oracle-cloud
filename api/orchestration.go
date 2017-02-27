@@ -87,7 +87,6 @@ func (c Client) AddOrchestration(p OrchestrationParams) (resp response.Orchestra
 		url:    url,
 		body:   &p,
 		verb:   "POST",
-		treat:  defaultPostTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -117,7 +116,6 @@ func (c Client) DeleteOrchestration(name string) (err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "DELETE",
-		treat:  defaultDeleteTreat,
 	}); err != nil {
 		return err
 	}
@@ -144,7 +142,6 @@ func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, 
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -167,7 +164,6 @@ func (c Client) AllOrchestration() (resp response.AllOrchestration, err error) {
 		cookie: c.cookie,
 		url:    url,
 		verb:   "GET",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -205,7 +201,6 @@ func (c Client) UpdateOrchestration(p OrchestrationParams, currentName string) (
 		url:    url,
 		body:   &p,
 		verb:   "PUT",
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
