@@ -4,10 +4,7 @@
 package api
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"net/http"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
@@ -85,7 +82,8 @@ func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan,
 		return resp, err
 	}
 
-	url := fmt.Sprintf("%s/launchplan/", c.endpoint)
+	url := c.endpoints["launchplan"]
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -93,41 +91,7 @@ func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan,
 		verb:   "POST",
 		body:   &params,
 		resp:   &resp,
-		treat: func(resp *http.Response) (err error) {
-			type Instances struct {
-				Instances string `json:"instances,omitempty"`
-			}
-			type m struct {
-				Message Instances `json:"message,omitempty"`
-			}
-			type refereceError struct {
-				Message   string `json:"message,omitempty"`
-				Reference string `json:"reference,omitmepty"`
-			}
-
-			var (
-				errOut m
-				refOut refereceError
-			)
-
-			if resp.StatusCode != http.StatusCreated {
-				if resp.StatusCode >= http.StatusInternalServerError {
-					json.NewDecoder(resp.Body).Decode(&refOut)
-					return fmt.Errorf(
-						"go-oracle-cloud: Error Api response %d %s Reference : %s",
-						resp.StatusCode, refOut.Message, refOut.Reference,
-					)
-				} else {
-					json.NewDecoder(resp.Body).Decode(&errOut)
-					return fmt.Errorf(
-						"go-oracle-cloud: Error Api response %d %s",
-						resp.StatusCode, errOut.Message.Instances,
-					)
-				}
-			}
-
-			return nil
-		},
+		treat:  debugTreat,
 	}); err != nil {
 		return resp, err
 	}

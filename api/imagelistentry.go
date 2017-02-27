@@ -6,12 +6,13 @@ package api
 import (
 	"errors"
 	"fmt"
+	"os"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-// ImageListEntry retrieves details of the specified image list entry.
-func (c Client) ImageListEntry(
+// ImageListEntryDetails retrieves details of the specified image list entry.
+func (c Client) ImageListEntryDetails(
 	name string,
 	version string,
 ) (resp response.ImageListEntry, err error) {
@@ -31,9 +32,10 @@ func (c Client) ImageListEntry(
 		)
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s/entry/%s",
-		c.endpoint, c.identify, c.username, name, version)
-
+	fmt.Println(c.endpoints["imagelistentries"])
+	url := fmt.Sprintf("")
+	fmt.Println(url)
+	os.Exit(1)
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,

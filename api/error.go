@@ -17,8 +17,7 @@ var (
 	// once the Authentication method of the client
 	ErrAlreadyAuth = errors.New("go-oracle-cloud: The client is already authenticated")
 	// ErrNotAuth error returned by the client if the Authentication method is not used
-	ErrNotAuth = errors.New("go-oracle-cloud: The client is not authenticated")
-
+	ErrNotAuth        = errors.New("go-oracle-cloud: The client is not authenticated")
 	ErrBadRequest     = errors.New("go-oracle-cloud: The request given is invalid")
 	ErrUnathorized    = errors.New("go-oracle-cloud: Client does not have authorisation for this resource")
 	ErrInternalApi    = errors.New("go-oracle-cloud: The cloud has encountered an error")

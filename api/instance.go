@@ -22,8 +22,7 @@ func (c Client) DeleteInstance(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty instance name")
 	}
 
-	url := fmt.Sprintf("%s/instance/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s/%s", c.endpoints["instance"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -37,17 +36,17 @@ func (c Client) DeleteInstance(name string) (err error) {
 	return nil
 }
 
-// AllInstances retrieves details of the instances that are in the specified
+// AllInstance retrieves details of the instances that are in the specified
 // container and match the specified query criteria.
 // If you don't specify any query criteria, then details
 // of all the instances in the container are displayed.
-func (c Client) AllInstances() (resp response.AllInstance, err error) {
+func (c Client) AllInstance() (resp response.AllInstance, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/instance/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["instance"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -69,8 +68,7 @@ func (c Client) InstanceDetails(name string) (resp response.Instance, err error)
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/instance/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s/%s", c.endpoints["instance"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -92,8 +90,7 @@ func (c Client) AllInstanceNames() (resp response.DirectoryNames, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/instance/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/", c.endpoints["instance"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		directory: true,

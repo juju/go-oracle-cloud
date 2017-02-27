@@ -10,8 +10,8 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-// AddSSHKey adds into the oracle cloud account an ssh key
-func (c Client) AddSHHKey(
+// CreateSSHKey adds into the oracle cloud account an ssh key
+func (c Client) CreateSHHKey(
 	name string,
 	key string,
 	enabled bool,
@@ -39,7 +39,8 @@ func (c Client) AddSHHKey(
 		Name:    name,
 	}
 
-	url := fmt.Sprintf("%s/%s/", c.endpoint, "sshkey")
+	url := c.endpoints["sshkeys"] + "/"
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -64,8 +65,7 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 		return errors.New("go-oracle-cloud: empty key name")
 	}
 
-	url := fmt.Sprintf("%s/sshkey/%s", name)
-
+	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], name)
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -88,7 +88,7 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 		return resp, errors.New("go-oracle-cloud: empty key name")
 	}
 
-	url := fmt.Sprintf("%s/sshkey/%s", c.endpoint, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -104,12 +104,13 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 }
 
 // AllSShKeysDetails returns list of all keys with all the details
-func (c Client) AllSSHKeyDetails() (resp response.AllSSH, err error) {
+func (c Client) AllSSHKey() (resp response.AllSSH, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/sshkey/Compute-%s/%s/", c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["sshkeys"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -130,8 +131,8 @@ func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/sshkey/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["sshkeys"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		directory: true,
@@ -182,7 +183,7 @@ func (c Client) UpdateSSHKey(
 		Name:    newName,
 	}
 
-	url := fmt.Sprintf("%s/sshkey/%s", c.endpoint, "sshkey", ssh.Name)
+	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], ssh.Name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
