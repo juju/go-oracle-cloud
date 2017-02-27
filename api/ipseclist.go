@@ -49,9 +49,8 @@ func (c Client) CreateSecIpList(
 		Name         string   `json:"name"`
 		Secipentries []string `json:"secipentries"`
 	}{
-		Description: description,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, name),
+		Description:  description,
+		Name:         name,
 		Secipentries: secipentries,
 	}
 
@@ -68,8 +67,6 @@ func (c Client) CreateSecIpList(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
 
 	return resp, nil
 }
@@ -129,7 +126,6 @@ func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error
 		return resp, err
 	}
 
-	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -150,10 +146,6 @@ func (c Client) AllSecIpList() (resp response.AllSecIpList, err error) {
 		treat:  defaultTreat,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key, _ := range resp.Result {
-		strip(&resp.Result[key].Name)
 	}
 
 	return resp, nil
@@ -197,9 +189,8 @@ func (c Client) UpdateSecIpList(
 		Name         string   `json:"name"`
 		Secipentries []string `json:"secipentries"`
 	}{
-		Description: description,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, newName),
+		Description:  description,
+		Name:         newName,
 		Secipentries: secipentries,
 	}
 

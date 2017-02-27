@@ -38,8 +38,7 @@ func (c Client) CreateRebootInstanceRequest(
 		Name string `json:"name"`
 		Hard bool   `json:"hard"`
 	}{
-		Name: fmt.Sprintf("/Compute-%s/%s/%s/",
-			c.identify, c.username, instanceName),
+		Name: instanceName,
 		Hard: hard,
 	}
 
@@ -54,9 +53,6 @@ func (c Client) CreateRebootInstanceRequest(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
-	strip(&resp.Instance)
 
 	return resp, nil
 }
@@ -118,9 +114,6 @@ func (c Client) RebootInstanceRequestDetails(
 		return resp, err
 	}
 
-	strip(&resp.Name)
-	strip(&resp.Instance)
-
 	return resp, nil
 }
 
@@ -142,11 +135,6 @@ func (c Client) AllRebootInstanceRequest() (resp response.AllRebootInstanceReque
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key := range resp.Result {
-		strip(&resp.Result[key].Name)
-		strip(&resp.Result[key].Instance)
 	}
 
 	return resp, nil

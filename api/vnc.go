@@ -36,7 +36,6 @@ func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 		return resp, err
 	}
 
-	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -58,10 +57,6 @@ func (c Client) AllVirtualNic() (resp response.AllVirtualNic, err error) {
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key := range resp.Result {
-		strip(&resp.Result[key].Name)
 	}
 
 	return resp, nil

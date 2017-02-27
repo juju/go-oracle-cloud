@@ -54,9 +54,6 @@ func (c Client) CreateSecList(
 		return resp, err
 	}
 
-	strip(&resp.Account)
-	strip(&resp.Name)
-
 	return resp, nil
 }
 
@@ -108,11 +105,6 @@ func (c Client) AllSecList() (resp response.AllSecList, err error) {
 		return resp, err
 	}
 
-	for key, _ := range resp.Result {
-		strip(&resp.Result[key].Account)
-		strip(&resp.Result[key].Name)
-	}
-
 	return resp, nil
 }
 
@@ -135,9 +127,6 @@ func (c Client) SecListDetails(name string) (resp response.SecList, err error) {
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Account)
-	strip(&resp.Name)
 
 	return resp, nil
 }
@@ -176,9 +165,8 @@ func (c Client) UpdateSecList(
 		Name                 string `json:"name"`
 		Outbound_cidr_policy string `json:"outbound_cidr_policy"`
 	}{
-		Description: description,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, newName),
+		Description:          description,
+		Name:                 newName,
 		Outbound_cidr_policy: strings.ToUpper(outbound_cidr_policy),
 		Policy:               strings.ToUpper(policy),
 	}
@@ -197,9 +185,6 @@ func (c Client) UpdateSecList(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Account)
-	strip(&resp.Name)
 
 	return resp, nil
 }

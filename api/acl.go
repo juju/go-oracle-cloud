@@ -40,8 +40,7 @@ func (c Client) CreateAcl(
 		EnabledFlag bool     `json:"enabledFlag"`
 		Tags        []string `json:"tags,omitempty"`
 	}{
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, name),
+		Name:        name,
 		Description: description,
 		EnabledFlag: enabledFlag,
 		Tags:        tags,
@@ -58,8 +57,6 @@ func (c Client) CreateAcl(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
 
 	return resp, nil
 }
@@ -123,10 +120,6 @@ func (c Client) AllAcl() (resp response.AllAcl, err error) {
 		return resp, err
 	}
 
-	for key := range resp.Result {
-		strip(&resp.Result[key].Name)
-	}
-
 	return resp, nil
 }
 
@@ -153,8 +146,6 @@ func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
 
 	return resp, nil
 }
@@ -185,16 +176,15 @@ func (c Client) UpdateAcl(
 		newName = currentName
 	}
 
-	url := fmt.Sprintf("%s/network/v1/acl/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, currentName)
-
 	acl := response.Acl{
 		Description: description,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, newName),
-		EnableFlag: enableFlag,
-		Tags:       tags,
+		Name:        newName,
+		EnableFlag:  enableFlag,
+		Tags:        tags,
 	}
+
+	url := fmt.Sprintf("%s/network/v1/acl/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -207,8 +197,6 @@ func (c Client) UpdateAcl(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
 
 	return resp, nil
 }

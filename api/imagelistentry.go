@@ -45,10 +45,6 @@ func (c Client) ImageListEntry(
 		return resp, err
 	}
 
-	for key := range resp.Machineimages {
-		strip(&resp.Machineimages[key])
-	}
-
 	return resp, nil
 }
 
@@ -120,15 +116,6 @@ func (c Client) AddImageListEntry(
 		)
 	}
 
-	n := len(machineImages)
-	// suppose we have only machine images names
-	// so we must make them oracle cloud api complaint
-	// when we are passing them into the post body
-	for i := 0; i < n; i++ {
-		machineImages[i] = fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, machineImages[i])
-	}
-
 	params := struct {
 		Attributes    map[string]interface{} `json:"attributes"`
 		MachineImages []string               `json:"machineImages"`
@@ -152,17 +139,6 @@ func (c Client) AddImageListEntry(
 		body:   &params,
 	}); err != nil {
 		return resp, err
-	}
-
-	strip(&resp.Imagelist.Name)
-	for key := range resp.Imagelist.Entries {
-		for alt := range resp.Imagelist.Entries[key].Machineimages {
-			strip(&resp.Imagelist.Entries[key].Machineimages[alt])
-		}
-	}
-
-	for key := range resp.Machineimages {
-		strip(&resp.Machineimages[key])
 	}
 
 	return resp, nil

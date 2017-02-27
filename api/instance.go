@@ -6,7 +6,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
@@ -62,14 +61,6 @@ func (c Client) AllInstances() (resp response.AllInstance, err error) {
 		return resp, err
 	}
 
-	for key := range resp.Result {
-		strip(&resp.Result[key].Imagelist)
-		for alt := range resp.Result[key].SSHKeys {
-			strip(&resp.Result[key].SSHKeys[alt])
-		}
-		list := strings.Split(resp.Result[key].Name, "/")
-		resp.Result[key].Name = list[len(list)-2] + "/" + list[len(list)-1]
-	}
 	return resp, nil
 }
 
@@ -93,13 +84,6 @@ func (c Client) InstanceDetails(name string) (resp response.Instance, err error)
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Imagelist)
-	for alt := range resp.SSHKeys {
-		strip(&resp.SSHKeys[alt])
-	}
-	list := strings.Split(resp.Name, "/")
-	resp.Name = list[len(list)-2] + "/" + list[len(list)-1]
 
 	return resp, nil
 }

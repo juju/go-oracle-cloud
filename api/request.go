@@ -11,8 +11,51 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 )
+
+var endpoints = map[string]string{
+	"account":               "%s/account",
+	"acl":                   "%s/network/v1/acl",
+	"authenticate":          "%s/authenticate/",
+	"backupconfiguration":   "%s/backupservice/v1/configuration",
+	"backups":               "%s/backupservice/v1/backup",
+	"imagelistentries":      "%s/imagelist/%s/entry",
+	"imagelists":            "%s/imagelist",
+	"instanceconsole":       "%s/instanceconsole",
+	"instance":              "%s/instance",
+	"ipaddressassociation":  "%s/network/v1/ipassociation",
+	"ipaddressprefixsets":   "%s/network/v1/ipaddressprefixset",
+	"ipaddressreservation":  "%s/network/v1/ipreservation",
+	"ipassociation":         "%s/ip/association",
+	"ipnetworkexchanges":    "%s/network/v1/ipnetworkexchange",
+	"ipnetworks":            "%s/network/v1/ipnetwork",
+	"ipreservation":         "%s/ip/reservation",
+	"launchplan":            "%s/launchplan",
+	"machineimages":         "%s/machineimage",
+	"orchestrations":        "%s/orchestration",
+	"osscontainers":         "%s/integrations/osscontainer",
+	"rebootinstancerequest": "%s/rebootinstancerequest",
+	"refreshtoken":          "%s/refresh",
+	"restores":              "%s/backupservice/v1/restore",
+	"routes":                "%s/network/v1/route",
+	"secapplications":       "%s/secapplication",
+	"secassociations":       "%s/secassociation",
+	"seciplists":            "%s/seciplist",
+	"seclists":              "%s/seclist",
+	"secrules":              "%s/secrule",
+	"securityprotocols":     "%s/network/v1/secprotocol",
+	"securityrules":         "%s/network/v1/secrule",
+	"shapes":                "%s/shape",
+	"snapshots":             "%s/snapshot",
+	"sshkeys":               "%s/sshkey",
+	"storageattachments":    "%s/storage/attachment",
+	"storageproperties":     "%s/property/storage",
+	"storagesnapshots":      "%s/storage/snapshot",
+	"storagevolumes":        "%s/storage/volume",
+	"virtualnics":           "%s/network/v1/vnic",
+	"virtualnicsets":        "%s/network/v1/vnicset",
+	"vpnendpoints":          "%s/vpnendpoint",
+}
 
 // treatStatus will be used as a callback to custom check the response
 // if the client decides the response contains some error codes
@@ -159,18 +202,4 @@ func request(cfg paramsRequest) (err error) {
 	}
 
 	return nil
-}
-
-// strip strips all metadata from a string
-// the string passed must be a valid address of the form
-// /Compute-indentify/someUser@gmail.com/someResourceName
-// After the call data is modified and stripped and returned
-// only with someResourceName
-func strip(data *string) {
-	if data == nil || *data == "" {
-		return
-	}
-
-	list := strings.Split(*data, "/")
-	*data = list[len(list)-1]
 }

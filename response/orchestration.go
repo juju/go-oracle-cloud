@@ -1,5 +1,10 @@
 package response
 
+import (
+	"net/url"
+	"time"
+)
+
 // Orchestration is an orchestration defines the attributes and interdependencies of a collection of compute,
 // networking, and storage resources in Oracle Compute Cloud Service. You can use orchestrations to automate
 // the provisioning and lifecycle operations of an entire virtual compute topology.
@@ -47,7 +52,7 @@ type Orchestration struct {
 	Status_timestamp string `json:"status_timestamp"`
 
 	// Uri is the Uniform Resource Identifier
-	Uri string `json:"uri,omitempty"`
+	Uri url.URL `json:"uri,omitempty"`
 
 	// User is the user of the orchestration
 	User string `json:"user"`
@@ -58,16 +63,16 @@ type AllOrchestration struct {
 }
 
 type Schedule struct {
-	Start_time string `json:"start_time,omitempty"`
-	Stop_time  string `json:"stop_time,omitempty"`
+	Start_time *time.Time `json:"start_time,omitempty"`
+	Stop_time  *time.Time `json:"stop_time,omitempty"`
 }
 
 type Oplans struct {
 	// Ha_policy indicates that description is not available
-	Ha_policy string `json:"ha_policy"`
+	Ha_policy string `json:"ha_policy,omitempty"`
 
 	// Info dictionary for the oplan.
-	Info interface{} `json:"info,omitempty"`
+	Info Info `json:"info,omitempty"`
 
 	// Label is the description of this object plan.
 	Label string `json:"label"`
@@ -83,16 +88,42 @@ type Oplans struct {
 	Status string `json:"status"`
 
 	// Status_timestamp Timestamp of the most-recent status change.
-	Status_timestamp string `json:"status_timestamp"`
+	Status_timestamp time.Time `json:"status_timestamp"`
+}
+
+type Info struct {
+	Errors map[string]string `json:"errors,omitempty"`
 }
 
 type Objects struct {
-	Instances []Inst `json:"instances"`
+	Instances        []InstancesOrchestration `json:"instances"`
+	Status_timestamp string                   `json:"status_timestamp,omitmepty"`
 }
 
-type Inst struct {
-	Shape     string `json:"shape"`
-	Label     string `json:"label"`
-	Imagelist string `json:"imagelist"`
-	Name      string `json:"name"`
+// todo(sgiulitti) test it make sure.
+type NetworkingOrchestration struct {
+	Interfaces map[string]interface{}
+}
+
+type InstancesOrchestration struct {
+	Shape               string                  `json:"shape"`
+	Label               string                  `json:"label"`
+	Imagelist           string                  `json:"imagelist"`
+	Name                string                  `json:"name"`
+	Boot_order          []string                `json:"boot_order,omitempty"`
+	Attributes          AttributesOrchestration `json:"attributes,omitmepty"`
+	Storage_attachments []StorageOrhcestration  `json:"storage_attachments,omitmepty"`
+	Uri                 *string                 `json:"uri,omitempty"`
+	SSHkeys             []string                `json:"sshkeys,omitmepty"`
+	Tags                []string                `json:"tags,omitmepty"`
+	Networking          NetworkingOrchestration `json:"networking,omitempty"`
+}
+
+type StorageOrhcestration struct {
+	Info map[string]string
+}
+
+type AttributesOrchestration struct {
+	Userdata              map[string]string `json:"userdata,omitempty"`
+	Nimbula_orchestration string            `json:"nimbula_orchestration,omitempty"`
 }

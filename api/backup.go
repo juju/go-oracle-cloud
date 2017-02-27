@@ -78,9 +78,6 @@ func (c Client) CreateBackupConfiguration(
 		)
 	}
 
-	p.Name = fmt.Sprintf("/Compute-%s/%s/%s",
-		c.identify, c.username, p.Name)
-
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -113,7 +110,6 @@ func (c Client) CreateBackupConfiguration(
 		return resp, err
 	}
 
-	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -232,8 +228,6 @@ func (c Client) BackupConfigurationDetails(
 		return resp, err
 	}
 
-	strip(&resp.Name)
-
 	return resp, nil
 }
 
@@ -305,8 +299,7 @@ func (c Client) UpdateBackupConfiguration(
 	url := fmt.Sprintf("%s/backupservice/v1/configuration/Compute-%s/%s/%s",
 		c.endpoint, c.identify, c.username, p.Name)
 
-	p.Name = fmt.Sprintf("/Compute-%s/%s/%s",
-		c.identify, c.username, newName)
+	p.Name = newName
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -338,6 +331,5 @@ func (c Client) UpdateBackupConfiguration(
 		return resp, err
 	}
 
-	strip(&resp.Name)
 	return resp, nil
 }

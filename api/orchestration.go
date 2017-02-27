@@ -32,6 +32,47 @@ type OrchestrationParams struct {
 	Name string `json:"name"`
 }
 
+func (o OrchestrationParams) validate() (err error) {
+	if o.Oplans == nil || len(o.Oplans) == 0 {
+		return errors.New(
+			"go-oracle-cloud: Empty orchestration plans",
+		)
+	}
+
+	if o.Name == "" {
+		return errors.New(
+			"go-oracle-clod: Empty name in orchestration",
+		)
+	}
+
+	for _, val := range o.Oplans {
+		if val.Ha_policy == "" {
+			return errors.New(
+				"go-oracle-cloud: Empty HA_policy in orchestration plan",
+			)
+		}
+
+		if val.Label == "" {
+			return errors.New(
+				"go-oracle-cloud: Empty label in orchestration plan",
+			)
+		}
+
+		if val.Objects == nil || len(val.Objects) == 0 {
+			return errors.New(
+				"go-oracle-cloud: Empty Objects in orchestration plan",
+			)
+		}
+		if val.Obj_type == "" {
+			return errors.New(
+				"go-oracle-cloud: Empty object type in orchestration plan",
+			)
+		}
+	}
+
+	return nil
+}
+
 // AddOrchestration Adds an orchestration to Oracle Compute Cloud Service.
 func (c Client) AddOrchestration(p OrchestrationParams) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
@@ -135,4 +176,40 @@ func (c Client) AllOrchestration() (resp response.AllOrchestration, err error) {
 	return resp, nil
 }
 
-// TODO(Update)
+// UpdateOrchestration updates an orchestration.
+func (c Client) UpdateOrchestration(p OrchestrationParams, currentName string) (resp response.Orchestration, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	if currentName == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty orchestration name",
+		)
+	}
+
+	if p.Name == "" {
+		p.Name = currentName
+	}
+
+	if err := p.validate(); err != nil {
+		return resp, err
+	}
+
+	url := fmt.Sprintf("%s/orchestration/Compute-%s/%s/%s",
+		c.endpoint, c.identify, c.username, p.Name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		body:   &p,
+		verb:   "PUT",
+		treat:  defaultTreat,
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}

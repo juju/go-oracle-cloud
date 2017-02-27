@@ -21,9 +21,8 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 		return resp, errors.New("go-oracle-cloud: empty account name")
 	}
 
-	// build the url for the api endpoint
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s",
-		c.endpoint, "account", c.identify, name)
+	url := fmt.Sprintf("%s/Compute-%s/%s",
+		c.endpoints["account"], c.identify, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -36,8 +35,6 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 		return resp, err
 	}
 
-	strip(&resp.Name)
-	strip(&resp.Accounttype)
 	return resp, nil
 }
 
@@ -49,8 +46,7 @@ func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/",
-		c.endpoint, "account", c.identify)
+	url := fmt.Sprintf("%s/Compute-%s/", endpoints["acount"], c.identify)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -63,11 +59,6 @@ func (c Client) AllAccountDetais() (resp response.AllAccount, err error) {
 		return resp, err
 	}
 
-	for key := range resp.Result {
-		strip(&resp.Result[key].Name)
-		strip(&resp.Result[key].Accounttype)
-	}
-
 	return resp, nil
 }
 
@@ -77,8 +68,7 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/",
-		c.endpoint, "account", c.identify)
+	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["account"], c.identify)
 
 	if err = request(paramsRequest{
 		directory: true,
@@ -90,10 +80,6 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 		resp:      &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key := range resp.Result {
-		strip(&resp.Result[key])
 	}
 
 	return resp, nil
@@ -108,7 +94,8 @@ func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/", c.endpoint, "account")
+	url := c.endpoints["account"]
+
 	if err = request(paramsRequest{
 		directory: true,
 		client:    &c.http,
@@ -119,10 +106,6 @@ func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 		resp:      &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key := range resp.Result {
-		strip(&resp.Result[key])
 	}
 
 	return resp, nil

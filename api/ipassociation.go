@@ -31,13 +31,6 @@ func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 		return resp, err
 	}
 
-	for key := range resp.Result {
-		strip(&resp.Result[key].Account)
-		strip(&resp.Result[key].Name)
-		strip(&resp.Result[key].Vcable)
-		strip(&resp.Result[key].Reservation)
-	}
-
 	return resp, nil
 
 }
@@ -67,11 +60,6 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 		return resp, err
 	}
 
-	strip(&resp.Account)
-	strip(&resp.Name)
-	strip(&resp.Vcable)
-	strip(&resp.Reservation)
-
 	return resp, nil
 }
 
@@ -91,8 +79,7 @@ func (c Client) CreateIpAssociation(
 		Vcable     string `json:"vcable"`
 	}{
 		Parentpool: parentpool,
-		Vcable: fmt.Sprintf("Compute-%s/%s/%s",
-			c.identify, c.username, vcable),
+		Vcable:     vcable,
 	}
 
 	url := fmt.Sprintf("%s/ip/ipassociation/", c.endpoint)
@@ -109,10 +96,6 @@ func (c Client) CreateIpAssociation(
 		return resp, err
 	}
 
-	strip(&resp.Account)
-	strip(&resp.Name)
-	strip(&resp.Vcable)
-	strip(&resp.Reservation)
 	return resp, nil
 }
 

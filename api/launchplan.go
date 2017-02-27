@@ -42,7 +42,7 @@ type Instances struct {
 	// These tags aren’t available from within the instance.
 	Tags []string `json:"tags,omitempty"`
 
-	Attributes []map[string]interface{} `json:"attributes,omitempty"`
+	Attributes map[string]interface{} `json:"attributes,omitempty"`
 
 	// If set to true (default), then reverse DNS records are created.
 	// If set to false, no reverse DNS records are created.
@@ -55,6 +55,23 @@ type InstanceParams struct {
 	Instances     []Instances `json:"instances"`
 }
 
+func (i InstanceParams) validate() (err error) {
+	for _, val := range i.Instances {
+		if val.Imagelist == "" {
+			return errors.New(
+				"go-oracle-cloud: Empty image list in instance parameters",
+			)
+		}
+		if val.Label == "" {
+			return errors.New(
+				"go-oracle-cloud: Empty label in instance parameters",
+			)
+		}
+	}
+
+	return nil
+}
+
 func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan, err error) {
 	if params.Instances == nil || len(params.Instances) == 0 {
 		return resp, errors.New("go-oracle-cloud: Empty slice of instance parameters")
@@ -64,38 +81,8 @@ func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan,
 		return resp, ErrNotAuth
 	}
 
-	n := len(params.Instances)
-
-	// here we are constructing the post body json
-	for i := 0; i < n; i++ {
-		// add the imagelist
-		if params.Instances[i].Imagelist == "" {
-			return resp, errors.New(
-				"go-oracle-cloud: Empty image list in instance parameters",
-			)
-		}
-		params.Instances[i].Imagelist = fmt.Sprintf(
-			"/Compute-%s/%s/%s", c.identify, c.username, params.Instances[i].Imagelist,
-		)
-
-		// add the label
-		if params.Instances[i].Label == "" {
-			return resp, errors.New(
-				"go-oracle-cloud: Empty label in instance parameters",
-			)
-		}
-
-		// make the name oracle cloud complaint
-		params.Instances[i].Name = fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, params.Instances[i].Name)
-
-		// add the ssh keys
-		keys := len(params.Instances[i].SSHKeys)
-		for j := 0; j < keys; j++ {
-			params.Instances[i].SSHKeys[j] = fmt.Sprintf("/Compute-%s/%s/%s",
-				c.identify, c.username, params.Instances[i].SSHKeys[j],
-			)
-		}
+	if err := params.validate(); err != nil {
+		return resp, err
 	}
 
 	url := fmt.Sprintf("%s/launchplan/", c.endpoint)

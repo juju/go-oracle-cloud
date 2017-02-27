@@ -36,8 +36,7 @@ func (c Client) AddSHHKey(
 	}{
 		Enabled: enabled,
 		Key:     key,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, name),
+		Name:    name,
 	}
 
 	url := fmt.Sprintf("%s/%s/", c.endpoint, "sshkey")
@@ -53,7 +52,6 @@ func (c Client) AddSHHKey(
 		return resp, err
 	}
 
-	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -67,10 +65,7 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 		return errors.New("go-oracle-cloud: empty key name")
 	}
 
-	keyname := fmt.Sprintf("Compute-%s/%s/%s",
-		c.identify, c.username, name)
-	url := fmt.Sprintf("%s/%s/%s",
-		c.endpoint, "sshkey", keyname)
+	url := fmt.Sprintf("%s/sshkey/%s", name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -95,8 +90,8 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 		return resp, errors.New("go-oracle-cloud: empty key name")
 	}
 
-	keyname := fmt.Sprintf("Compute-%s/%s/%s", c.identify, c.username, name)
-	url := fmt.Sprintf("%s/%s/%s", c.endpoint, "sshkey", keyname)
+	url := fmt.Sprintf("%s/sshkey/%s", c.endpoint, name)
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -108,7 +103,6 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 		return resp, err
 	}
 
-	strip(&resp.Name)
 	return resp, nil
 }
 
@@ -118,7 +112,8 @@ func (c Client) AllSSHKeyDetails() (resp response.AllSSH, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/", c.endpoint, "sshkey", c.identify, c.username)
+	url := fmt.Sprintf("%s/sshkey/Compute-%s/%s/", c.endpoint, c.identify, c.username)
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -128,10 +123,6 @@ func (c Client) AllSSHKeyDetails() (resp response.AllSSH, err error) {
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key, _ := range resp.Result {
-		strip(&resp.Result[key].Name)
 	}
 
 	return resp, nil
@@ -143,8 +134,9 @@ func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
-		c.endpoint, "sshkey", c.identify, c.username)
+	url := fmt.Sprintf("%s/sshkey/Compute-%s/%s/",
+		c.endpoint, c.identify, c.username)
+
 	if err = request(paramsRequest{
 		directory: true,
 		client:    &c.http,
@@ -163,7 +155,8 @@ func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 // UpdateSSHKey change the content and details of a specific ssh key
 // If the key is invalid it will retrun 400 status code. Make sure the key is a valid ssh public key
 func (c Client) UpdateSSHKey(
-	name string,
+	currentName string,
+	newName string,
 	key string,
 	enabled bool,
 ) (resp response.SSH, err error) {
@@ -172,12 +165,16 @@ func (c Client) UpdateSSHKey(
 		return resp, ErrNotAuth
 	}
 
-	if name == "" {
+	if currentName == "" {
 		return resp, errors.New("go-oracle-cloud: empty key name")
 	}
 
 	if key == "" {
 		return resp, errors.New("go-oracle-cloud: ssh key provided is empty")
+	}
+
+	if newName == "" {
+		newName = currentName
 	}
 
 	ssh := struct {
@@ -187,12 +184,11 @@ func (c Client) UpdateSSHKey(
 	}{
 		Enabled: enabled,
 		Key:     key,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, name),
+		Name:    newName,
 	}
 
-	url := fmt.Sprintf("%s/%s%s",
-		c.endpoint, "sshkey", ssh.Name)
+	url := fmt.Sprintf("%s/sshkey/%s", c.endpoint, "sshkey", ssh.Name)
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
@@ -205,6 +201,5 @@ func (c Client) UpdateSSHKey(
 		return resp, err
 	}
 
-	strip(&resp.Name)
 	return resp, nil
 }

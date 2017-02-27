@@ -31,11 +31,6 @@ func (c Client) AllIp() (resp response.AllIp, err error) {
 		return resp, err
 	}
 
-	for key := range resp.Result {
-		strip(&resp.Result[key].Name)
-		strip(&resp.Result[key].IpNetworkExchange)
-	}
-
 	return resp, nil
 }
 
@@ -63,9 +58,6 @@ func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
-	strip(&resp.IpNetworkExchange)
 
 	return resp, nil
 }
@@ -100,15 +92,11 @@ func (c Client) CreateIp(
 	url := fmt.Sprintf("%s/network/v1/ipnetwork/", c.endpoint)
 
 	params := response.Ip{
-		Description:     description,
-		IpAddressPrefix: ipAddressPrefix,
-		IpNetworkExchange: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, ipNetworkExchange),
-
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, name),
-
-		Tags: tags,
+		Description:       description,
+		IpAddressPrefix:   ipAddressPrefix,
+		IpNetworkExchange: ipNetworkExchange,
+		Name:              name,
+		Tags:              tags,
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
 	}
 
@@ -123,9 +111,6 @@ func (c Client) CreateIp(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
-	strip(&resp.IpNetworkExchange)
 
 	return resp, nil
 }
@@ -204,14 +189,11 @@ func (c Client) UpdateIp(
 		c.endpoint, c.identify, c.username, currentName)
 
 	params := response.Ip{
-		Description:     description,
-		IpAddressPrefix: ipAddressPrefix,
-		IpNetworkExchange: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, ipNetworkExchange),
-
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, newName),
-		Tags: tags,
+		Description:       description,
+		IpAddressPrefix:   ipAddressPrefix,
+		IpNetworkExchange: ipNetworkExchange,
+		Name:              newName,
+		Tags:              tags,
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
 	}
 
@@ -226,9 +208,6 @@ func (c Client) UpdateIp(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Name)
-	strip(&resp.IpNetworkExchange)
 
 	return resp, nil
 }

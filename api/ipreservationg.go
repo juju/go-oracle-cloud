@@ -30,11 +30,6 @@ func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
 		return resp, err
 	}
 
-	for key := range resp.Result {
-		strip(&resp.Result[key].Account)
-		strip(&resp.Result[key].Name)
-		strip(&resp.Result[key].Parentpool)
-	}
 	return resp, nil
 }
 
@@ -64,9 +59,6 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 		return resp, err
 	}
 
-	strip(&resp.Account)
-	strip(&resp.Name)
-	strip(&resp.Parentpool)
 	return resp, nil
 }
 
@@ -107,11 +99,10 @@ func (c Client) CreateIpReservation(
 		Name       string   `json:"name"`
 		Parentpool string   `json:"parentpool"`
 	}{
-		Permanent: permanent,
-		Tags:      tags,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, newName),
-		Parentpool: fmt.Sprintf("/oracle/public/%s", parentpool),
+		Permanent:  permanent,
+		Tags:       tags,
+		Name:       newName,
+		Parentpool: parentpool,
 	}
 
 	url := fmt.Sprintf("%s/ip/reservation/", c.endpoint)
@@ -128,9 +119,6 @@ func (c Client) CreateIpReservation(
 		return resp, err
 	}
 
-	strip(&resp.Account)
-	strip(&resp.Name)
-	strip(&resp.Parentpool)
 	return resp, nil
 }
 
@@ -196,11 +184,10 @@ func (c Client) UpdateIpReservation(
 		Name       string   `json:"name"`
 		Parentpool string   `json:"parentpool"`
 	}{
-		Permanent: permanent,
-		Tags:      tags,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, newName),
-		Parentpool: fmt.Sprintf("/oracle/public/%s", parentpool),
+		Permanent:  permanent,
+		Tags:       tags,
+		Name:       newName,
+		Parentpool: parentpool,
 	}
 
 	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
@@ -217,10 +204,6 @@ func (c Client) UpdateIpReservation(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.Account)
-	strip(&resp.Name)
-	strip(&resp.Parentpool)
 
 	return resp, nil
 }

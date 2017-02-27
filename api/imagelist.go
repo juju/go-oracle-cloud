@@ -39,13 +39,6 @@ func (c Client) ImageListDetails(
 		return resp, err
 	}
 
-	strip(&resp.Name)
-	for key := range resp.Entries {
-		for alt := range resp.Entries[key].Machineimages {
-			strip(&resp.Entries[key].Machineimages[alt])
-		}
-	}
-
 	return resp, nil
 }
 
@@ -68,17 +61,6 @@ func (c Client) AllImageList() (resp response.AllImageList, err error) {
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key := range resp.Result {
-		strip(&resp.Result[key].Name)
-
-		for alt := range resp.Result[key].Entries {
-			for alk := range resp.Result[key].Entries[alt].Machineimages {
-				strip(&resp.Result[key].Entries[alt].Machineimages[alk])
-			}
-		}
-
 	}
 
 	return resp, nil
@@ -128,8 +110,7 @@ func (c Client) CreateImageList(
 	}{
 		Def:         def,
 		Description: description,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, name),
+		Name:        name,
 	}
 
 	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/",
@@ -145,13 +126,6 @@ func (c Client) CreateImageList(
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	strip(&resp.Name)
-	for key := range resp.Entries {
-		for alt := range resp.Entries[key].Machineimages {
-			strip(&resp.Entries[key].Machineimages[alt])
-		}
 	}
 
 	return resp, nil
@@ -205,6 +179,10 @@ func (c Client) UpdateImageList(
 		)
 	}
 
+	if newName == "" {
+		newName = currentName
+	}
+
 	params := struct {
 		Def         int    `json:"default"`
 		Description string `json:"description,omitempty"`
@@ -212,12 +190,7 @@ func (c Client) UpdateImageList(
 	}{
 		Def:         def,
 		Description: description,
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, currentName),
-	}
-
-	if newName == "" {
-		newName = currentName
+		Name:        newName,
 	}
 
 	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s",
@@ -232,13 +205,6 @@ func (c Client) UpdateImageList(
 		treat:  defaultTreat,
 	}); err != nil {
 		return resp, err
-	}
-
-	strip(&resp.Name)
-	for key := range resp.Entries {
-		for alt := range resp.Entries[key].Machineimages {
-			strip(&resp.Entries[key].Machineimages[alt])
-		}
 	}
 
 	return resp, nil

@@ -68,7 +68,8 @@ type Client struct {
 	// the endpoint of the oracle account
 	endpoint string
 	// internal http client
-	http http.Client
+	http      http.Client
+	endpoints map[string]string
 }
 
 // NewClient returns a new client based on the cfg provided
@@ -79,11 +80,16 @@ func NewClient(cfg Config) (*Client, error) {
 	}
 
 	cli := &Client{
-		identify: cfg.Identify,
-		username: cfg.Username,
-		password: cfg.Password,
-		endpoint: cfg.Endpoint,
-		http:     http.Client{},
+		identify:  cfg.Identify,
+		username:  cfg.Username,
+		password:  cfg.Password,
+		endpoint:  cfg.Endpoint,
+		http:      http.Client{},
+		endpoints: endpoints,
+	}
+
+	for key := range cli.endpoints {
+		cli.endpoints[key] = fmt.Sprintf(cli.endpoints[key], cli.endpoint)
 	}
 
 	return cli, nil

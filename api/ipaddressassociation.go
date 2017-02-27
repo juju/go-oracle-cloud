@@ -34,9 +34,6 @@ func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddres
 	}); err != nil {
 		return resp, err
 	}
-	strip(&resp.IpAddressReservation)
-	strip(&resp.Vnic)
-	strip(&resp.Name)
 
 	return resp, nil
 
@@ -60,13 +57,6 @@ func (c Client) AllIpAddressAssociation() (resp response.AllIpAddressAssociation
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
-	}
-
-	for key := range resp.Result {
-		strip(&resp.Result[key].IpAddressReservation)
-		strip(&resp.Result[key].Vnic)
-		strip(&resp.Result[key].Name)
-
 	}
 
 	return resp, nil
@@ -102,14 +92,11 @@ func (c Client) CreateIpAddressAssociation(
 
 	// construct the body for the post request
 	params := response.IpAddressAssociation{
-		IpAddressReservation: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, ipAddressReservation),
-		Vnic: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, vnic),
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, name),
-		Tags:        tags,
-		Description: description,
+		IpAddressReservation: ipAddressReservation,
+		Vnic:                 vnic,
+		Name:                 name,
+		Tags:                 tags,
+		Description:          description,
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipassociation/", c.endpoint)
@@ -125,10 +112,6 @@ func (c Client) CreateIpAddressAssociation(
 	}); err != nil {
 		return resp, err
 	}
-
-	strip(&resp.IpAddressReservation)
-	strip(&resp.Vnic)
-	strip(&resp.Name)
 
 	return resp, nil
 }
@@ -200,14 +183,9 @@ func (c Client) UpdateIpAddressAssociation(
 
 	// construct the body for the post request
 	params := response.IpAddressAssociation{
-		IpAddressReservation: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, ipAddressReservation),
-
-		Vnic: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, vnic),
-
-		Name: fmt.Sprintf("/Compute-%s/%s/%s",
-			c.identify, c.username, newName),
+		IpAddressReservation: ipAddressReservation,
+		Vnic:                 vnic,
+		Name:                 newName,
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipassociation/Compute-%s/%s/%s",
