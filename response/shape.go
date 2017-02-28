@@ -43,6 +43,6 @@ type Shape struct {
 }
 
 // AllShapes has a slice of all declared shapes in the oracle api
-type AllShape struct {
+type AllShapes struct {
 	Result []Shape `json:"result"`
 }

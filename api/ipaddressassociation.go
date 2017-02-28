@@ -38,7 +38,7 @@ func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddres
 }
 
 // AllIpAddressAssociation Retrieves details of the specified IP address association.
-func (c Client) AllIpAddressAssociation() (resp response.AllIpAddressAssociation, err error) {
+func (c Client) AllIpAddressAssociations() (resp response.AllIpAddressAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

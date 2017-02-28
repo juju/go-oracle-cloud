@@ -185,8 +185,8 @@ func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, 
 	return resp, nil
 }
 
-// AllOrchestration retrives all orchestration
-func (c Client) AllOrchestration() (resp response.AllOrchestration, err error) {
+// AllOrchestrations retrives all orchestration
+func (c Client) AllOrchestrations() (resp response.AllOrchestrations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

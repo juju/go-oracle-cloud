@@ -35,8 +35,8 @@ func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 	return resp, nil
 }
 
-// AllShapeDetails retrieves the CPU and memory details of all the available shapes.
-func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
+// AllShapes retrieves the CPU and memory details of all the available shapes.
+func (c Client) AllShapes() (resp response.AllShapes, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

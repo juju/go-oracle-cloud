@@ -36,11 +36,11 @@ func (c Client) DeleteInstance(name string) (err error) {
 	return nil
 }
 
-// AllInstance retrieves details of the instances that are in the specified
+// AllInstances retrieves details of the instances that are in the specified
 // container and match the specified query criteria.
 // If you don't specify any query criteria, then details
 // of all the instances in the container are displayed.
-func (c Client) AllInstance() (resp response.AllInstance, err error) {
+func (c Client) AllInstances() (resp response.AllInstances, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

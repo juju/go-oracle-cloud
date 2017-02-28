@@ -40,9 +40,9 @@ func (c Client) ImageListDetails(
 	return resp, nil
 }
 
-// AllImageList retrieves details of all the available
+// AllImageLists retrieves details of all the available
 // image lists in the specified container.
-func (c Client) AllImageList() (resp response.AllImageList, err error) {
+func (c Client) AllImageLists() (resp response.AllImageLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

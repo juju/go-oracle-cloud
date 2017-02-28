@@ -31,6 +31,8 @@ type ImageList struct {
 	Name string `json:"name"`
 }
 
-type AllImageList struct {
+// AllImageLists contains a slice of all lists of images
+// in the oracle cloud account
+type AllImageLists struct {
 	Result []ImageList `json:"result,omitempty"`
 }

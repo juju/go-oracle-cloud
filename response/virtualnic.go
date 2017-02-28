@@ -32,9 +32,9 @@ type VirtualNic struct {
 	TransitFlag bool `json:"transitFlag"`
 }
 
-// AllVirtualNic type returned by AllVirtualNic()
+// AllVirtualNics type returned by AllVirtualNic()
 // holding all the vnc inside the oracle cloud
 // account
-type AllVirtualNic struct {
+type AllVirtualNics struct {
 	Result []VirtualNic `json:"result"`
 }

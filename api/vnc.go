@@ -37,8 +37,8 @@ func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 	return resp, nil
 }
 
-// AllVirtualNic returns all virtual nic that are in the oracle account
-func (c Client) AllVirtualNic() (resp response.AllVirtualNic, err error) {
+// AllVirtualNics returns all virtual nic that are in the oracle account
+func (c Client) AllVirtualNics() (resp response.AllVirtualNics, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

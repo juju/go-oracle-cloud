@@ -36,8 +36,8 @@ type SecIpList struct {
 	Id string `json:"id"`
 }
 
-// AllSecIpList holds all the secure ip list entries
+// AllSecIpLists holds all the secure ip list entries
 // from a given account
-type AllSecIpList struct {
+type AllSecIpLists struct {
 	Result []SecIpList `json:"result,omitempty"`
 }

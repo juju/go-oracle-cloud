@@ -13,7 +13,7 @@ import (
 
 // AllIpAssociation retrieves the names of objects and subcontainers
 // that you can access in the specified container.
-func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
+func (c Client) AllIpAssociations() (resp response.AllIpAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

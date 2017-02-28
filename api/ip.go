@@ -40,9 +40,9 @@ func (i *IPPool) prefix() {
 	*i = IPPool("ippool:") + *i
 }
 
-// AllIp retrieves details of all the IP networks
+// AllIps retrieves details of all the IP networks
 // that are available in the specified container.
-func (c Client) AllIp() (resp response.AllIp, err error) {
+func (c Client) AllIps() (resp response.AllIps, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

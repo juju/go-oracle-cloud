@@ -103,8 +103,8 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 	return resp, nil
 }
 
-// AllSShKeysDetails returns list of all keys with all the details
-func (c Client) AllSSHKey() (resp response.AllSSH, err error) {
+// AllSShKeys returns list of all keys with all the details
+func (c Client) AllSSHKeys() (resp response.AllSSH, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

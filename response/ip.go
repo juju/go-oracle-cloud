@@ -61,8 +61,8 @@ type Ip struct {
 	Uri string `json:"uri"`
 }
 
-// AllIp holds a slice of all ip networks in the
+// AllIps holds a slice of all ip networks in the
 // oracle cloud account
-type AllIp struct {
+type AllIps struct {
 	Result []Ip `json:"result,omitempty"`
 }

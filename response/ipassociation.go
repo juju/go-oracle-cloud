@@ -43,8 +43,8 @@ type IpAssociation struct {
 	Vcable common.VcableID `json:"vcable"`
 }
 
-// AllIpAssociation holds all ip association
+// AllIpAssociations holds all ip association
 // in the oracle account
-type AllIpAssociation struct {
+type AllIpAssociations struct {
 	Result []IpAssociation `json:"result,omitempty"`
 }

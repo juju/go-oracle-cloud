@@ -51,8 +51,8 @@ type IpReservation struct {
 	Used bool `json:"used"`
 }
 
-// AllIpReservation holds all ip reservation in the
+// AllIpReservations holds all ip reservation in the
 // oracle cloud account
-type AllIpReservation struct {
+type AllIpReservations struct {
 	Result []IpReservation `json:"result,omitmepty"`
 }

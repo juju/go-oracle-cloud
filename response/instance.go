@@ -8,15 +8,16 @@ type LaunchPlan struct {
 	Instances     []Instance `json:"instances"`
 }
 
-type AllInstance struct {
+// AllInstances a slice of all instances in the
+// oracle cloud account
+type AllInstances struct {
 	Result []Instance `json:"result"`
 }
 
+// AllInstanceNames a slice of all instance
+// names in the oracle cloud account
 type AllInstanceNames struct {
 	Result []string `json:"result"`
-}
-
-type List struct {
 }
 
 // Instance represents an Oracle Compute Cloud Service

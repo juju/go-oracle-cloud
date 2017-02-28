@@ -53,7 +53,9 @@ type Orchestration struct {
 	User string `json:"user"`
 }
 
-type AllOrchestration struct {
+// AllOrchestrations a holds a slice of all
+// orchestrations of a oracle cloud account
+type AllOrchestrations struct {
 	Result []Orchestration `json:"result,omitmepty"`
 }
 

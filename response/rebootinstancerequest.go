@@ -29,8 +29,8 @@ type RebootInstanceRequest struct {
 	Uri string `json:"uri"`
 }
 
-// AllRebootInstanceRequest all reboot instance requests that are
+// AllRebootInstanceRequests all reboot instance requests that are
 // inside the oracle cloud account
-type AllRebootInstanceRequest struct {
+type AllRebootInstanceRequests struct {
 	Result []RebootInstanceRequest `json:"result,omitempty"`
 }

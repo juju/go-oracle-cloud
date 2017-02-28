@@ -36,10 +36,10 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	return resp, nil
 }
 
-// AllAccount retrives details of the accounts that are in the
+// AllAccounts retrives details of the accounts that are in the
 // specified identity domain. You can use this HTTP request to
 // get details of the account that you must specify while creating a machine image.
-func (c Client) AllAccount() (resp response.AllAccount, err error) {
+func (c Client) AllAccounts() (resp response.AllAccounts, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

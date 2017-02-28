@@ -11,7 +11,7 @@ import (
 )
 
 // AllIpReservations Retrieves details of the IP reservations that are available
-func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
+func (c Client) AllIpReservations() (resp response.AllIpReservations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

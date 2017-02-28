@@ -18,6 +18,7 @@ type DirectoryNames struct {
 	Result []string `json:"result,omitempty"`
 }
 
-type AllAccount struct {
+// AllAccounts list of all accounts in the oracle cloud
+type AllAccounts struct {
 	Result []Account `json:"result,omitempty"`
 }

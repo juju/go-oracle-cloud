@@ -80,9 +80,9 @@ func (c Client) DeleteSecList(name string) (err error) {
 	return nil
 }
 
-// AllSecList retrieves details of the security lists that are in the specified
+// AllSecLists retrieves details of the security lists that are in the specified
 // container and match the specified query criteria.
-func (c Client) AllSecList() (resp response.AllSecList, err error) {
+func (c Client) AllSecLists() (resp response.AllSecLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

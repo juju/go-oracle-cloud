@@ -34,7 +34,7 @@ type Acl struct {
 	Uri string `json:"uri"`
 }
 
-// AllAcl holds all acls inside of the account
-type AllAcl struct {
+// AllAcls holds all acls inside of the account
+type AllAcls struct {
 	Result []Acl `json:"result,omitempty"`
 }

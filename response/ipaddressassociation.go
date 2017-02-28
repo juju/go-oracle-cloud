@@ -26,9 +26,9 @@ type IpAddressAssociation struct {
 	IpAddressReservation string `json:"ipAddressReservation"`
 }
 
-// AllIpAddressAssociation holds a slice of
+// AllIpAddressAssociations holds a slice of
 // all the ip address associations in the oracle account
-type AllIpAddressAssociation struct {
+type AllIpAddressAssociations struct {
 	// Result is the hole resutl of the AllIpAddressAssociation call
 	Result []IpAddressAssociation `json:"result,omitempty"`
 }

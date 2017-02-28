@@ -96,9 +96,9 @@ func (c Client) DeleteAcl(name string) (err error) {
 	return nil
 }
 
-// AllAcl retrieves details of all the ACLs
+// AllAcls retrieves details of all the ACLs
 // that are available in the specified container.
-func (c Client) AllAcl() (resp response.AllAcl, err error) {
+func (c Client) AllAcls() (resp response.AllAcls, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

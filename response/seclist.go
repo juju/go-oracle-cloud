@@ -39,8 +39,8 @@ type SecList struct {
 	Uri string `json:"uri"`
 }
 
-// AllSecList type that is filled with all the
+// AllSecLists type that is filled with all the
 // security list that are in the account declared
-type AllSecList struct {
+type AllSecLists struct {
 	Result []SecList `json:"result,omitempty"`
 }

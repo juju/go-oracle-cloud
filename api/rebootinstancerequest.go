@@ -112,8 +112,8 @@ func (c Client) RebootInstanceRequestDetails(
 	return resp, nil
 }
 
-//AllRebootInstanceRequest retrieves details of the reboot instance requests that are available in the specified container
-func (c Client) AllRebootInstanceRequest() (resp response.AllRebootInstanceRequest, err error) {
+//AllRebootInstanceRequests retrieves details of the reboot instance requests that are available in the specified container
+func (c Client) AllRebootInstanceRequests() (resp response.AllRebootInstanceRequests, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

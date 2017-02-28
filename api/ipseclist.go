@@ -124,8 +124,8 @@ func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error
 	return resp, nil
 }
 
-// AllSecIpList retrieves details of the security IP lists that are in the account
-func (c Client) AllSecIpList() (resp response.AllSecIpList, err error) {
+// AllSecIpLists retrieves details of the security IP lists that are in the account
+func (c Client) AllSecIpLists() (resp response.AllSecIpLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
