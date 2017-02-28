@@ -117,7 +117,7 @@ func (c *Client) RefreshCookie() (err error) {
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat: func(resp *http.Response) (err error) {
+		treat: func(resp *http.Response, verbRequest string) (err error) {
 			if resp.StatusCode != http.StatusNoContent {
 				return dumpApiError(resp)
 			}

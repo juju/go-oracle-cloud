@@ -91,7 +91,6 @@ func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan,
 		verb:   "POST",
 		body:   &params,
 		resp:   &resp,
-		treat:  debugTreat,
 	}); err != nil {
 		return resp, err
 	}

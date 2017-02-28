@@ -27,7 +27,6 @@ func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -49,7 +48,6 @@ func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

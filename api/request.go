@@ -61,7 +61,7 @@ var endpoints = map[string]string{
 // treatStatus will be used as a callback to custom check the response
 // if the client decides the response contains some error codes
 // it will make the Request return that error
-type treatStatus func(resp *http.Response) error
+type treatStatus func(resp *http.Response, verbRequest string) error
 
 func debugTreat(resp *http.Response) (err error) {
 	raw, err := ioutil.ReadAll(resp.Body)
@@ -74,7 +74,7 @@ func debugTreat(resp *http.Response) (err error) {
 }
 
 // defaultTreat used in post, put, delete and get requests
-func defaultTreat(resp *http.Response) (err error) {
+func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 	switch resp.StatusCode {
 	// this is the case when if we have such status
 	// we return nil
@@ -89,6 +89,9 @@ func defaultTreat(resp *http.Response) (err error) {
 	case http.StatusConflict:
 		return ErrStatusConflict
 	case http.StatusNotFound:
+		if verbRequest == http.MethodDelete {
+			return nil
+		}
 		return ErrNotFound
 	// any other error
 	default:
@@ -182,11 +185,11 @@ func request(cfg paramsRequest) (err error) {
 	// let the caller treat the response
 	// if we don't have one execute the default one
 	if cfg.treat != nil {
-		if err = cfg.treat(resp); err != nil {
+		if err = cfg.treat(resp, cfg.verb); err != nil {
 			return err
 		}
 	} else {
-		if err = defaultTreat(resp); err != nil {
+		if err = defaultTreat(resp, cfg.verb); err != nil {
 			return err
 		}
 	}

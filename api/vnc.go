@@ -29,7 +29,6 @@ func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
@@ -44,17 +43,13 @@ func (c Client) AllVirtualNic() (resp response.AllVirtualNic, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["vnc"], name)
-
-	url := fmt.Sprintf("%s/Compute-%s/%s/",
-		c.endpoints["vnc"], c.identify, c.username)
+	url := c.endpoints["vnc"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,
 		verb:   "GET",
 		url:    url,
-		treat:  defaultTreat,
 		resp:   &resp,
 	}); err != nil {
 		return resp, err

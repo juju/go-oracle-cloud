@@ -34,3 +34,9 @@ func dumpApiError(resp *http.Response) error {
 		"go-oracle-cloud: Error api response %d %s", resp.Status, e.Message,
 	)
 }
+
+//
+// func IsNotFound(err error) bool {
+// 	_, ok := err.(*ErrNotFound)
+// 	return ok
+// }

@@ -66,7 +66,7 @@ func (c Client) DeleteSecList(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty secure list")
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -110,8 +110,7 @@ func (c Client) SecListDetails(name string) (resp response.SecList, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s%s",
-		c.endpoints["seclit"], currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
