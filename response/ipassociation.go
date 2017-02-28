@@ -3,6 +3,8 @@
 
 package response
 
+import "github.com/hoenirvili/go-oracle-cloud/common"
+
 // IpAssociation is a link between an IP reservation
 // and the vcable of an instance. A vcable is an attachment
 // point to a specific network interface of an instance.
@@ -38,7 +40,7 @@ type IpAssociation struct {
 
 	// Vcable is the vcable it of the instance that
 	// is associated with the ip reservation.
-	Vcable string `json:"vcable"`
+	Vcable common.VcableID `json:"vcable"`
 }
 
 // AllIpAssociation holds all ip association

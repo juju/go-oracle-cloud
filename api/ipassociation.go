@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hoenirvili/go-oracle-cloud/common"
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
@@ -64,7 +65,7 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 // and the vcable ID of an instance.
 func (c Client) CreateIpAssociation(
 	parentpool IPPool,
-	vcable string,
+	vcable common.VcableID,
 ) (resp response.IpAssociation, err error) {
 
 	if !c.isAuth() {
@@ -74,9 +75,13 @@ func (c Client) CreateIpAssociation(
 	// add the prefix if it does not have
 	parentpool.prefix()
 
+	if err = vcable.Validate(); err != nil {
+		return resp, err
+	}
+
 	params := struct {
-		Parentpool IPPool `json:"parentpool"`
-		Vcable     string `json:"vcable"`
+		Parentpool IPPool          `json:"parentpool"`
+		Vcable     common.VcableID `json:"vcable"`
 	}{
 		Parentpool: parentpool,
 		Vcable:     vcable,
