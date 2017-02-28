@@ -6,6 +6,8 @@ package api
 import (
 	"errors"
 	"fmt"
+
+	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
 type SecRule string
@@ -88,7 +90,7 @@ func (c Client) CreateSecRule(p SecRuleParams) (resp response.SecRule, err error
 // cloud account. If the security rule is not found this will return nil
 func (c Client) DeleteSecRule(name string) (err error) {
 	if !c.isAuth() {
-		return resp, errNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
