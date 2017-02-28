@@ -5,6 +5,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/hoenirvili/go-oracle-cloud/common"
 	"github.com/hoenirvili/go-oracle-cloud/response"
@@ -82,7 +83,7 @@ func (s SecApplicationParams) validate() (err error) {
 
 // CreateSecApplication creates a security application.
 // After creating security applications
-func (c Client) CreateSecApplication(p SecApplicationParams) (resp response.SecList, err error) {
+func (c Client) CreateSecApplication(p SecApplicationParams) (resp response.SecApplication, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -99,6 +100,73 @@ func (c Client) CreateSecApplication(p SecApplicationParams) (resp response.SecL
 		url:    url,
 		body:   &p,
 		verb:   "POST",
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// DeleteSecApplication deletes a security application. No response is returned.
+func (c Client) DeleteSecApplication(name string) (err error) {
+	if !c.isAuth() {
+		return errNotAuth
+	}
+
+	url := fmt.Sprintf("%s%s", c.endpoints["secapplication"], name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "DELETE",
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SecApplicationDetails retrieve details of a security application
+func (c Client) SecApplicationDetails(name string) (resp response.SecApplication, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	if name == "" {
+		errors.New("go-oracle-cloud: Empty sec application name")
+	}
+
+	url := fmt.Sprintf("%s%s", c.endpoints["secapplication"], name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// AllSecApplications retrieves details of the security applications that are in the specified container
+func (c Client) AllSecApplications() (resp response.AllSecApplications, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["secapplication"], c.identify, c.username)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
 		resp:   &resp,
 	}); err != nil {
 		return resp, err
