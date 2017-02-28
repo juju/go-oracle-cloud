@@ -40,7 +40,7 @@ func (c Client) CreateSecList(
 		Policy:               policy,
 	}
 
-	url := fmt.Sprintf("%s/seclist/", c.endpoint)
+	url := c.endpoints["seclist"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -66,8 +66,7 @@ func (c Client) DeleteSecList(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty secure list")
 	}
 
-	url := fmt.Sprintf("%s/seclist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -88,8 +87,8 @@ func (c Client) AllSecList() (resp response.AllSecList, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/seclist/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["seclist"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -111,8 +110,8 @@ func (c Client) SecListDetails(name string) (resp response.SecList, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/seclist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s",
+		c.endpoints["seclit"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -167,8 +166,7 @@ func (c Client) UpdateSecList(
 		Policy:               strings.ToUpper(policy),
 	}
 
-	url := fmt.Sprintf("%s/seclist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,

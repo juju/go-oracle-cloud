@@ -32,7 +32,7 @@ func (c Client) CreateRebootInstanceRequest(
 		)
 	}
 
-	url := fmt.Sprintf("%s/rebootinstancerequest/", c.endpoint)
+	url := c.endpoints["rebootinstancerequest"] + "/"
 
 	params := struct {
 		Name string `json:"name"`
@@ -67,8 +67,7 @@ func (c Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
 		return errors.New("go-oracle-cloud: Empty instance name")
 	}
 
-	url := fmt.Sprintf("%s/rebootinstancerequest/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, instanceName)
+	url := fmt.Sprintf("%s%s", c.endpoints["rebootinstancerequest"], instanceName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -98,8 +97,7 @@ func (c Client) RebootInstanceRequestDetails(
 		)
 	}
 
-	url := fmt.Sprintf("%s/rebootinstancerequest/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, instanceName)
+	url := fmt.Sprintf("%s%s", c.endpoints["rebootinstrancerequest"], instanceName)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -120,8 +118,8 @@ func (c Client) AllRebootInstanceRequest() (resp response.AllRebootInstanceReque
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/rebootinstancerequest/Compute-%s/%s",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["rebootinstancerequest"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,

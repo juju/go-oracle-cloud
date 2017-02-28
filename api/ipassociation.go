@@ -17,8 +17,8 @@ func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/ip/association/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["ipassociation"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -45,8 +45,7 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 		return resp, errors.New("go-oracle-cloud: Empty ip association name")
 	}
 
-	url := fmt.Sprintf("%s/ip/association/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["ipassociation"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -80,7 +79,7 @@ func (c Client) CreateIpAssociation(
 		Vcable:     vcable,
 	}
 
-	url := fmt.Sprintf("%s/ip/ipassociation/", c.endpoint)
+	url := c.endpoints["ipassociation"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -106,8 +105,7 @@ func (c Client) DeleteIpAssociation(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty ip association name provided")
 	}
 
-	url := fmt.Sprintf("%s/ip/ipassociation/%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["ipassociation"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,

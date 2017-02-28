@@ -109,7 +109,7 @@ func (c Client) CreateImageList(
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
-		c.identify["imagelist"], c.identify, c.username)
+		c.endpoints["imagelist"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,

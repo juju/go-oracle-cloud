@@ -54,7 +54,7 @@ func (c Client) CreateSecIpList(
 		Secipentries: secipentries,
 	}
 
-	url := fmt.Sprintf("%s/seciplist/", c.endpoint)
+	url := c.endpoints["seciplist"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -82,8 +82,7 @@ func (c Client) DeleteSecIpList(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty secure ip list name")
 	}
 
-	url := fmt.Sprintf("%s/seciplist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["seciplist"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -111,8 +110,7 @@ func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error
 		)
 	}
 
-	url := fmt.Sprintf("%s/seciplist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["seciplist"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -132,8 +130,8 @@ func (c Client) AllSecIpList() (resp response.AllSecIpList, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/seciplist/Compute-%s/%s",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s",
+		c.endpoints["seciplist"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -190,8 +188,7 @@ func (c Client) UpdateSecIpList(
 		Secipentries: secipentries,
 	}
 
-	url := fmt.Sprintf("%s/seciplist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["seciplist"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,

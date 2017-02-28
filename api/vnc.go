@@ -22,8 +22,7 @@ func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 		)
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/%s",
-		c.endpoint, "network/v1/vnic", c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["vnc"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -45,8 +44,10 @@ func (c Client) AllVirtualNic() (resp response.AllVirtualNic, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s/Compute-%s/%s/",
-		c.endpoint, "network/v1/vnic", c.identify, c.username)
+	url := fmt.Sprintf("%s%s", c.endpoints["vnc"], name)
+
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["vnc"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,

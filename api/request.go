@@ -46,7 +46,7 @@ var endpoints = map[string]string{
 	"secrule":               "%s/secrule",
 	"securityprotocol":      "%s/network/v1/secprotocol",
 	"securityrule":          "%s/network/v1/secrule",
-	"shapes":                "%s/shape",
+	"shape":                 "%s/shape",
 	"snapshot":              "%s/snapshot",
 	"sshkey":                "%s/sshkey",
 	"storageattachment":     "%s/storage/attachment",

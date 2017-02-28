@@ -16,8 +16,8 @@ func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["ipreservation"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -44,8 +44,7 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 		return resp, errors.New("go-oracle-cloud: Empty name provided")
 	}
 
-	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["ipreservation"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -103,7 +102,7 @@ func (c Client) CreateIpReservation(
 		Parentpool: parentpool,
 	}
 
-	url := fmt.Sprintf("%s/ip/reservation/", c.endpoint)
+	url := c.endpoints["ipreservation"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -131,8 +130,7 @@ func (c Client) DeleteIpReservation(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty name provided")
 	}
 
-	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints, name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -186,8 +184,7 @@ func (c Client) UpdateIpReservation(
 		Parentpool: parentpool,
 	}
 
-	url := fmt.Sprintf("%s/ip/reservation/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["ipreservation"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,

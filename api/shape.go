@@ -20,7 +20,7 @@ func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 		return resp, errors.New("go-oracle-cloud: Empty shape name provided")
 	}
 
-	url := fmt.Sprintf("%s/shape/%s", c.endpoint, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["shape"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -42,7 +42,7 @@ func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/shape/", c.endpoint)
+	url := c.endpoints["shape"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
