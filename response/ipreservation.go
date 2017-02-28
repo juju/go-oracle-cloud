@@ -3,6 +3,8 @@
 
 package response
 
+import "github.com/hoenirvili/go-oracle-cloud/common"
+
 // IpReservation is an IP reservation is the allocation of a public IP address
 // from an IP address pool. After creating an IP reservation,
 // you can associate it with an instance by using an IP
@@ -22,7 +24,7 @@ type IpReservation struct {
 	Name string `json:"name"`
 
 	// Parentpool is a pool of public IP addresses
-	Parentpool string `json:"parentpool"`
+	Parentpool common.IPPool `json:"parentpool"`
 
 	// Permanent flag is true and indicates that the IP reservation
 	// has a persistent public IP address.

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hoenirvili/go-oracle-cloud/common"
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
@@ -65,7 +66,7 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 func (c Client) CreateIpReservation(
 	currentName string,
 	newName string,
-	parentpool IPPool,
+	parentpool common.IPPool,
 	permanent bool,
 	tags []string,
 ) (resp response.IpReservation, err error) {
@@ -80,19 +81,15 @@ func (c Client) CreateIpReservation(
 		)
 	}
 
-	if err = parentpool.validate(); err != nil {
-		return resp, err
-	}
-
 	if newName == "" {
 		newName = currentName
 	}
 
 	params := struct {
-		Permanent  bool     `json:"permanent"`
-		Tags       []string `json:"tags,omitempty"`
-		Name       string   `json:"name"`
-		Parentpool IPPool   `json:"parentpool"`
+		Permanent  bool          `json:"permanent"`
+		Tags       []string      `json:"tags,omitempty"`
+		Name       string        `json:"name"`
+		Parentpool common.IPPool `json:"parentpool"`
 	}{
 		Permanent:  permanent,
 		Tags:       tags,
@@ -155,7 +152,7 @@ func (c Client) DeleteIpReservation(name string) (err error) {
 func (c Client) UpdateIpReservation(
 	currentName string,
 	newName string,
-	parentpool IPPool,
+	parentpool common.IPPool,
 	permanent bool,
 	tags []string,
 ) (resp response.IpReservation, err error) {
@@ -171,10 +168,10 @@ func (c Client) UpdateIpReservation(
 	}
 
 	params := struct {
-		Permanent  bool     `json:"permanent"`
-		Tags       []string `json:"tags,omitempty"`
-		Name       string   `json:"name"`
-		Parentpool IPPool   `json:"parentpool"`
+		Permanent  bool          `json:"permanent"`
+		Tags       []string      `json:"tags,omitempty"`
+		Name       string        `json:"name"`
+		Parentpool common.IPPool `json:"parentpool"`
 	}{
 		Permanent:  permanent,
 		Tags:       tags,

@@ -30,7 +30,7 @@ type IpAssociation struct {
 	// is three-part name of an existing IP reservation in the // /Compute-identity_domain/user/object_name format. For more
 	// information about how to create an IP reservation,
 	// see CreateIpReservation.
-	Parentpool string `json:"parentpool"`
+	Parentpool common.IPPool `json:"parentpool"`
 
 	// Reservation is the  ip reservation object in the format name
 	Reservation string `json:"reservation"`

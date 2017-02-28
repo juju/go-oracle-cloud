@@ -14,3 +14,23 @@ func (v VcableID) Validate() (err error) {
 
 	return nil
 }
+
+// IPPool type describing the
+// parent pool of an ip association
+type IPPool string
+
+const (
+	// PublicIPPool standard ip pool for the oracle provider
+	PublicIPPool IPPool = "/oracle/public/ippool"
+)
+
+func NewIPPool(name IPPool, prefix IPPrefixType) IPPool {
+	return IPPool(prefix) + name
+}
+
+type IPPrefixType string
+
+const (
+	IPReservationType IPPrefixType = "ipreservation:"
+	IPPoolType        IPPrefixType = "ippool:"
+)
