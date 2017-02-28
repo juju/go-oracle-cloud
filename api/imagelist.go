@@ -18,7 +18,7 @@ func (c Client) ImageListDetails(
 ) (resp response.ImageList, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -44,7 +44,7 @@ func (c Client) ImageListDetails(
 // image lists in the specified container.
 func (c Client) AllImageList() (resp response.AllImageList, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -68,7 +68,7 @@ func (c Client) AllImageList() (resp response.AllImageList, err error) {
 func (c Client) AllImageListNames() (resp response.DirectoryNames, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/", c.endpoints["imageList"])
@@ -95,7 +95,7 @@ func (c Client) CreateImageList(
 ) (resp response.ImageList, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	params := struct {
@@ -130,7 +130,7 @@ func (c Client) CreateImageList(
 // that are available in the /oracle/public container.
 func (c Client) DeleteImageList(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -162,7 +162,7 @@ func (c Client) UpdateImageList(
 ) (resp response.ImageList, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

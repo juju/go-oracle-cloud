@@ -44,7 +44,7 @@ func (i *IPPool) prefix() {
 // that are available in the specified container.
 func (c Client) AllIp() (resp response.AllIp, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/",
@@ -67,7 +67,7 @@ func (c Client) AllIp() (resp response.AllIp, err error) {
 // that is available in the oracle account
 func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -106,7 +106,7 @@ func (c Client) CreateIp(
 ) (resp response.Ip, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if ipAddressPrefix == "" {
@@ -145,7 +145,7 @@ func (c Client) CreateIp(
 // DeleteIp deletes an IP network with a given name
 func (c Client) DeleteIp(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -196,7 +196,7 @@ func (c Client) UpdateIp(
 ) (resp response.Ip, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

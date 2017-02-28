@@ -23,7 +23,7 @@ func (c Client) CreateRebootInstanceRequest(
 ) (resp response.RebootInstanceRequest, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if instanceName == "" {
@@ -60,7 +60,7 @@ func (c Client) CreateRebootInstanceRequest(
 // No response is returned for the delete action.
 func (c Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if instanceName == "" {
@@ -88,7 +88,7 @@ func (c Client) RebootInstanceRequestDetails(
 ) (resp response.RebootInstanceRequest, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if instanceName == "" {
@@ -115,7 +115,7 @@ func (c Client) RebootInstanceRequestDetails(
 //AllRebootInstanceRequest retrieves details of the reboot instance requests that are available in the specified container
 func (c Client) AllRebootInstanceRequest() (resp response.AllRebootInstanceRequest, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",

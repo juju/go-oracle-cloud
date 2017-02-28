@@ -18,7 +18,7 @@ func (c Client) CreateSHHKey(
 ) (resp response.SSH, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -58,7 +58,7 @@ func (c Client) CreateSHHKey(
 // DeleteSSHKey deteles a ssh key with a specific name
 func (c Client) DeleteSSHKey(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -81,7 +81,7 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 // SSHKeyDetails returns all details of a specific key
 func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -106,7 +106,7 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 // AllSShKeysDetails returns list of all keys with all the details
 func (c Client) AllSSHKey() (resp response.AllSSH, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -128,7 +128,7 @@ func (c Client) AllSSHKey() (resp response.AllSSH, err error) {
 // AllSSHKeyNames returns a list of all ssh keys by names of the user
 func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -158,7 +158,7 @@ func (c Client) UpdateSSHKey(
 ) (resp response.SSH, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

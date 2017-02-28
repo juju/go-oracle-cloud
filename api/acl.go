@@ -23,7 +23,7 @@ func (c Client) CreateAcl(
 	tags []string,
 ) (resp response.Acl, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -79,7 +79,7 @@ func (c Client) CreateAcl(
 // If you want to disable an ACL and not delete it, use the UpdateAcl method
 func (c Client) DeleteAcl(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["acl"], name)
@@ -100,7 +100,7 @@ func (c Client) DeleteAcl(name string) (err error) {
 // that are available in the specified container.
 func (c Client) AllAcl() (resp response.AllAcl, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["acl"], c.identify)
@@ -121,7 +121,7 @@ func (c Client) AllAcl() (resp response.AllAcl, err error) {
 // AclDetails retrieves information about the specified ACL.
 func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -158,7 +158,7 @@ func (c Client) UpdateAcl(
 ) (resp response.Acl, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

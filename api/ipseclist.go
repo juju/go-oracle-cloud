@@ -29,7 +29,7 @@ func (c Client) CreateSecIpList(
 ) (resp response.SecIpList, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -75,7 +75,7 @@ func (c Client) CreateSecIpList(
 // available in the /oracle/public container.
 func (c Client) DeleteSecIpList(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -101,7 +101,7 @@ func (c Client) DeleteSecIpList(name string) (err error) {
 // or UpdateSecIpList operations were completed successfully.
 func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -127,7 +127,7 @@ func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error
 // AllSecIpList retrieves details of the security IP lists that are in the account
 func (c Client) AllSecIpList() (resp response.AllSecIpList, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s",
@@ -159,7 +159,7 @@ func (c Client) UpdateSecIpList(
 ) (resp response.SecIpList, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

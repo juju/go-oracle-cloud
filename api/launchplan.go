@@ -75,7 +75,7 @@ func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan,
 	}
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if err := params.validate(); err != nil {

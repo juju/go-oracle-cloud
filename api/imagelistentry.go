@@ -16,7 +16,7 @@ func (c Client) ImageListEntryDetails(
 	version string,
 ) (resp response.ImageListEntry, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -53,7 +53,7 @@ func (c Client) DeleteImageListEntry(
 	version string,
 ) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -93,7 +93,7 @@ func (c Client) CreateImageListEntry(
 ) (resp response.ImageListEntryAdd, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {

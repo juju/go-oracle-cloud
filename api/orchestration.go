@@ -113,7 +113,7 @@ func (o OrchestrationParams) validate() (err error) {
 // CreateOrchestration Adds an orchestration to Oracle Compute Cloud Service.
 func (c Client) CreateOrchestration(p OrchestrationParams) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := c.endpoints["orchestration"] + "/"
@@ -138,7 +138,7 @@ func (c Client) CreateOrchestration(p OrchestrationParams) (resp response.Orches
 // No response is returned for the delete action.
 func (c Client) DeleteOrchestration(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -163,7 +163,7 @@ func (c Client) DeleteOrchestration(name string) (err error) {
 // that are available in the specified container
 func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -188,7 +188,7 @@ func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, 
 // AllOrchestration retrives all orchestration
 func (c Client) AllOrchestration() (resp response.AllOrchestration, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -211,7 +211,7 @@ func (c Client) AllOrchestration() (resp response.AllOrchestration, err error) {
 // that you can access
 func (c Client) DirectoryOrchestration() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := c.endpoints["orchestration"] + "/"
@@ -232,7 +232,7 @@ func (c Client) DirectoryOrchestration() (resp response.DirectoryNames, err erro
 
 func (c Client) AllOrchestrationNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -256,7 +256,7 @@ func (c Client) AllOrchestrationNames() (resp response.DirectoryNames, err error
 // UpdateOrchestration updates an orchestration.
 func (c Client) UpdateOrchestration(p OrchestrationParams, currentName string) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

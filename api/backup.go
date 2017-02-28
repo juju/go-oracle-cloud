@@ -75,11 +75,11 @@ func (c Client) CreateBackupConfiguration(
 ) (resp response.BackupConfiguration, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if err = p.validate(); err != nil {
-		return resp, ErrNotAuth
+		return resp, err
 	}
 
 	url := c.endpoints["backupconfiguration"] + "/"
@@ -104,7 +104,7 @@ func (c Client) CreateBackupConfiguration(
 // If disabling a backup configuration is desired, consider setting enabled to false.
 func (c Client) DeleteBackupConfiguration(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -136,7 +136,7 @@ func (c Client) BackupConfigurationDetails(
 ) (resp response.BackupConfiguration, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -165,7 +165,7 @@ func (c Client) BackupConfigurationDetails(
 func (c Client) AllBackupConfiguration() (resp []response.BackupConfiguration, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := c.endpoints["backupconfiguration"] + "/"
@@ -193,7 +193,7 @@ func (c Client) UpdateBackupConfiguration(
 	currentName string,
 ) (resp response.BackupConfiguration, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

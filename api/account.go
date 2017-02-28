@@ -14,7 +14,7 @@ import (
 // example of default name account that oracle provider has: default, cloud_storage.
 func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -41,7 +41,7 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 // get details of the account that you must specify while creating a machine image.
 func (c Client) AllAccount() (resp response.AllAccount, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/", endpoints["account"], c.identify)
@@ -62,7 +62,7 @@ func (c Client) AllAccount() (resp response.AllAccount, err error) {
 // AllAccountNames retrieves names of all the accounts in the specified container.
 func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["account"], c.identify)
@@ -86,7 +86,7 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 // information to construct the multipart name of an object
 func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := c.endpoints["account"] + "/"

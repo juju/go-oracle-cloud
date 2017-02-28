@@ -13,7 +13,7 @@ import (
 // VirtualNic retrives a virtual nic with that has a given name
 func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -40,7 +40,7 @@ func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 // AllVirtualNic returns all virtual nic that are in the oracle account
 func (c Client) AllVirtualNic() (resp response.AllVirtualNic, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := c.endpoints["vnc"] + "/"

@@ -13,7 +13,7 @@ import (
 // ShapeDetails retrieves the CPU and memory details of the specified shape.
 func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -38,7 +38,7 @@ func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 // AllShapeDetails retrieves the CPU and memory details of all the available shapes.
 func (c Client) AllShapeDetails() (resp response.AllShape, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := c.endpoints["shape"] + "/"

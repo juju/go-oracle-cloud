@@ -14,7 +14,7 @@ import (
 func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddressAssociation, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -40,7 +40,7 @@ func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddres
 // AllIpAddressAssociation Retrieves details of the specified IP address association.
 func (c Client) AllIpAddressAssociation() (resp response.AllIpAddressAssociation, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -72,7 +72,7 @@ func (c Client) CreateIpAddressAssociation(
 ) (resp response.IpAddressAssociation, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if ipAddressReservation == "" {
@@ -117,7 +117,7 @@ func (c Client) CreateIpAddressAssociation(
 func (c Client) DeleteIpAddressAssociation(name string) (err error) {
 
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -156,7 +156,7 @@ func (c Client) UpdateIpAddressAssociation(
 ) (resp response.IpAddressAssociation, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

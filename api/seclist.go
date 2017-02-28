@@ -21,7 +21,7 @@ func (c Client) CreateSecList(
 	policy string,
 ) (resp response.SecList, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -59,7 +59,7 @@ func (c Client) CreateSecList(
 // DeleteSecList the specified security list. No response is returned.<Paste>
 func (c Client) DeleteSecList(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -84,7 +84,7 @@ func (c Client) DeleteSecList(name string) (err error) {
 // container and match the specified query criteria.
 func (c Client) AllSecList() (resp response.AllSecList, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -107,7 +107,7 @@ func (c Client) AllSecList() (resp response.AllSecList, err error) {
 // SecListDetails retrieves information about the specified security list.
 func (c Client) SecListDetails(name string) (resp response.SecList, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], name)
@@ -142,7 +142,7 @@ func (c Client) UpdateSecList(
 	policy string,
 ) (resp response.SecList, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {

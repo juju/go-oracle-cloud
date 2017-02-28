@@ -15,7 +15,7 @@ import (
 // Requests sent with expired cookies will result in an Unauthorized error in the response.
 func (c *Client) Authenticate() (err error) {
 	if c.isAuth() {
-		return ErrAlreadyAuth
+		return errAlreadyAuth
 	}
 
 	// build the json authentication

@@ -14,7 +14,7 @@ import (
 // that you can access in the specified container.
 func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -38,7 +38,7 @@ func (c Client) AllIpAssociation() (resp response.AllIpAssociation, err error) {
 // available in the specified container
 func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -68,7 +68,7 @@ func (c Client) CreateIpAssociation(
 ) (resp response.IpAssociation, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	// add the prefix if it does not have
@@ -101,7 +101,7 @@ func (c Client) CreateIpAssociation(
 // Deletes the specified IP association with the name
 func (c Client) DeleteIpAssociation(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {

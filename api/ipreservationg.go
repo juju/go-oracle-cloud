@@ -13,7 +13,7 @@ import (
 // AllIpReservations Retrieves details of the IP reservations that are available
 func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -37,7 +37,7 @@ func (c Client) AllIpReservation() (resp response.AllIpReservation, err error) {
 // CreateIpReservation or PutIpReservatio were completed successfully.
 func (c Client) IpReservationDetails(name string) (resp response.IpReservation, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if name == "" {
@@ -71,7 +71,7 @@ func (c Client) CreateIpReservation(
 ) (resp response.IpReservation, err error) {
 
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	if currentName == "" {
@@ -121,7 +121,7 @@ func (c Client) CreateIpReservation(
 // Ensure that no instance is using the IP reservation that you want to delete.
 func (c Client) DeleteIpReservation(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {

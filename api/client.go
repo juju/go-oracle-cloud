@@ -75,6 +75,7 @@ type Client struct {
 // NewClient returns a new client based on the cfg provided
 func NewClient(cfg Config) (*Client, error) {
 	var err error
+
 	if err = cfg.validate(); err != nil {
 		return nil, err
 	}
@@ -111,7 +112,8 @@ func (c Client) isAuth() bool {
 // It extends the expiry of the current authentication token,
 // but not beyond the session expiry time, which is 3 hours.
 func (c *Client) RefreshCookie() (err error) {
-	url := fmt.Sprintf("%s/%s/", c.endpoint, "refresh")
+	url := c.endpoints["refreshcookie"] + "/"
+
 	if err = request(paramsRequest{
 		client: &c.http,
 		cookie: c.cookie,

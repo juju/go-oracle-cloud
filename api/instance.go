@@ -15,7 +15,7 @@ import (
 // Example of name f653a677-b566-4f92-8e93-71d47b364119
 func (c Client) DeleteInstance(name string) (err error) {
 	if !c.isAuth() {
-		return ErrNotAuth
+		return errNotAuth
 	}
 
 	if name == "" {
@@ -42,7 +42,7 @@ func (c Client) DeleteInstance(name string) (err error) {
 // of all the instances in the container are displayed.
 func (c Client) AllInstance() (resp response.AllInstance, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
@@ -65,7 +65,7 @@ func (c Client) AllInstance() (resp response.AllInstance, err error) {
 // Name is the form of dev-name/uuid
 func (c Client) InstanceDetails(name string) (resp response.Instance, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["instance"], name)
@@ -87,7 +87,7 @@ func (c Client) InstanceDetails(name string) (resp response.Instance, err error)
 // that you can access in the specified container.
 func (c Client) AllInstanceNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
-		return resp, ErrNotAuth
+		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/", c.endpoints["instance"], c.identify, c.username)
