@@ -3,6 +3,8 @@
 
 package response
 
+import "github.com/hoenirvili/go-oracle-cloud/common"
+
 type LaunchPlan struct {
 	Relationships []string   `json:"relationships,omitempty"`
 	Instances     []Instance `json:"instances"`
@@ -73,7 +75,7 @@ type Instance struct {
 	Account                         string              `json:"account"`
 	Node_uuid                       interface{}         `json:"node_uuid,omitempty"`
 	Name                            string              `json:"name"`
-	Vcanble_id                      interface{}         `json:"vcable_id,omitempty"`
+	Vcable_id                       common.VcableID     `json:"vcable_id,omitempty"`
 	Higgs                           interface{}         `json:"higgs,omitempty"`
 	Hypervisor                      Hypervisor          `json:"hypervisor"`
 	Uri                             string              `json:"uri"`
