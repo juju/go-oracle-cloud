@@ -81,28 +81,18 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 	case http.StatusOK, http.StatusCreated, http.StatusNoContent:
 		return nil
 	case http.StatusBadRequest:
-		return &ErrBadRequest{
-			message: "go-oracle-cloud: The request given is invalid",
-		}
+		return errBadRequest
 	case http.StatusUnauthorized:
-		return &ErrNotUnauthorized{
-			message: "go-oracle-cloud: Client does not have authorization to access this resource",
-		}
+		return errNotAuthorized
 	case http.StatusInternalServerError:
-		return &ErrInternalApi{
-			message: "go-oracle-cloud: Oracle infrstracutre has encountered an internal error",
-		}
+		return errInternalApi
 	case http.StatusConflict:
-		return &ErrStatusConflict{
-			message: "go-oracle-cloud: Some association isn't right or object already",
-		}
+		return errStatusConflict
 	case http.StatusNotFound:
 		if verbRequest == http.MethodDelete {
 			return nil
 		}
-		return &ErrNotFound{
-			message: "go-oracle-cloud: The resource you requested is not found",
-		}
+		return errNotFound
 	// any other error
 	default:
 		return dumpApiError(resp)
