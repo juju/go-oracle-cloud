@@ -146,6 +146,7 @@ func (c Client) AllSecRules() (resp response.AllSecRules, err error) {
 
 }
 
+// UpdateSecRule modifies the security rule with the currentName
 func (c Client) UpdateSecRule(p SecRuleParams, currentName string) (resp response.SecRule, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth

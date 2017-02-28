@@ -105,14 +105,17 @@ func (c Client) isAuth() bool {
 	return true
 }
 
+// Idenitify return the identity name of the oracle cloud account
 func (c Client) Identify() string {
 	return c.identify
 }
 
+// Username returns the username of the oracle cloud account
 func (c Client) Username() string {
 	return c.username
 }
 
+// Password returns the password of the oracle cloud account
 func (c Client) Password() string {
 	return c.password
 }

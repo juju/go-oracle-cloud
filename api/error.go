@@ -15,10 +15,6 @@ var (
 		message: "go-oracle-cloud: Client is not authenticated",
 	}
 
-	errAlreadyAuth = &ErrAlreadyAuth{
-		message: "go-oracle-cloud: Client is already authenticated",
-	}
-
 	errBadRequest = &ErrBadRequest{
 		message: "go-oracle-cloud: The request given is invalid",
 	}
@@ -43,10 +39,6 @@ var (
 type ErrorDumper interface {
 	DumpApiError(r io.Reader) error
 }
-
-type ErrAlreadyAuth struct{ message string }
-
-func (e ErrAlreadyAuth) Error() string { return e.message }
 
 type ErrNotAuth struct{ message string }
 
@@ -105,13 +97,6 @@ func dumpApiError(resp *http.Response) error {
 		"go-oracle-cloud: Error api response %d , Raw: %s",
 		resp.Status, string(body),
 	)
-}
-
-// IsAlreadyAuth returns true if the error
-// indicates an already already authenticated client
-func IsAlreadyAuth(err error) bool {
-	_, ok := err.(*ErrAlreadyAuth)
-	return ok
 }
 
 // IsNotAuth returns true if the error
