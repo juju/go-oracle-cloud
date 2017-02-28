@@ -7,35 +7,22 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hoenirvili/go-oracle-cloud/common"
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-type SecRule string
-
-func (s SecRule) validate() (err error) {
-	if s == "" {
-		return errors.New("go-oracle-cloud: Empty secure rule permission")
-	}
-
-	return nil
-}
-
-const (
-	DefaultSecRule SecRule = "PERMIT"
-)
-
 type SecRuleParams struct {
-	Permit      SecRule `json:"permit"`
-	Application string  `json:"application"`
-	Description string  `json:"description,omitempty"`
-	Disabled    bool    `json:"disabled"`
-	Dst_list    string  `json:"dst_list"`
-	Name        string  `json:"name"`
-	Src_list    string  `json:"src_list"`
+	Permit      common.SecRule `json:"permit"`
+	Application string         `json:"application"`
+	Description string         `json:"description,omitempty"`
+	Disabled    bool           `json:"disabled"`
+	Dst_list    string         `json:"dst_list"`
+	Name        string         `json:"name"`
+	Src_list    string         `json:"src_list"`
 }
 
-func (s SecRuleParams) validate() (err error) {
-	if err = s.Permit.validate(); err != nil {
+func (s SecRuleParams) Validate() (err error) {
+	if err = s.Permit.Validate(); err != nil {
 		return err
 	}
 
@@ -66,7 +53,7 @@ func (c Client) CreateSecRule(p SecRuleParams) (resp response.SecRule, err error
 		return resp, errNotAuth
 	}
 
-	if err = p.validate(); err != nil {
+	if err = p.Validate(); err != nil {
 		return resp, err
 	}
 
@@ -109,4 +96,104 @@ func (c Client) DeleteSecRule(name string) (err error) {
 	}
 
 	return nil
+}
+
+// SecRuleDetails retrives details on a specific security rule
+func (c Client) SecRuleDetails(name string) (resp response.SecRule, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty secure rule name")
+	}
+
+	url := fmt.Sprintf("%s%s", c.endpoints["secrule"], name)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// AllSecRules retrives all security rulues from the oracle cloud account
+func (c Client) AllSecRules() (resp response.AllSecRules, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["secrule"], c.identify, c.username)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+
+}
+
+func (c Client) UpdateSecRule(p SecRuleParams, currentName string) (resp response.SecRule, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	if err = p.Validate(); err != nil {
+		return resp, err
+	}
+
+	if currentName == "" {
+		errors.New("go-oracle-cloud: Empty secure rule current name")
+	}
+
+	url := fmt.Sprintf("%s%s", c.endpoints["secrule"], currentName)
+
+	if err = request(paramsRequest{
+		client: &c.http,
+		cookie: c.cookie,
+		url:    url,
+		body:   &p,
+		verb:   "PUT",
+		resp:   &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// SecRuleNames retrives all secure rule names in the oracle cloud account
+func (c Client) SecRuleNames() (resp response.DirectoryNames, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["secrule"], c.identify, c.username)
+
+	if err = request(paramsRequest{
+		directory: true,
+		client:    &c.http,
+		cookie:    c.cookie,
+		url:       url,
+		verb:      "GET",
+		resp:      &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }

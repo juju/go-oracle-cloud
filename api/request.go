@@ -6,11 +6,8 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
-	"os"
 )
 
 // endoiints map for every resource in the oracle iaas api:w
@@ -63,16 +60,6 @@ var endpoints = map[string]string{
 // it will make the Request return that error
 type treatStatus func(resp *http.Response, verbRequest string) error
 
-func debugTreat(resp *http.Response) (err error) {
-	raw, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	fmt.Println(string(raw))
-	os.Exit(1)
-	return nil
-}
-
 // defaultTreat used in post, put, delete and get requests
 func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 	switch resp.StatusCode {
@@ -81,18 +68,18 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 	case http.StatusOK, http.StatusCreated, http.StatusNoContent:
 		return nil
 	case http.StatusBadRequest:
-		return errBadRequest
+		return errBadRequest.DumpApiError(resp.Body)
 	case http.StatusUnauthorized:
-		return errNotAuthorized
+		return errNotAuthorized.DumpApiError(resp.Body)
 	case http.StatusInternalServerError:
-		return errInternalApi
+		return errInternalApi.DumpApiError(resp.Body)
 	case http.StatusConflict:
-		return errStatusConflict
+		return errStatusConflict.DumpApiError(resp.Body)
 	case http.StatusNotFound:
 		if verbRequest == http.MethodDelete {
 			return nil
 		}
-		return errNotFound
+		return errNotFound.DumpApiError(resp.Body)
 	// any other error
 	default:
 		return dumpApiError(resp)

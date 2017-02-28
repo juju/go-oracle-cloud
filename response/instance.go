@@ -90,6 +90,8 @@ type Instance struct {
 	Last_seen                       interface{}         `json:"last_seen,omitempty"`
 }
 
+type Attributes map[string]interface{}
+
 type Networking struct {
 	Eth0 Nic `json:"eth0"`
 }
@@ -110,15 +112,6 @@ type Storage struct {
 
 type Hypervisor struct {
 	Mode string `json:"mode"`
-}
-
-type Attributes struct {
-	Userdata        map[string]interface{} `json:"userdata,omitempty"`
-	SupportedShapes string                 `json:"supportedShapes"`
-	DefaultShape    string                 `json:"defaultShape"`
-	MinimumDiskSize string                 `json:"minimumDiskSize"`
-	SSHKeys         []string               `json:"sshkeys"`
-	Network         Network                `json:"network"`
 }
 
 type Dns struct {

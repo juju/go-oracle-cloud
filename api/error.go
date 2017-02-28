@@ -6,9 +6,8 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
-
-	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
 var (
@@ -52,30 +51,50 @@ func (e ErrNotAuth) Error() string { return e.message }
 type ErrNotAuthorized struct{ message string }
 
 func (e ErrNotAuthorized) Error() string { return e.message }
+func (e *ErrNotAuthorized) DumpApiError(r io.Reader) error {
+	json.NewDecoder(r).Decode(e.message)
+	return e
+}
 
 type ErrBadRequest struct{ message string }
 
 func (e ErrBadRequest) Error() string { return e.message }
+func (e *ErrBadRequest) DumpApiError(r io.Reader) error {
+	json.NewDecoder(r).Decode(e.message)
+	return e
+}
 
 type ErrInternalApi struct{ message string }
 
 func (e ErrInternalApi) Error() string { return e.message }
+func (e *ErrInternalApi) DumpApiError(r io.Reader) error {
+	json.NewDecoder(r).Decode(e.message)
+	return e
+}
 
 type ErrNotFound struct{ message string }
 
 func (e ErrNotFound) Error() string { return e.message }
+func (e *ErrNotFound) DumpApiError(r io.Reader) error {
+	json.NewDecoder(r).Decode(e.message)
+	return e
+}
 
 type ErrStatusConflict struct{ message string }
 
 func (e ErrStatusConflict) Error() string { return e.message }
+func (e *ErrStatusConflict) DumpApiError(r io.Reader) error {
+	json.NewDecoder(r).Decode(e.message)
+	return e
+}
 
 // dumpApiError used in the callback request custom handlers
 func dumpApiError(resp *http.Response) error {
-	var e response.Error
+	var message string
 	// skip the error in decoding part
-	json.NewDecoder(resp.Body).Decode(&e)
+	json.NewDecoder(resp.Body).Decode(&message)
 	return fmt.Errorf(
-		"go-oracle-cloud: Error api response %d %s", resp.Status, e.Message,
+		"go-oracle-cloud: Error api response %d %s", resp.Status, message,
 	)
 }
 
