@@ -105,6 +105,23 @@ func (c Client) isAuth() bool {
 	return true
 }
 
+func (c Client) Identify() string {
+	return c.identify
+}
+
+func (c Client) Username() string {
+	return c.username
+}
+
+func (c Client) Password() string {
+	return c.password
+}
+
+func (c Client) ComposeName(name string) string {
+	return fmt.Sprintf("/Compute-%s/%s/%s",
+		c.identify, c.username, name)
+}
+
 // RefreshCookie refreshes the authentication tokens
 // that expires usually around 30 minutes.
 // This request extends the expiry of a valid authentication
