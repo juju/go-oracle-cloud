@@ -63,7 +63,7 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 // Creates an association between an IP address
 // and the vcable ID of an instance.
 func (c Client) CreateIpAssociation(
-	parentpool string,
+	parentpool IPPool,
 	vcable string,
 ) (resp response.IpAssociation, err error) {
 
@@ -71,8 +71,11 @@ func (c Client) CreateIpAssociation(
 		return resp, ErrNotAuth
 	}
 
+	// add the prefix if it does not have
+	parentpool.prefix()
+
 	params := struct {
-		Parentpool string `json:"parentpool"`
+		Parentpool IPPool `json:"parentpool"`
 		Vcable     string `json:"vcable"`
 	}{
 		Parentpool: parentpool,

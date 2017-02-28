@@ -65,7 +65,7 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 func (c Client) CreateIpReservation(
 	currentName string,
 	newName string,
-	parentpool string,
+	parentpool IPPool,
 	permanent bool,
 	tags []string,
 ) (resp response.IpReservation, err error) {
@@ -80,10 +80,8 @@ func (c Client) CreateIpReservation(
 		)
 	}
 
-	if parentpool == "" {
-		return resp, errors.New(
-			"go-oracle-cloud: Empty pool of public IP addresses",
-		)
+	if err = parentpool.validate(); err != nil {
+		return resp, err
 	}
 
 	if newName == "" {
@@ -94,7 +92,7 @@ func (c Client) CreateIpReservation(
 		Permanent  bool     `json:"permanent"`
 		Tags       []string `json:"tags,omitempty"`
 		Name       string   `json:"name"`
-		Parentpool string   `json:"parentpool"`
+		Parentpool IPPool   `json:"parentpool"`
 	}{
 		Permanent:  permanent,
 		Tags:       tags,
@@ -157,7 +155,7 @@ func (c Client) DeleteIpReservation(name string) (err error) {
 func (c Client) UpdateIpReservation(
 	currentName string,
 	newName string,
-	parentpool string,
+	parentpool IPPool,
 	permanent bool,
 	tags []string,
 ) (resp response.IpReservation, err error) {
@@ -176,7 +174,7 @@ func (c Client) UpdateIpReservation(
 		Permanent  bool     `json:"permanent"`
 		Tags       []string `json:"tags,omitempty"`
 		Name       string   `json:"name"`
-		Parentpool string   `json:"parentpool"`
+		Parentpool IPPool   `json:"parentpool"`
 	}{
 		Permanent:  permanent,
 		Tags:       tags,

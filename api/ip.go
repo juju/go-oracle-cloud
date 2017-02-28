@@ -6,9 +6,39 @@ package api
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
+
+// IPPool type describing the
+// parent pool of an ip association
+type IPPool string
+
+const (
+	// PublicIPPool standard ip pool for the oracle provider
+	PublicIPPool IPPool = "/oracle/public/ippool"
+)
+
+// validate checks if the ippool provided is empty or not
+func (i IPPool) validate() (err error) {
+	if i == "" {
+		return errors.New("go-oracle-cloud: Empty ip pool")
+	}
+	return nil
+}
+
+// prefix add the ippool: prefix for different
+// ip methods that needs this in order to
+// construct the correct request body
+func (i *IPPool) prefix() {
+	prefix := "ippool:"
+	if strings.HasPrefix(string(*i), prefix) {
+		return
+	}
+
+	*i = IPPool("ippool:") + *i
+}
 
 // AllIp retrieves details of all the IP networks
 // that are available in the specified container.
