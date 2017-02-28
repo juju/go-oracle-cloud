@@ -83,9 +83,9 @@ func (c Client) DeleteImageListEntry(
 	return nil
 }
 
-// AddImageListEntry adds an image list entry to Oracle Compute Cloud
+// CreateImageListEntry adds an image list entry to Oracle Compute Cloud
 // Each machine image in an image list is identified by an image list entry.
-func (c Client) AddImageListEntry(
+func (c Client) CreateImageListEntry(
 	name string,
 	attributes map[string]interface{},
 	version int,
@@ -124,8 +124,8 @@ func (c Client) AddImageListEntry(
 		Version:       version,
 	}
 
-	url := fmt.Sprintf("%s%s/entry/%s",
-		c.endpoints["imagelistentries"], name, version)
+	url := fmt.Sprintf("%s%s/entry/",
+		c.endpoints["imagelistentries"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,

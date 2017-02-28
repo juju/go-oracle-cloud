@@ -25,8 +25,7 @@ func (c Client) ImageListDetails(
 		return resp, errors.New("go-oracle-api: Empty image list name")
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["imagelist"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -48,8 +47,8 @@ func (c Client) AllImageList() (resp response.AllImageList, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["imagelist"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -72,8 +71,7 @@ func (c Client) AllImageListNames() (resp response.DirectoryNames, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/", c.endpoints["imageList"])
 
 	if err = request(paramsRequest{
 		directory: true,
@@ -110,8 +108,8 @@ func (c Client) CreateImageList(
 		Name:        name,
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.identify["imagelist"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -139,8 +137,7 @@ func (c Client) DeleteImageList(name string) (err error) {
 		return errors.New("go-oracle-api: Empty image list name")
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["endpoints"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -188,8 +185,7 @@ func (c Client) UpdateImageList(
 		Name:        newName,
 	}
 
-	url := fmt.Sprintf("%s/imagelist/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, newName)
+	url := fmt.Sprintf("%s%s", c.endpoints["imagelist"], newName)
 
 	if err = request(paramsRequest{
 		client: &c.http,

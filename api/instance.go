@@ -22,7 +22,7 @@ func (c Client) DeleteInstance(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty instance name")
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["instance"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["instance"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -68,7 +68,7 @@ func (c Client) InstanceDetails(name string) (resp response.Instance, err error)
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/%s", c.endpoints["instance"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["instance"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,

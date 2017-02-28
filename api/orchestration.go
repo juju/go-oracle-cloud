@@ -12,24 +12,61 @@ type OrchestrationParams struct {
 	// that are created by this orchestration.
 	Relationships []string `json:"relationships,omitempty"`
 
-	// Account shows the default account for your identity domain.
-	Account string `json:"account"`
-
 	// Description is the description of this orchestration plan
 	Description string `json:"description,omitempty"`
 
-	// Schedule for an orchestration consists
-	// of the start and stop dates and times.
-	Schedule response.Schedule `json:"schedule"`
-
-	// Uri is the Uniform Resource Identifier
-	Uri string `json:"uri,omitempty"`
-
 	// List of oplans. An object plan, or oplan, is a top-level orchestration attribute.
-	Oplans []response.Oplans `json:"oplans"`
+	Oplans []Oplans `json:"oplans"`
 
 	// Name is the name of the orchestration
 	Name string `json:"name"`
+}
+
+type Oplans struct {
+	// Ha_policy indicates that description is not available
+	Ha_policy string `json:"ha_policy,omitempty"`
+
+	// Label is the description of this object plan.
+	Label string `json:"label"`
+
+	// Obj_type type of the object.
+	Obj_type string `json:"obj_type"`
+
+	// Objects list of object dictionaries
+	// or object names.
+	Objects []Objects `json:"objects"`
+}
+
+type Objects struct {
+	Instances        []InstancesOrchestration `json:"instances"`
+	Status_timestamp string                   `json:"status_timestamp,omitmepty"`
+}
+
+type InstancesOrchestration struct {
+	Shape               string                  `json:"shape"`
+	Label               string                  `json:"label"`
+	Imagelist           string                  `json:"imagelist"`
+	Name                string                  `json:"name"`
+	Boot_order          []string                `json:"boot_order,omitempty"`
+	Attributes          AttributesOrchestration `json:"attributes,omitmepty"`
+	Storage_attachments []StorageOrhcestration  `json:"storage_attachments,omitmepty"`
+	Uri                 *string                 `json:"uri,omitempty"`
+	SSHkeys             []string                `json:"sshkeys,omitmepty"`
+	Tags                []string                `json:"tags,omitmepty"`
+	Networking          NetworkingOrchestration `json:"networking,omitempty"`
+}
+
+type StorageOrhcestration struct {
+	Info map[string]string
+}
+
+type AttributesOrchestration struct {
+	Userdata              map[string]string `json:"userdata,omitempty"`
+	Nimbula_orchestration string            `json:"nimbula_orchestration,omitempty"`
+}
+
+type NetworkingOrchestration struct {
+	Interfaces map[string]interface{}
 }
 
 func (o OrchestrationParams) validate() (err error) {
@@ -73,13 +110,13 @@ func (o OrchestrationParams) validate() (err error) {
 	return nil
 }
 
-// AddOrchestration Adds an orchestration to Oracle Compute Cloud Service.
-func (c Client) AddOrchestration(p OrchestrationParams) (resp response.Orchestration, err error) {
+// CreateOrchestration Adds an orchestration to Oracle Compute Cloud Service.
+func (c Client) CreateOrchestration(p OrchestrationParams) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/orchestration/", c.endpoint)
+	url := c.endpoints["orchestration"] + "/"
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -108,8 +145,7 @@ func (c Client) DeleteOrchestration(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty secure list")
 	}
 
-	url := fmt.Sprintf("%s/orchestration/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["orchestration"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -134,8 +170,7 @@ func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, 
 		return resp, errors.New("go-oracle-cloud: Empty secure list")
 	}
 
-	url := fmt.Sprintf("%s/orchestration/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["orchestration"], name)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -156,8 +191,8 @@ func (c Client) AllOrchestration() (resp response.AllOrchestration, err error) {
 		return resp, ErrNotAuth
 	}
 
-	url := fmt.Sprintf("%s/orchestration/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["orchestration"], c.identify, c.username)
 
 	if err = request(paramsRequest{
 		client: &c.http,
@@ -170,6 +205,52 @@ func (c Client) AllOrchestration() (resp response.AllOrchestration, err error) {
 	}
 
 	return resp, nil
+}
+
+// DirectoryOrchestration retrieves the names of containers that contain objects
+// that you can access
+func (c Client) DirectoryOrchestration() (resp response.DirectoryNames, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := c.endpoints["orchestration"] + "/"
+
+	if err = request(paramsRequest{
+		directory: true,
+		client:    &c.http,
+		cookie:    c.cookie,
+		url:       url,
+		verb:      "GET",
+		resp:      &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (c Client) AllOrchestrationNames() (resp response.DirectoryNames, err error) {
+	if !c.isAuth() {
+		return resp, ErrNotAuth
+	}
+
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["orchestration"], c.identify, c.username)
+
+	if err = request(paramsRequest{
+		directory: true,
+		client:    &c.http,
+		cookie:    c.cookie,
+		url:       url,
+		verb:      "GET",
+		resp:      &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+
 }
 
 // UpdateOrchestration updates an orchestration.
@@ -192,8 +273,7 @@ func (c Client) UpdateOrchestration(p OrchestrationParams, currentName string) (
 		return resp, err
 	}
 
-	url := fmt.Sprintf("%s/orchestration/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, p.Name)
+	url := fmt.Sprintf("%s%s", c.endpoints["orchestration"], currentName)
 
 	if err = request(paramsRequest{
 		client: &c.http,

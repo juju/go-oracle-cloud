@@ -1,10 +1,5 @@
 package response
 
-import (
-	"net/url"
-	"time"
-)
-
 // Orchestration is an orchestration defines the attributes and interdependencies of a collection of compute,
 // networking, and storage resources in Oracle Compute Cloud Service. You can use orchestrations to automate
 // the provisioning and lifecycle operations of an entire virtual compute topology.
@@ -52,7 +47,7 @@ type Orchestration struct {
 	Status_timestamp string `json:"status_timestamp"`
 
 	// Uri is the Uniform Resource Identifier
-	Uri url.URL `json:"uri,omitempty"`
+	Uri string `json:"uri,omitempty"`
 
 	// User is the user of the orchestration
 	User string `json:"user"`
@@ -63,8 +58,8 @@ type AllOrchestration struct {
 }
 
 type Schedule struct {
-	Start_time *time.Time `json:"start_time,omitempty"`
-	Stop_time  *time.Time `json:"stop_time,omitempty"`
+	Start_time *string `json:"start_time,omitempty"`
+	Stop_time  *string `json:"stop_time,omitempty"`
 }
 
 type Oplans struct {
@@ -88,7 +83,7 @@ type Oplans struct {
 	Status string `json:"status"`
 
 	// Status_timestamp Timestamp of the most-recent status change.
-	Status_timestamp time.Time `json:"status_timestamp"`
+	Status_timestamp string `json:"status_timestamp"`
 }
 
 type Info struct {

@@ -32,7 +32,7 @@ func (c Client) CreateAcl(
 		)
 	}
 
-	url := fmt.Sprintf("%s/", c.endpoints["acl"])
+	url := c.endpoints["acl"] + "/"
 
 	params := struct {
 		Name        string   `json:"name"`
