@@ -12,15 +12,15 @@ import (
 
 var (
 	errNotAuth = &ErrNotAuth{
-		message: "go-oracle-cloud: Client is not authenticated",
+		message: "go-oracle-cloud: Client is not authenticated ",
 	}
 
 	errAlreadyAuth = &ErrAlreadyAuth{
-		message: "go-oracle-cloud: Client is already authenticated",
+		message: "go-oracle-cloud: Client is already authenticated ",
 	}
 
 	errBadRequest = &ErrBadRequest{
-		message: "go-oracle-cloud: The request given is invalid",
+		message: "go-oracle-cloud: The request given is invalid ",
 	}
 
 	errNotAuthorized = &ErrNotAuthorized{
@@ -40,6 +40,10 @@ var (
 	}
 )
 
+type ErrorDumper interface {
+	DumpApiError(r io.Reader) error
+}
+
 type ErrAlreadyAuth struct{ message string }
 
 func (e ErrAlreadyAuth) Error() string { return e.message }
@@ -52,15 +56,20 @@ type ErrNotAuthorized struct{ message string }
 
 func (e ErrNotAuthorized) Error() string { return e.message }
 func (e *ErrNotAuthorized) DumpApiError(r io.Reader) error {
-	json.NewDecoder(r).Decode(e.message)
+	var suffix string
+	json.NewDecoder(r).Decode(&suffix)
+	e.message = e.message + ",Raw " + suffix
 	return e
+
 }
 
 type ErrBadRequest struct{ message string }
 
 func (e ErrBadRequest) Error() string { return e.message }
 func (e *ErrBadRequest) DumpApiError(r io.Reader) error {
-	json.NewDecoder(r).Decode(e.message)
+	var suffix string
+	json.NewDecoder(r).Decode(&suffix)
+	e.message = e.message + ",Raw " + suffix
 	return e
 }
 
@@ -68,7 +77,9 @@ type ErrInternalApi struct{ message string }
 
 func (e ErrInternalApi) Error() string { return e.message }
 func (e *ErrInternalApi) DumpApiError(r io.Reader) error {
-	json.NewDecoder(r).Decode(e.message)
+	var suffix string
+	json.NewDecoder(r).Decode(&suffix)
+	e.message = e.message + ",Raw " + suffix
 	return e
 }
 
@@ -76,7 +87,9 @@ type ErrNotFound struct{ message string }
 
 func (e ErrNotFound) Error() string { return e.message }
 func (e *ErrNotFound) DumpApiError(r io.Reader) error {
-	json.NewDecoder(r).Decode(e.message)
+	var suffix string
+	json.NewDecoder(r).Decode(&suffix)
+	e.message = e.message + ",Raw " + suffix
 	return e
 }
 
@@ -84,7 +97,9 @@ type ErrStatusConflict struct{ message string }
 
 func (e ErrStatusConflict) Error() string { return e.message }
 func (e *ErrStatusConflict) DumpApiError(r io.Reader) error {
-	json.NewDecoder(r).Decode(e.message)
+	var suffix string
+	json.NewDecoder(r).Decode(&suffix)
+	e.message = e.message + ",Raw " + suffix
 	return e
 }
 
@@ -94,7 +109,7 @@ func dumpApiError(resp *http.Response) error {
 	// skip the error in decoding part
 	json.NewDecoder(resp.Body).Decode(&message)
 	return fmt.Errorf(
-		"go-oracle-cloud: Error api response %d %s", resp.Status, message,
+		"go-oracle-cloud: Error api response %d , Raw: %s", resp.Status, message,
 	)
 }
 
