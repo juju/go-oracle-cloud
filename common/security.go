@@ -15,3 +15,10 @@ func (s SecRule) Validate() (err error) {
 const (
 	DefaultSecRule SecRule = "PERMIT"
 )
+
+type FlowDirection string
+
+const (
+	Egress  FlowDirection = "egress"
+	Ingress FlowDirection = "ingress"
+)
