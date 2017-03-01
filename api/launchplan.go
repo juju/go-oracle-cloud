@@ -69,7 +69,7 @@ func (i InstanceParams) validate() (err error) {
 	return nil
 }
 
-func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan, err error) {
+func (c *Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan, err error) {
 	if params.Instances == nil || len(params.Instances) == 0 {
 		return resp, errors.New("go-oracle-cloud: Empty slice of instance parameters")
 	}
@@ -84,13 +84,11 @@ func (c Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan,
 
 	url := c.endpoints["launchplan"]
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "POST",
-		body:   &params,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "POST",
+		body: &params,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

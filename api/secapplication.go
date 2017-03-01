@@ -83,7 +83,7 @@ func (s SecApplicationParams) validate() (err error) {
 
 // CreateSecApplication creates a security application.
 // After creating security applications
-func (c Client) CreateSecApplication(p SecApplicationParams) (resp response.SecApplication, err error) {
+func (c *Client) CreateSecApplication(p SecApplicationParams) (resp response.SecApplication, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -94,13 +94,11 @@ func (c Client) CreateSecApplication(p SecApplicationParams) (resp response.SecA
 
 	url := c.endpoints["secapplication"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &p,
-		verb:   "POST",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &p,
+		verb: "POST",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -109,18 +107,16 @@ func (c Client) CreateSecApplication(p SecApplicationParams) (resp response.SecA
 }
 
 // DeleteSecApplication deletes a security application. No response is returned.
-func (c Client) DeleteSecApplication(name string) (err error) {
+func (c *Client) DeleteSecApplication(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secapplication"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -129,7 +125,7 @@ func (c Client) DeleteSecApplication(name string) (err error) {
 }
 
 // SecApplicationDetails retrieve details of a security application
-func (c Client) SecApplicationDetails(name string) (resp response.SecApplication, err error) {
+func (c *Client) SecApplicationDetails(name string) (resp response.SecApplication, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -140,12 +136,10 @@ func (c Client) SecApplicationDetails(name string) (resp response.SecApplication
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secapplication"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -154,7 +148,7 @@ func (c Client) SecApplicationDetails(name string) (resp response.SecApplication
 }
 
 // AllSecApplications retrieves details of the security applications that are in the specified container
-func (c Client) AllSecApplications() (resp response.AllSecApplications, err error) {
+func (c *Client) AllSecApplications() (resp response.AllSecApplications, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -162,12 +156,10 @@ func (c Client) AllSecApplications() (resp response.AllSecApplications, err erro
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["secapplication"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

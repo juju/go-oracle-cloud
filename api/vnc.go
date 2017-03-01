@@ -11,7 +11,7 @@ import (
 )
 
 // VirtualNic retrives a virtual nic with that has a given name
-func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
+func (c *Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -24,12 +24,10 @@ func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["vnc"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -38,19 +36,17 @@ func (c Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 }
 
 // AllVirtualNics returns all virtual nic that are in the oracle account
-func (c Client) AllVirtualNics() (resp response.AllVirtualNics, err error) {
+func (c *Client) AllVirtualNics() (resp response.AllVirtualNics, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := c.endpoints["vnc"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

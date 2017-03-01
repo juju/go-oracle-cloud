@@ -12,7 +12,7 @@ import (
 
 // AccountDetails retrieves details of the specified account.
 // example of default name account that oracle provider has: default, cloud_storage.
-func (c Client) AccountDetails(name string) (resp response.Account, err error) {
+func (c *Client) AccountDetails(name string) (resp response.Account, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -23,12 +23,10 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["account"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -39,19 +37,17 @@ func (c Client) AccountDetails(name string) (resp response.Account, err error) {
 // AllAccounts retrives details of the accounts that are in the
 // specified identity domain. You can use this HTTP request to
 // get details of the account that you must specify while creating a machine image.
-func (c Client) AllAccounts() (resp response.AllAccounts, err error) {
+func (c *Client) AllAccounts() (resp response.AllAccounts, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/", endpoints["account"], c.identify)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -60,17 +56,15 @@ func (c Client) AllAccounts() (resp response.AllAccounts, err error) {
 }
 
 // AllAccountNames retrieves names of all the accounts in the specified container.
-func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
+func (c *Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["account"], c.identify)
 
-	if err = request(paramsRequest{
+	if err = c.request(paramsRequest{
 		directory: true,
-		client:    &c.http,
-		cookie:    c.cookie,
 		verb:      "GET",
 		url:       url,
 		resp:      &resp,
@@ -84,17 +78,15 @@ func (c Client) AllAccountNames() (resp response.DirectoryNames, err error) {
 // DirectoryAccount retrieves the names of containers
 // that contain objects that you can access. You can use this
 // information to construct the multipart name of an object
-func (c Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
+func (c *Client) DirectoryAccount() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := c.endpoints["account"] + "/"
 
-	if err = request(paramsRequest{
+	if err = c.request(paramsRequest{
 		directory: true,
-		client:    &c.http,
-		cookie:    c.cookie,
 		verb:      "GET",
 		url:       url,
 		resp:      &resp,

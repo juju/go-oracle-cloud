@@ -111,20 +111,18 @@ func (o OrchestrationParams) validate() (err error) {
 }
 
 // CreateOrchestration Adds an orchestration to Oracle Compute Cloud Service.
-func (c Client) CreateOrchestration(p OrchestrationParams) (resp response.Orchestration, err error) {
+func (c *Client) CreateOrchestration(p OrchestrationParams) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := c.endpoints["orchestration"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &p,
-		verb:   "POST",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &p,
+		verb: "POST",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -136,7 +134,7 @@ func (c Client) CreateOrchestration(p OrchestrationParams) (resp response.Orches
 // The orchestration must be stopped to be deleted. All the objects created by
 // the orchestration are deleted when you stop the orchestration.
 // No response is returned for the delete action.
-func (c Client) DeleteOrchestration(name string) (err error) {
+func (c *Client) DeleteOrchestration(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -147,11 +145,9 @@ func (c Client) DeleteOrchestration(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["orchestration"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -161,7 +157,7 @@ func (c Client) DeleteOrchestration(name string) (err error) {
 
 // OrchestrationDetails retrieves details of the orchestrations
 // that are available in the specified container
-func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, err error) {
+func (c *Client) OrchestrationDetails(name string) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -172,12 +168,10 @@ func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, 
 
 	url := fmt.Sprintf("%s%s", c.endpoints["orchestration"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -186,7 +180,7 @@ func (c Client) OrchestrationDetails(name string) (resp response.Orchestration, 
 }
 
 // AllOrchestrations retrives all orchestration
-func (c Client) AllOrchestrations() (resp response.AllOrchestrations, err error) {
+func (c *Client) AllOrchestrations() (resp response.AllOrchestrations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -194,12 +188,10 @@ func (c Client) AllOrchestrations() (resp response.AllOrchestrations, err error)
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["orchestration"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -209,17 +201,15 @@ func (c Client) AllOrchestrations() (resp response.AllOrchestrations, err error)
 
 // DirectoryOrchestration retrieves the names of containers that contain objects
 // that you can access
-func (c Client) DirectoryOrchestration() (resp response.DirectoryNames, err error) {
+func (c *Client) DirectoryOrchestration() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := c.endpoints["orchestration"] + "/"
 
-	if err = request(paramsRequest{
+	if err = c.request(paramsRequest{
 		directory: true,
-		client:    &c.http,
-		cookie:    c.cookie,
 		url:       url,
 		verb:      "GET",
 		resp:      &resp,
@@ -230,7 +220,7 @@ func (c Client) DirectoryOrchestration() (resp response.DirectoryNames, err erro
 	return resp, nil
 }
 
-func (c Client) AllOrchestrationNames() (resp response.DirectoryNames, err error) {
+func (c *Client) AllOrchestrationNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -238,10 +228,8 @@ func (c Client) AllOrchestrationNames() (resp response.DirectoryNames, err error
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["orchestration"], c.identify, c.username)
 
-	if err = request(paramsRequest{
+	if err = c.request(paramsRequest{
 		directory: true,
-		client:    &c.http,
-		cookie:    c.cookie,
 		url:       url,
 		verb:      "GET",
 		resp:      &resp,
@@ -254,7 +242,7 @@ func (c Client) AllOrchestrationNames() (resp response.DirectoryNames, err error
 }
 
 // UpdateOrchestration updates an orchestration.
-func (c Client) UpdateOrchestration(p OrchestrationParams, currentName string) (resp response.Orchestration, err error) {
+func (c *Client) UpdateOrchestration(p OrchestrationParams, currentName string) (resp response.Orchestration, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -275,13 +263,11 @@ func (c Client) UpdateOrchestration(p OrchestrationParams, currentName string) (
 
 	url := fmt.Sprintf("%s%s", c.endpoints["orchestration"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &p,
-		verb:   "PUT",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &p,
+		verb: "PUT",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

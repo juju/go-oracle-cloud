@@ -70,7 +70,7 @@ func (c BackupConfigurationParams) validate() (err error) {
 // CreateBackupConfiguration creates a new backup configuration.
 // Requires authorization to create backup configurations as well
 // as appropriate authorization to create snapshots from the target volume.
-func (c Client) CreateBackupConfiguration(
+func (c *Client) CreateBackupConfiguration(
 	p BackupConfigurationParams,
 ) (resp response.BackupConfiguration, err error) {
 
@@ -84,13 +84,11 @@ func (c Client) CreateBackupConfiguration(
 
 	url := c.endpoints["backupconfiguration"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "POST",
-		body:   &p,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "POST",
+		body: &p,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -102,7 +100,7 @@ func (c Client) CreateBackupConfiguration(
 // In order to delete the configuration all backups and restores
 // related to the configuration must already be deleted.
 // If disabling a backup configuration is desired, consider setting enabled to false.
-func (c Client) DeleteBackupConfiguration(name string) (err error) {
+func (c *Client) DeleteBackupConfiguration(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -115,11 +113,9 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["backupconfiguration"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -131,7 +127,7 @@ func (c Client) DeleteBackupConfiguration(name string) (err error) {
 // backup configuration. You can use this request to verify whether
 // the CreateBackupConfiguration and UpdateBackupConfiguration
 // requests were completed successfully.
-func (c Client) BackupConfigurationDetails(
+func (c *Client) BackupConfigurationDetails(
 	name string,
 ) (resp response.BackupConfiguration, err error) {
 
@@ -147,12 +143,10 @@ func (c Client) BackupConfigurationDetails(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["backupconfiguration"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -162,7 +156,7 @@ func (c Client) BackupConfigurationDetails(
 
 // AllBackupConfigurations retrieves details for all backup
 // configuration objects the current user has permission to access
-func (c Client) AllBackupConfigurations() (resp []response.BackupConfiguration, err error) {
+func (c *Client) AllBackupConfigurations() (resp []response.BackupConfiguration, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -170,12 +164,10 @@ func (c Client) AllBackupConfigurations() (resp []response.BackupConfiguration, 
 
 	url := c.endpoints["backupconfiguration"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -188,7 +180,7 @@ func (c Client) AllBackupConfigurations() (resp []response.BackupConfiguration, 
 // All fields, including unmodifiable fields, must be provided
 // for this operation. The following fields are unmodifiable:
 // volumeName, runAsUser, name.
-func (c Client) UpdateBackupConfiguration(
+func (c *Client) UpdateBackupConfiguration(
 	p BackupConfigurationParams,
 	currentName string,
 ) (resp response.BackupConfiguration, err error) {
@@ -208,13 +200,11 @@ func (c Client) UpdateBackupConfiguration(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["backupconfiguration"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "PUT",
-		body:   &p,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "PUT",
+		body: &p,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

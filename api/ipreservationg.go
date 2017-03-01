@@ -12,7 +12,7 @@ import (
 )
 
 // AllIpReservations Retrieves details of the IP reservations that are available
-func (c Client) AllIpReservations() (resp response.AllIpReservations, err error) {
+func (c *Client) AllIpReservations() (resp response.AllIpReservations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -20,12 +20,10 @@ func (c Client) AllIpReservations() (resp response.AllIpReservations, err error)
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["ipreservation"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -36,7 +34,7 @@ func (c Client) AllIpReservations() (resp response.AllIpReservations, err error)
 // IpReservationDetails retrieves details of an IP reservation.
 // You can use this request to verify whether the
 // CreateIpReservation or PutIpReservatio were completed successfully.
-func (c Client) IpReservationDetails(name string) (resp response.IpReservation, err error) {
+func (c *Client) IpReservationDetails(name string) (resp response.IpReservation, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -47,12 +45,10 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipreservation"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -63,7 +59,7 @@ func (c Client) IpReservationDetails(name string) (resp response.IpReservation, 
 // CreateIpReservation creates an IP reservation.
 // After creating an IP reservation, you can associate it with
 // an instance by using the CrateIpAddressAssociation method
-func (c Client) CreateIpReservation(
+func (c *Client) CreateIpReservation(
 	currentName string,
 	newName string,
 	parentpool common.IPPool,
@@ -99,13 +95,11 @@ func (c Client) CreateIpReservation(
 
 	url := c.endpoints["ipreservation"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &params,
-		verb:   "POST",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &params,
+		verb: "POST",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -116,7 +110,7 @@ func (c Client) CreateIpReservation(
 // DeleteIpReservation deletes the ip reservation of a instance.
 // When you no longer need an IP reservation, you can delete it.
 // Ensure that no instance is using the IP reservation that you want to delete.
-func (c Client) DeleteIpReservation(name string) (err error) {
+func (c *Client) DeleteIpReservation(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -127,11 +121,9 @@ func (c Client) DeleteIpReservation(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints, name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -149,7 +141,7 @@ func (c Client) DeleteIpReservation(name string) (err error) {
 // and if the reservation is not associated with an instance, then
 // the reservation will be deleted.
 // You can also update the tags that are used to identify the IP reservation.
-func (c Client) UpdateIpReservation(
+func (c *Client) UpdateIpReservation(
 	currentName string,
 	newName string,
 	parentpool common.IPPool,
@@ -181,13 +173,11 @@ func (c Client) UpdateIpReservation(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipreservation"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		body:   &params,
-		url:    url,
-		verb:   "PUT",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		body: &params,
+		url:  url,
+		verb: "PUT",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

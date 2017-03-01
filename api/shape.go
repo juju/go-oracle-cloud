@@ -11,7 +11,7 @@ import (
 )
 
 // ShapeDetails retrieves the CPU and memory details of the specified shape.
-func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
+func (c *Client) ShapeDetails(name string) (resp response.Shape, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -22,12 +22,10 @@ func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["shape"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -36,19 +34,17 @@ func (c Client) ShapeDetails(name string) (resp response.Shape, err error) {
 }
 
 // AllShapes retrieves the CPU and memory details of all the available shapes.
-func (c Client) AllShapes() (resp response.AllShapes, err error) {
+func (c *Client) AllShapes() (resp response.AllShapes, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := c.endpoints["shape"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

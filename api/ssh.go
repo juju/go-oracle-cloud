@@ -11,7 +11,7 @@ import (
 )
 
 // CreateSSHKey adds into the oracle cloud account an ssh key
-func (c Client) CreateSHHKey(
+func (c *Client) CreateSHHKey(
 	name string,
 	key string,
 	enabled bool,
@@ -41,13 +41,11 @@ func (c Client) CreateSHHKey(
 
 	url := c.endpoints["sshkeys"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "POST",
-		body:   &ssh,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "POST",
+		body: &ssh,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -56,7 +54,7 @@ func (c Client) CreateSHHKey(
 }
 
 // DeleteSSHKey deteles a ssh key with a specific name
-func (c Client) DeleteSSHKey(name string) (err error) {
+func (c *Client) DeleteSSHKey(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -66,11 +64,10 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], name)
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -79,7 +76,7 @@ func (c Client) DeleteSSHKey(name string) (err error) {
 }
 
 // SSHKeyDetails returns all details of a specific key
-func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
+func (c *Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -90,12 +87,10 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -104,7 +99,7 @@ func (c Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 }
 
 // AllSShKeys returns list of all keys with all the details
-func (c Client) AllSSHKeys() (resp response.AllSSH, err error) {
+func (c *Client) AllSSHKeys() (resp response.AllSSH, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -112,12 +107,10 @@ func (c Client) AllSSHKeys() (resp response.AllSSH, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["sshkeys"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -126,7 +119,7 @@ func (c Client) AllSSHKeys() (resp response.AllSSH, err error) {
 }
 
 // AllSSHKeyNames returns a list of all ssh keys by names of the user
-func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
+func (c *Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -134,10 +127,8 @@ func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["sshkeys"], c.identify, c.username)
 
-	if err = request(paramsRequest{
+	if err = c.request(paramsRequest{
 		directory: true,
-		client:    &c.http,
-		cookie:    c.cookie,
 		url:       url,
 		verb:      "GET",
 		resp:      &resp,
@@ -150,7 +141,7 @@ func (c Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 
 // UpdateSSHKey change the content and details of a specific ssh key
 // If the key is invalid it will retrun 400 status code. Make sure the key is a valid ssh public key
-func (c Client) UpdateSSHKey(
+func (c *Client) UpdateSSHKey(
 	currentName string,
 	newName string,
 	key string,
@@ -185,13 +176,11 @@ func (c Client) UpdateSSHKey(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], ssh.Name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		body:   &ssh,
-		url:    url,
-		verb:   "PUT",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		body: &ssh,
+		url:  url,
+		verb: "PUT",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

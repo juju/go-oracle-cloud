@@ -90,10 +90,6 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 type paramsRequest struct {
 	// directory is the type of directory request
 	directory bool
-	// use this client to do the request
-	client *http.Client
-	// include in the request the cookie
-	cookie *http.Cookie
 	// url this will not be checked so, make sure it is valid
 	url string
 	// verb contains an http verb POST, GET, PUT, PATH
@@ -111,7 +107,7 @@ type paramsRequest struct {
 
 // request function is a wrapper around building the request,
 // treating exceptional errors and executing the client http connection
-func request(cfg paramsRequest) (err error) {
+func (c *Client) request(cfg paramsRequest) (err error) {
 	var buf io.Reader
 
 	// if we have a body we assume that the body
@@ -131,8 +127,8 @@ func request(cfg paramsRequest) (err error) {
 	}
 
 	// add the session cookie if there is one
-	if cfg.cookie != nil {
-		req.AddCookie(cfg.cookie)
+	if c.cookie != nil {
+		req.AddCookie(c.cookie)
 	}
 
 	// let the endpoint api know that the request
@@ -157,10 +153,11 @@ func request(cfg paramsRequest) (err error) {
 	case "GET":
 	}
 
-	resp, err := cfg.client.Do(req)
+	resp, err := c.http.Do(req)
 	if err != nil {
 		return err
 	}
+
 	defer func() {
 		if errClose := resp.Body.Close(); errClose != nil {
 			// overwrite the previous error if any
@@ -168,17 +165,25 @@ func request(cfg paramsRequest) (err error) {
 		}
 	}()
 
+	var errTreat error
 	// if we have a special treat function
 	// let the caller treat the response
 	// if we don't have one execute the default one
 	if cfg.treat != nil {
-		if err = cfg.treat(resp, cfg.verb); err != nil {
-			return err
-		}
+		errTreat = cfg.treat(resp, cfg.verb)
 	} else {
-		if err = defaultTreat(resp, cfg.verb); err != nil {
+		errTreat = defaultTreat(resp, cfg.verb)
+	}
+
+	// if the status code of the request is unauthorized
+	// this means the cookie has expired and we need to
+	// refresh it.
+	if IsNotAuthorized(errTreat) && c.isAuth() {
+		if err := c.RefreshCookie(); err != nil {
 			return err
 		}
+	} else if errTreat != nil {
+		return errTreat
 	}
 
 	// if we the caller tells us that the http request

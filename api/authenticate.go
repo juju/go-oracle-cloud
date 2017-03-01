@@ -19,17 +19,15 @@ func (c *Client) Authenticate() (err error) {
 	}
 
 	// build the json authentication
-	auth := map[string]string{
+	params := map[string]string{
 		"user":     fmt.Sprintf("/Compute-%s/%s", c.identify, c.username),
 		"password": c.password,
 	}
 
-	return request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    c.endpoints["authenticate"],
-		verb:   "POST",
-		body:   auth,
+	return c.request(paramsRequest{
+		url:  c.endpoints["authenticate"],
+		verb: "POST",
+		body: params,
 		treat: func(resp *http.Response, verbReque string) (err error) {
 			// if the operation is successful then we will recive 204 http status
 			// if this is not the case then we should stop and return a friendly error
@@ -42,7 +40,9 @@ func (c *Client) Authenticate() (err error) {
 			// more connections to other api resources
 			cookies := resp.Cookies()
 			if len(cookies) != 1 {
-				return fmt.Errorf("go-oracle-cloud: Invalid number of session cookies: %q", cookies)
+				return fmt.Errorf(
+					"go-oracle-cloud: Invalid number of session cookies: %q", cookies,
+				)
 			}
 			// take the cookie
 			c.cookie = cookies[0]

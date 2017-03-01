@@ -14,7 +14,7 @@ import (
 // CreatesSecList a security list. After creating security
 // lists, you can add instances to them by using the HTTP request,
 // CreateSecAssociation (Create a Security Association).
-func (c Client) CreateSecList(
+func (c *Client) CreateSecList(
 	description string,
 	name string,
 	outbound_cidr_policy string,
@@ -42,13 +42,11 @@ func (c Client) CreateSecList(
 
 	url := c.endpoints["seclist"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &params,
-		verb:   "POST",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &params,
+		verb: "POST",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -57,7 +55,7 @@ func (c Client) CreateSecList(
 }
 
 // DeleteSecList the specified security list. No response is returned.<Paste>
-func (c Client) DeleteSecList(name string) (err error) {
+func (c *Client) DeleteSecList(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -68,11 +66,9 @@ func (c Client) DeleteSecList(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -82,7 +78,7 @@ func (c Client) DeleteSecList(name string) (err error) {
 
 // AllSecLists retrieves details of the security lists that are in the specified
 // container and match the specified query criteria.
-func (c Client) AllSecLists() (resp response.AllSecLists, err error) {
+func (c *Client) AllSecLists() (resp response.AllSecLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -90,12 +86,10 @@ func (c Client) AllSecLists() (resp response.AllSecLists, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["seclist"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 
 		return resp, err
@@ -105,19 +99,17 @@ func (c Client) AllSecLists() (resp response.AllSecLists, err error) {
 }
 
 // SecListDetails retrieves information about the specified security list.
-func (c Client) SecListDetails(name string) (resp response.SecList, err error) {
+func (c *Client) SecListDetails(name string) (resp response.SecList, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -134,7 +126,7 @@ func (c Client) SecListDetails(name string) (resp response.SecList, err error) {
 // deny: Packets are dropped. No response is sent.
 // reject: Packets are dropped, but a response is sent.
 // permit(default): Packets are allowed.
-func (c Client) UpdateSecList(
+func (c *Client) UpdateSecList(
 	description string,
 	currentName string,
 	newName string,
@@ -167,13 +159,11 @@ func (c Client) UpdateSecList(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seclit"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &params,
-		verb:   "PUT",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &params,
+		verb: "PUT",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

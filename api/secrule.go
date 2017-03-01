@@ -48,7 +48,7 @@ func (s SecRuleParams) Validate() (err error) {
 // CreateSecRule creates a new security rule. A security rule defines network access over a specified
 // protocol between instances in two security lists, or from a
 // set of external hosts (an IP list) to instances in a security list.
-func (c Client) CreateSecRule(p SecRuleParams) (resp response.SecRule, err error) {
+func (c *Client) CreateSecRule(p SecRuleParams) (resp response.SecRule, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -59,13 +59,11 @@ func (c Client) CreateSecRule(p SecRuleParams) (resp response.SecRule, err error
 
 	url := c.endpoints["secrule"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &p,
-		verb:   "POST",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &p,
+		verb: "POST",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -75,7 +73,7 @@ func (c Client) CreateSecRule(p SecRuleParams) (resp response.SecRule, err error
 
 // DeleteSecRule deletes a security role inside the oracle
 // cloud account. If the security rule is not found this will return nil
-func (c Client) DeleteSecRule(name string) (err error) {
+func (c *Client) DeleteSecRule(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -86,11 +84,9 @@ func (c Client) DeleteSecRule(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secrule"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -99,7 +95,7 @@ func (c Client) DeleteSecRule(name string) (err error) {
 }
 
 // SecRuleDetails retrives details on a specific security rule
-func (c Client) SecRuleDetails(name string) (resp response.SecRule, err error) {
+func (c *Client) SecRuleDetails(name string) (resp response.SecRule, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -110,12 +106,10 @@ func (c Client) SecRuleDetails(name string) (resp response.SecRule, err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secrule"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -124,7 +118,7 @@ func (c Client) SecRuleDetails(name string) (resp response.SecRule, err error) {
 }
 
 // AllSecRules retrives all security rulues from the oracle cloud account
-func (c Client) AllSecRules() (resp response.AllSecRules, err error) {
+func (c *Client) AllSecRules() (resp response.AllSecRules, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -132,12 +126,10 @@ func (c Client) AllSecRules() (resp response.AllSecRules, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["secrule"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -147,7 +139,7 @@ func (c Client) AllSecRules() (resp response.AllSecRules, err error) {
 }
 
 // UpdateSecRule modifies the security rule with the currentName
-func (c Client) UpdateSecRule(p SecRuleParams, currentName string) (resp response.SecRule, err error) {
+func (c *Client) UpdateSecRule(p SecRuleParams, currentName string) (resp response.SecRule, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -162,13 +154,11 @@ func (c Client) UpdateSecRule(p SecRuleParams, currentName string) (resp respons
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secrule"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &p,
-		verb:   "PUT",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &p,
+		verb: "PUT",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -177,7 +167,7 @@ func (c Client) UpdateSecRule(p SecRuleParams, currentName string) (resp respons
 }
 
 // SecRuleNames retrives all secure rule names in the oracle cloud account
-func (c Client) SecRuleNames() (resp response.DirectoryNames, err error) {
+func (c *Client) SecRuleNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -185,10 +175,8 @@ func (c Client) SecRuleNames() (resp response.DirectoryNames, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["secrule"], c.identify, c.username)
 
-	if err = request(paramsRequest{
+	if err = c.request(paramsRequest{
 		directory: true,
-		client:    &c.http,
-		cookie:    c.cookie,
 		url:       url,
 		verb:      "GET",
 		resp:      &resp,

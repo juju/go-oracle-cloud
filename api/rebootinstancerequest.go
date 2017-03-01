@@ -17,7 +17,7 @@ import (
 // your instance. After creating this request, use GET /rebootinstancerequest/{name}
 // to retrieve the status of the request. When the status of the rebootinstancerequest
 // changes to complete, you know that the instance has been rebooted.
-func (c Client) CreateRebootInstanceRequest(
+func (c *Client) CreateRebootInstanceRequest(
 	hard bool,
 	instanceName string,
 ) (resp response.RebootInstanceRequest, err error) {
@@ -42,13 +42,11 @@ func (c Client) CreateRebootInstanceRequest(
 		Hard: hard,
 	}
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		body:   &params,
-		verb:   "POST",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		body: &params,
+		verb: "POST",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -58,7 +56,7 @@ func (c Client) CreateRebootInstanceRequest(
 
 // DeleteRebootInstanceRequest deletes a reboot instance request.
 // No response is returned for the delete action.
-func (c Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
+func (c *Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -69,11 +67,9 @@ func (c Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["rebootinstancerequest"], instanceName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "DELETE",
-		url:    url,
+	if err = c.request(paramsRequest{
+		verb: "DELETE",
+		url:  url,
 	}); err != nil {
 		return err
 	}
@@ -83,7 +79,7 @@ func (c Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
 
 // RebootInstanceRequestDetails retrieves details of the specified reboot instance request.
 // You can use this request when you want to find out the status of a reboot instance request.
-func (c Client) RebootInstanceRequestDetails(
+func (c *Client) RebootInstanceRequestDetails(
 	instanceName string,
 ) (resp response.RebootInstanceRequest, err error) {
 
@@ -99,12 +95,10 @@ func (c Client) RebootInstanceRequestDetails(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["rebootinstrancerequest"], instanceName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -113,7 +107,7 @@ func (c Client) RebootInstanceRequestDetails(
 }
 
 //AllRebootInstanceRequests retrieves details of the reboot instance requests that are available in the specified container
-func (c Client) AllRebootInstanceRequests() (resp response.AllRebootInstanceRequests, err error) {
+func (c *Client) AllRebootInstanceRequests() (resp response.AllRebootInstanceRequests, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -121,12 +115,10 @@ func (c Client) AllRebootInstanceRequests() (resp response.AllRebootInstanceRequ
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["rebootinstancerequest"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

@@ -11,7 +11,7 @@ import (
 )
 
 // ImageListEntryDetails retrieves details of the specified image list entry.
-func (c Client) ImageListEntryDetails(
+func (c *Client) ImageListEntryDetails(
 	name string,
 	version string,
 ) (resp response.ImageListEntry, err error) {
@@ -34,12 +34,10 @@ func (c Client) ImageListEntryDetails(
 	url := fmt.Sprintf("%s%s/entry/%s",
 		c.endpoints["imagelistentries"], name, version)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -48,7 +46,7 @@ func (c Client) ImageListEntryDetails(
 }
 
 // DeleteImageListEntry deletes an Image List Entry
-func (c Client) DeleteImageListEntry(
+func (c *Client) DeleteImageListEntry(
 	name string,
 	version string,
 ) (err error) {
@@ -71,11 +69,9 @@ func (c Client) DeleteImageListEntry(
 	url := fmt.Sprintf("%s%s/entry/%s",
 		c.endpoints["imagelistentries"], name, version)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "DELETE",
-		url:    url,
+	if err = c.request(paramsRequest{
+		verb: "DELETE",
+		url:  url,
 	}); err != nil {
 		return err
 	}
@@ -85,7 +81,7 @@ func (c Client) DeleteImageListEntry(
 
 // CreateImageListEntry adds an image list entry to Oracle Compute Cloud
 // Each machine image in an image list is identified by an image list entry.
-func (c Client) CreateImageListEntry(
+func (c *Client) CreateImageListEntry(
 	name string,
 	attributes map[string]interface{},
 	version int,
@@ -127,13 +123,11 @@ func (c Client) CreateImageListEntry(
 	url := fmt.Sprintf("%s%s/entry/",
 		c.endpoints["imagelistentries"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "POST",
-		url:    url,
-		resp:   &resp,
-		body:   &params,
+	if err = c.request(paramsRequest{
+		verb: "POST",
+		url:  url,
+		resp: &resp,
+		body: &params,
 	}); err != nil {
 		return resp, err
 	}

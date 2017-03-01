@@ -16,7 +16,7 @@ import (
 // to a virtual NIC set. Each security rule may refer to a virtual
 // NIC set in either the source or destination.See Workflow for
 // After creating an ACL, you can associate it to one or more virtual NIC sets.
-func (c Client) CreateAcl(
+func (c *Client) CreateAcl(
 	name string,
 	description string,
 	enabledFlag bool,
@@ -46,13 +46,11 @@ func (c Client) CreateAcl(
 		Tags:        tags,
 	}
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "POST",
-		body:   &params,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "POST",
+		body: &params,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -77,18 +75,16 @@ func (c Client) CreateAcl(
 // might become unreachable.
 //
 // If you want to disable an ACL and not delete it, use the UpdateAcl method
-func (c Client) DeleteAcl(name string) (err error) {
+func (c *Client) DeleteAcl(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["acl"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -98,19 +94,17 @@ func (c Client) DeleteAcl(name string) (err error) {
 
 // AllAcls retrieves details of all the ACLs
 // that are available in the specified container.
-func (c Client) AllAcls() (resp response.AllAcls, err error) {
+func (c *Client) AllAcls() (resp response.AllAcls, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["acl"], c.identify)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -119,7 +113,7 @@ func (c Client) AllAcls() (resp response.AllAcls, err error) {
 }
 
 // AclDetails retrieves information about the specified ACL.
-func (c Client) AclDetails(name string) (resp response.Acl, err error) {
+func (c *Client) AclDetails(name string) (resp response.Acl, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -132,12 +126,10 @@ func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["acl"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -149,7 +141,7 @@ func (c Client) AclDetails(name string) (resp response.Acl, err error) {
 // You can also disable an ACL by setting the value of the enabledFlag to false.
 // When you disable an ACL, it also disables the flow of traffic
 // allowed by the security rules in scope of the ACL.
-func (c Client) UpdateAcl(
+func (c *Client) UpdateAcl(
 	currentName string,
 	newName string,
 	description string,
@@ -180,13 +172,11 @@ func (c Client) UpdateAcl(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["acl"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "PUT",
-		body:   &params,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "PUT",
+		body: &params,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

@@ -22,7 +22,7 @@ import (
 // IP addresses 203.0.113.1 and 203.0.113.2, enter one of the following:
 // 203.0.113.0/30
 // 203.0.113.1, 203.0.113.2
-func (c Client) CreateSecIpList(
+func (c *Client) CreateSecIpList(
 	description string,
 	name string,
 	secipentries []string,
@@ -56,13 +56,11 @@ func (c Client) CreateSecIpList(
 
 	url := c.endpoints["seciplist"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &params,
-		verb:   "POST",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &params,
+		verb: "POST",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -73,7 +71,7 @@ func (c Client) CreateSecIpList(
 // DeleteSecIpList deletes the specified security IP list. No response is returned.
 // You can't delete system-provided security application that are
 // available in the /oracle/public container.
-func (c Client) DeleteSecIpList(name string) (err error) {
+func (c *Client) DeleteSecIpList(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -84,11 +82,9 @@ func (c Client) DeleteSecIpList(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seciplist"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -99,7 +95,7 @@ func (c Client) DeleteSecIpList(name string) (err error) {
 // SecIpListDetail retrieves information about the specified security IP list.
 // You can use this request to verify whether CreateSecIpList
 // or UpdateSecIpList operations were completed successfully.
-func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error) {
+func (c *Client) IpSecListDetail(name string) (resp response.SecIpList, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -112,11 +108,9 @@ func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seciplist"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
 	}); err != nil {
 		return resp, err
 	}
@@ -125,7 +119,7 @@ func (c Client) IpSecListDetail(name string) (resp response.SecIpList, err error
 }
 
 // AllSecIpLists retrieves details of the security IP lists that are in the account
-func (c Client) AllSecIpLists() (resp response.AllSecIpLists, err error) {
+func (c *Client) AllSecIpLists() (resp response.AllSecIpLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -133,11 +127,9 @@ func (c Client) AllSecIpLists() (resp response.AllSecIpLists, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/%s",
 		c.endpoints["seciplist"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
 	}); err != nil {
 		return resp, err
 	}
@@ -151,7 +143,7 @@ func (c Client) AllSecIpLists() (resp response.AllSecIpLists, err error) {
 // the new values that you specify. To add one or more IP addresses
 // to the existing list, run the add seciplist command and
 // specify just the additional IP addresses.
-func (c Client) UpdateSecIpList(
+func (c *Client) UpdateSecIpList(
 	description string,
 	currentName string,
 	newName string,
@@ -190,13 +182,11 @@ func (c Client) UpdateSecIpList(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seciplist"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		body:   &params,
-		verb:   "PUT",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		body: &params,
+		verb: "PUT",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}

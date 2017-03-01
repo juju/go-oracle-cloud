@@ -11,7 +11,7 @@ import (
 )
 
 // IpAddressAssociation retrives details of the specified IP address association.
-func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddressAssociation, err error) {
+func (c *Client) IpAddressAssociationDetails(name string) (resp response.IpAddressAssociation, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -23,12 +23,10 @@ func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddres
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipaddressassociation"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -38,7 +36,7 @@ func (c Client) IpAddressAssociationDetails(name string) (resp response.IpAddres
 }
 
 // AllIpAddressAssociation Retrieves details of the specified IP address association.
-func (c Client) AllIpAddressAssociations() (resp response.AllIpAddressAssociations, err error) {
+func (c *Client) AllIpAddressAssociations() (resp response.AllIpAddressAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -46,12 +44,10 @@ func (c Client) AllIpAddressAssociations() (resp response.AllIpAddressAssociatio
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["ipaddressassociation"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -63,7 +59,7 @@ func (c Client) AllIpAddressAssociations() (resp response.AllIpAddressAssociatio
 // to associate an IP address reservation, a public IP address,
 // with a vNIC of an instance either while creating the instance
 // or when an instance is already running.
-func (c Client) CreateIpAddressAssociation(
+func (c *Client) CreateIpAddressAssociation(
 	description string,
 	ipAddressReservation string,
 	vnic string,
@@ -98,13 +94,11 @@ func (c Client) CreateIpAddressAssociation(
 
 	url := c.endpoints["ipaddressassociation"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "POST",
-		resp:   &resp,
-		body:   params,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "POST",
+		resp: &resp,
+		body: params,
 	}); err != nil {
 		return resp, err
 	}
@@ -114,7 +108,7 @@ func (c Client) CreateIpAddressAssociation(
 
 // DeleteIpAddressAssociation deletes the specified IP address association.
 // Ensure that the IP address association is not being used before deleting it.
-func (c Client) DeleteIpAddressAssociation(name string) (err error) {
+func (c *Client) DeleteIpAddressAssociation(name string) (err error) {
 
 	if !c.isAuth() {
 		return errNotAuth
@@ -126,11 +120,9 @@ func (c Client) DeleteIpAddressAssociation(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipaddressassociation"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -148,7 +140,7 @@ func (c Client) DeleteIpAddressAssociation(name string) (err error) {
 // then to remove the IP reservation, update the instance orchestration.
 // Otherwise, whenever your instance orchestration is stopped and restarted,
 // the IP reservation will again be associated with the vNIC.
-func (c Client) UpdateIpAddressAssociation(
+func (c *Client) UpdateIpAddressAssociation(
 	currentName,
 	ipAddressReservation,
 	vnic,
@@ -184,13 +176,11 @@ func (c Client) UpdateIpAddressAssociation(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipaddressassociation"], currentName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "PUT",
-		resp:   &resp,
-		body:   params,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "PUT",
+		resp: &resp,
+		body: params,
 	}); err != nil {
 		return resp, err
 	}

@@ -13,7 +13,7 @@ import (
 // ImageListDetails retrieves details of the specified image list.
 // You can also use this request to retrieve details of all the available
 // image list entries in the specified image list.
-func (c Client) ImageListDetails(
+func (c *Client) ImageListDetails(
 	name string,
 ) (resp response.ImageList, err error) {
 
@@ -27,12 +27,10 @@ func (c Client) ImageListDetails(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["imagelist"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -42,7 +40,7 @@ func (c Client) ImageListDetails(
 
 // AllImageLists retrieves details of all the available
 // image lists in the specified container.
-func (c Client) AllImageLists() (resp response.AllImageLists, err error) {
+func (c *Client) AllImageLists() (resp response.AllImageLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -50,12 +48,10 @@ func (c Client) AllImageLists() (resp response.AllImageLists, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["imagelist"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -65,7 +61,7 @@ func (c Client) AllImageLists() (resp response.AllImageLists, err error) {
 
 // AllImageListNames retrieves the names of objects and
 // subcontainers that you can access in the specified container.
-func (c Client) AllImageListNames() (resp response.DirectoryNames, err error) {
+func (c *Client) AllImageListNames() (resp response.DirectoryNames, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -73,10 +69,8 @@ func (c Client) AllImageListNames() (resp response.DirectoryNames, err error) {
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/", c.endpoints["imageList"])
 
-	if err = request(paramsRequest{
+	if err = c.request(paramsRequest{
 		directory: true,
-		client:    &c.http,
-		cookie:    c.cookie,
 		verb:      "GET",
 		url:       url,
 		resp:      &resp,
@@ -88,7 +82,7 @@ func (c Client) AllImageListNames() (resp response.DirectoryNames, err error) {
 }
 
 // CreateImageList Adds an image list to Oracle Compute Cloud Service.
-func (c Client) CreateImageList(
+func (c *Client) CreateImageList(
 	def int,
 	description string,
 	name string,
@@ -111,13 +105,11 @@ func (c Client) CreateImageList(
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["imagelist"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "POST",
-		url:    url,
-		body:   &params,
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		verb: "POST",
+		url:  url,
+		body: &params,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -128,7 +120,7 @@ func (c Client) CreateImageList(
 // DeleteImageList deletes an image list
 // You can't delete system-provided image lists
 // that are available in the /oracle/public container.
-func (c Client) DeleteImageList(name string) (err error) {
+func (c *Client) DeleteImageList(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -139,11 +131,9 @@ func (c Client) DeleteImageList(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["endpoints"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -154,7 +144,7 @@ func (c Client) DeleteImageList(name string) (err error) {
 // UpdateImageList updates the description of an image list.
 // You can also update the default image list entry to be used
 // while launching instances using the specified image list.
-func (c Client) UpdateImageList(
+func (c *Client) UpdateImageList(
 	currentName string,
 	newName string,
 	description string,
@@ -187,12 +177,10 @@ func (c Client) UpdateImageList(
 
 	url := fmt.Sprintf("%s%s", c.endpoints["imagelist"], newName)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "PUT",
-		url:    url,
-		body:   &params,
+	if err = c.request(paramsRequest{
+		verb: "PUT",
+		url:  url,
+		body: &params,
 	}); err != nil {
 		return resp, err
 	}

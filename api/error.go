@@ -102,6 +102,10 @@ func dumpApiError(resp *http.Response) error {
 // IsNotAuth returns true if the error
 // indicates that the client is not authenticate
 func IsNotAuth(err error) bool {
+	if err == nil {
+		return false
+	}
+
 	_, ok := err.(*ErrNotAuth)
 	return ok
 }
@@ -109,6 +113,10 @@ func IsNotAuth(err error) bool {
 // IsNotFound returns true if the error
 // indicates an http not found 404
 func IsNotFound(err error) bool {
+	if err == nil {
+		return false
+	}
+
 	_, ok := err.(*ErrNotFound)
 	return ok
 }
@@ -116,6 +124,10 @@ func IsNotFound(err error) bool {
 // IsBadRequest returns true if the error
 // indicates an http bad request 400
 func IsBadRequest(err error) bool {
+	if err == nil {
+		return false
+	}
+
 	_, ok := err.(*ErrBadRequest)
 	return ok
 }
@@ -123,6 +135,10 @@ func IsBadRequest(err error) bool {
 // IsNotAuthorized returns true if the error
 // indicates an http unauthorized 401
 func IsNotAuthorized(err error) bool {
+	if err == nil {
+		return false
+	}
+
 	_, ok := err.(*ErrNotAuthorized)
 	return ok
 }
@@ -130,6 +146,10 @@ func IsNotAuthorized(err error) bool {
 // IsInternalApi returns true if the error
 // indicated an http internal service error 500
 func IsInternalApi(err error) bool {
+	if err == nil {
+		return false
+	}
+
 	_, ok := err.(*ErrInternalApi)
 	return ok
 }
@@ -137,6 +157,10 @@ func IsInternalApi(err error) bool {
 // IsStatusConflict returns true if the error
 // indicates an http conflict error 401
 func IsStatusConflict(err error) bool {
+	if err == nil {
+		return false
+	}
+
 	_, ok := err.(*ErrStatusConflict)
 	return ok
 }

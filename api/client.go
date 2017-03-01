@@ -67,6 +67,7 @@ type Client struct {
 	cookie *http.Cookie
 	// the endpoint of the oracle account
 	endpoint string
+
 	// internal http client
 	http      http.Client
 	endpoints map[string]string
@@ -80,17 +81,18 @@ func NewClient(cfg Config) (*Client, error) {
 		return nil, err
 	}
 
+	e := make(map[string]string, len(endpoints))
+	for key := range endpoints {
+		e[key] = fmt.Sprintf(endpoints[key], cfg.Endpoint)
+	}
+
 	cli := &Client{
 		identify:  cfg.Identify,
 		username:  cfg.Username,
 		password:  cfg.Password,
 		endpoint:  cfg.Endpoint,
 		http:      http.Client{},
-		endpoints: endpoints,
-	}
-
-	for key := range cli.endpoints {
-		cli.endpoints[key] = fmt.Sprintf(cli.endpoints[key], cli.endpoint)
+		endpoints: e,
 	}
 
 	return cli, nil
@@ -134,11 +136,9 @@ func (c Client) ComposeName(name string) string {
 func (c *Client) RefreshCookie() (err error) {
 	url := c.endpoints["refreshcookie"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		verb:   "GET",
-		url:    url,
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
 		treat: func(resp *http.Response, verbRequest string) (err error) {
 			if resp.StatusCode != http.StatusNoContent {
 				return dumpApiError(resp)
@@ -154,7 +154,7 @@ func (c *Client) RefreshCookie() (err error) {
 			}
 
 			// take the cookie
-			c.cookie = cookies[0]
+			*c.cookie = *cookies[0]
 			return nil
 		},
 	}); err != nil {

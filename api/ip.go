@@ -12,7 +12,7 @@ import (
 
 // AllIps retrieves details of all the IP networks
 // that are available in the specified container.
-func (c Client) AllIps() (resp response.AllIps, err error) {
+func (c *Client) AllIps() (resp response.AllIps, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -20,12 +20,10 @@ func (c Client) AllIps() (resp response.AllIps, err error) {
 	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/",
 		c.endpoint, c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -35,7 +33,7 @@ func (c Client) AllIps() (resp response.AllIps, err error) {
 
 // IpDetails retrives details of a an IP network
 // that is available in the oracle account
-func (c Client) IpDetails(name string) (resp response.Ip, err error) {
+func (c *Client) IpDetails(name string) (resp response.Ip, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -47,12 +45,10 @@ func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
 		c.endpoint, c.identify, c.username, name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -66,7 +62,7 @@ func (c Client) IpDetails(name string) (resp response.Ip, err error) {
 // to specific networks. Traffic can flow between instances within
 // the same IP network, but by default each network is isolated
 // from other networks and from the public Internet.
-func (c Client) CreateIp(
+func (c *Client) CreateIp(
 	description string,
 	ipAddressPrefix string,
 	ipNetworkExchange string,
@@ -98,13 +94,11 @@ func (c Client) CreateIp(
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
 	}
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "POST",
-		resp:   &resp,
-		body:   params,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "POST",
+		resp: &resp,
+		body: params,
 	}); err != nil {
 		return resp, err
 	}
@@ -113,7 +107,7 @@ func (c Client) CreateIp(
 }
 
 // DeleteIp deletes an IP network with a given name
-func (c Client) DeleteIp(name string) (err error) {
+func (c *Client) DeleteIp(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -125,11 +119,9 @@ func (c Client) DeleteIp(name string) (err error) {
 	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
 		c.endpoint, c.identify, c.username, name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
@@ -155,7 +147,7 @@ func (c Client) DeleteIp(name string) (err error) {
 // to 192.168.1.0/20. Don't, however, change the IP address.
 // This ensures that all IP addresses that have been currently allocated
 // to instances remain valid in the updated IP network.
-func (c Client) UpdateIp(
+func (c *Client) UpdateIp(
 	currentName string,
 	newName string,
 	description string,
@@ -193,13 +185,11 @@ func (c Client) UpdateIp(
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
 	}
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "PUT",
-		resp:   &resp,
-		body:   params,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "PUT",
+		resp: &resp,
+		body: params,
 	}); err != nil {
 		return resp, err
 	}

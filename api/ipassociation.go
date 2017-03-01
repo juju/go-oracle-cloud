@@ -13,7 +13,7 @@ import (
 
 // AllIpAssociation retrieves the names of objects and subcontainers
 // that you can access in the specified container.
-func (c Client) AllIpAssociations() (resp response.AllIpAssociations, err error) {
+func (c *Client) AllIpAssociations() (resp response.AllIpAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -21,12 +21,10 @@ func (c Client) AllIpAssociations() (resp response.AllIpAssociations, err error)
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["ipassociation"], c.identify, c.username)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -37,7 +35,7 @@ func (c Client) AllIpAssociations() (resp response.AllIpAssociations, err error)
 
 // IpAssociationDetails retrieves details of the IP associations that are
 // available in the specified container
-func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, err error) {
+func (c *Client) IpAssociationDetails(name string) (resp response.IpAssociation, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -48,12 +46,10 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipassociation"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "GET",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -63,7 +59,7 @@ func (c Client) IpAssociationDetails(name string) (resp response.IpAssociation, 
 
 // Creates an association between an IP address
 // and the vcable ID of an instance.
-func (c Client) CreateIpAssociation(
+func (c *Client) CreateIpAssociation(
 	parentpool common.IPPool,
 	vcable common.VcableID,
 ) (resp response.IpAssociation, err error) {
@@ -86,13 +82,11 @@ func (c Client) CreateIpAssociation(
 
 	url := c.endpoints["ipassociation"] + "/"
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		body:   &params,
-		url:    url,
-		verb:   "POST",
-		resp:   &resp,
+	if err = c.request(paramsRequest{
+		body: &params,
+		url:  url,
+		verb: "POST",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -101,7 +95,7 @@ func (c Client) CreateIpAssociation(
 }
 
 // Deletes the specified IP association with the name
-func (c Client) DeleteIpAssociation(name string) (err error) {
+func (c *Client) DeleteIpAssociation(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -112,11 +106,9 @@ func (c Client) DeleteIpAssociation(name string) (err error) {
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipassociation"], name)
 
-	if err = request(paramsRequest{
-		client: &c.http,
-		cookie: c.cookie,
-		url:    url,
-		verb:   "DELETE",
+	if err = c.request(paramsRequest{
+		url:  url,
+		verb: "DELETE",
 	}); err != nil {
 		return err
 	}
