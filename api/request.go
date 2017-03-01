@@ -86,6 +86,10 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 	}
 }
 
+type Filter struct {
+	Arg, Value string
+}
+
 // paramsRequest used to fill up the params for the request function
 type paramsRequest struct {
 	// directory is the type of directory request
@@ -103,6 +107,8 @@ type paramsRequest struct {
 	// resp will contains a json object where the
 	// request function will decode
 	resp interface{}
+	// query args
+	filter []Filter
 }
 
 // request function is a wrapper around building the request,
@@ -124,6 +130,14 @@ func (c *Client) request(cfg paramsRequest) (err error) {
 	req, err := http.NewRequest(cfg.verb, cfg.url, buf)
 	if err != nil {
 		return err
+	}
+
+	if cfg.filter != nil && len(cfg.filter) > 0 {
+		q := req.URL.Query()
+		for _, val := range cfg.filter {
+			q.Add(val.Arg, val.Value)
+		}
+		req.URL.RawQuery = q.Encode()
 	}
 
 	// add the session cookie if there is one

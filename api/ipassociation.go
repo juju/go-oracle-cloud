@@ -13,7 +13,7 @@ import (
 
 // AllIpAssociation retrieves the names of objects and subcontainers
 // that you can access in the specified container.
-func (c *Client) AllIpAssociations() (resp response.AllIpAssociations, err error) {
+func (c *Client) AllIpAssociations(filter []Filter) (resp response.AllIpAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -22,9 +22,10 @@ func (c *Client) AllIpAssociations() (resp response.AllIpAssociations, err error
 		c.endpoints["ipassociation"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

@@ -38,7 +38,7 @@ func (c *Client) DeleteInstance(name string) (err error) {
 // container and match the specified query criteria.
 // If you don't specify any query criteria, then details
 // of all the instances in the container are displayed.
-func (c *Client) AllInstances() (resp response.AllInstances, err error) {
+func (c *Client) AllInstances(filter []Filter) (resp response.AllInstances, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -47,9 +47,10 @@ func (c *Client) AllInstances() (resp response.AllInstances, err error) {
 		c.endpoints["instance"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}
@@ -79,7 +80,7 @@ func (c *Client) InstanceDetails(name string) (resp response.Instance, err error
 
 // AllInstanceNames retrieves the names of objects and subcontainers
 // that you can access in the specified container.
-func (c *Client) AllInstanceNames() (resp response.DirectoryNames, err error) {
+func (c *Client) AllInstanceNames(filter []Filter) (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -91,6 +92,7 @@ func (c *Client) AllInstanceNames() (resp response.DirectoryNames, err error) {
 		url:       url,
 		verb:      "GET",
 		resp:      &resp,
+		filter:    filter,
 	}); err != nil {
 		return resp, err
 	}

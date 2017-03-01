@@ -12,7 +12,7 @@ import (
 )
 
 // AllIpReservations Retrieves details of the IP reservations that are available
-func (c *Client) AllIpReservations() (resp response.AllIpReservations, err error) {
+func (c *Client) AllIpReservations(filter []Filter) (resp response.AllIpReservations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -21,9 +21,10 @@ func (c *Client) AllIpReservations() (resp response.AllIpReservations, err error
 		c.endpoints["ipreservation"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}
@@ -119,7 +120,7 @@ func (c *Client) DeleteIpReservation(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty name provided")
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["ipreservation"], name)
 
 	if err = c.request(paramsRequest{
 		url:  url,
