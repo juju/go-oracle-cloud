@@ -22,7 +22,7 @@ func (c *Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 		)
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["vnc"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["virtualnic"], name)
 
 	if err = c.request(paramsRequest{
 		verb: "GET",
@@ -41,7 +41,7 @@ func (c *Client) AllVirtualNics(filter []Filter) (resp response.AllVirtualNics, 
 		return resp, errNotAuth
 	}
 
-	url := c.endpoints["vnc"] + "/"
+	url := c.endpoints["virtualnic"] + "/"
 
 	if err = c.request(paramsRequest{
 		verb:   "GET",
