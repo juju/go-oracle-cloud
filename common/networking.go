@@ -89,3 +89,11 @@ const (
 	SCTP   Protocol = "132"
 	MPLSIP Protocol = "137"
 )
+
+type AdminDistance int
+
+const (
+	AdminDistanceZero = 0
+	AdminDistanceOne  = 1
+	AdminDistanceTwo  = 2
+)
