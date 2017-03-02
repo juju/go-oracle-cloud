@@ -57,7 +57,7 @@ type Instance struct {
 	Resource_requirements           ResourceRequirments  `json:"resource_requirements"`
 	Virtio                          interface{}          `json:"virtio,omitempty"`
 	Vnc                             string               `json:"vnc,omitempty"`
-	Desired_state                   string               `json:"desired_state"`
+	Desired_state                   common.InstanceState `json:"desired_state"`
 	Storage_attachments             []Storage            `json:"storage_attachments,omitempty"`
 	Start_time                      string               `json:"start_time"`
 	Storage_attachment_associations []interface{}        `json:"storage_attachment_associations,omitempty"`
@@ -90,18 +90,50 @@ type Instance struct {
 	Last_seen                       interface{}          `json:"last_seen,omitempty"`
 }
 
+// Attributes holds a map of attributes that is returned from
+// the instance response
+// This attributes can have user data scripts or any other
+// key, value passed to be executed when the instance will strat, inits
 type Attributes map[string]interface{}
 
-type Networking struct {
-	Eth0 Nic `json:"eth0"`
+// Networking is a json object of string keys
+// Every key is the name of the interface example eth0,eth1, etc.
+// And every valu is a predefined json objects that holds infromation
+// about the interface
+type Networking map[string]interface{}
+
+// Nic type used to hold information from a
+// given inteface in the instance response
+type Nic struct {
+	Model     string   `json:"model,omitempty"`
+	Seclists  []string `json:"seclists"`
+	Dns       []string `json:"dns"`
+	Nat       []string `json:"nat,omitempty"`
+	Vethernet string   `json:"vethernet"`
 }
 
-type Nic struct {
-	Model     string      `json:"model,omitempty"`
-	Seclists  []string    `json:"seclists"`
-	Dns       []string    `json:"dns"`
-	Nat       interface{} `json:"nat,omitempty"`
-	Vethernet string      `json:"vethernet"`
+// Interfaces returns a map of interfaces from the response instance
+// this should be called in order to take details of about the interfaces
+// that the instance uses
+// Nil value returns means that the response is empty
+func (c Networking) Interfaces() (interfaces map[string]Nic) {
+	if c == nil || len(c) == 0 {
+		return nil
+	}
+
+	for key, val := range c {
+		data, ok := val.(Nic)
+		if !ok {
+			continue
+		}
+		interfaces[key] = data
+	}
+
+	if len(interfaces) == 0 {
+		return nil
+	}
+
+	return interfaces
 }
 
 type Storage struct {

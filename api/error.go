@@ -95,7 +95,7 @@ func dumpApiError(resp *http.Response) error {
 	body, _ := ioutil.ReadAll(resp.Body)
 	return fmt.Errorf(
 		"go-oracle-cloud: Error api response %d ,Raw: %s",
-		resp.Status, string(body),
+		resp.StatusCode, string(body),
 	)
 }
 
