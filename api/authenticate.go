@@ -27,7 +27,7 @@ func (c *Client) Authenticate() (err error) {
 	return c.request(paramsRequest{
 		url:  c.endpoints["authenticate"],
 		verb: "POST",
-		body: params,
+		body: &params,
 		treat: func(resp *http.Response, verbReque string) (err error) {
 			// if the operation is successful then we will recive 204 http status
 			// if this is not the case then we should stop and return a friendly error

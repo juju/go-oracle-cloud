@@ -99,7 +99,7 @@ func (c *Client) CreateIpAddressAssociation(
 		url:  url,
 		verb: "POST",
 		resp: &resp,
-		body: params,
+		body: &params,
 	}); err != nil {
 		return resp, err
 	}
@@ -181,7 +181,7 @@ func (c *Client) UpdateIpAddressAssociation(
 		url:  url,
 		verb: "PUT",
 		resp: &resp,
-		body: params,
+		body: &params,
 	}); err != nil {
 		return resp, err
 	}

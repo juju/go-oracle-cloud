@@ -43,10 +43,10 @@ func (c *Client) CreateRebootInstanceRequest(
 	}
 
 	if err = c.request(paramsRequest{
-		body: &params,
-		verb: "POST",
 		url:  url,
+		body: &params,
 		resp: &resp,
+		verb: "POST",
 	}); err != nil {
 		return resp, err
 	}

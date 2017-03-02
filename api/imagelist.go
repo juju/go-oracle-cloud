@@ -182,6 +182,7 @@ func (c *Client) UpdateImageList(
 		verb: "PUT",
 		url:  url,
 		body: &params,
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
