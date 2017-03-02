@@ -17,7 +17,7 @@ var endpoints = map[string]string{
 	"authenticate":          "%s/authenticate/",
 	"backupconfiguration":   "%s/backupservice/v1/configuration",
 	"backup":                "%s/backupservice/v1/backup",
-	"imagelistentries":      "%s/imagelist",
+	"imagelistentrie":       "%s/imagelist",
 	"imagelist":             "%s/imagelist",
 	"instanceconsole":       "%s/instanceconsole",
 	"instance":              "%s/instance",

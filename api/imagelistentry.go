@@ -32,7 +32,7 @@ func (c *Client) ImageListEntryDetails(
 	}
 
 	url := fmt.Sprintf("%s%s/entry/%s",
-		c.endpoints["imagelistentries"], name, version)
+		c.endpoints["imagelistentrie"], name, version)
 
 	if err = c.request(paramsRequest{
 		verb: "GET",
@@ -67,7 +67,7 @@ func (c *Client) DeleteImageListEntry(
 	}
 
 	url := fmt.Sprintf("%s%s/entry/%s",
-		c.endpoints["imagelistentries"], name, version)
+		c.endpoints["imagelistentrie"], name, version)
 
 	if err = c.request(paramsRequest{
 		verb: "DELETE",
@@ -121,7 +121,7 @@ func (c *Client) CreateImageListEntry(
 	}
 
 	url := fmt.Sprintf("%s%s/entry/",
-		c.endpoints["imagelistentries"], name)
+		c.endpoints["imagelistentrie"], name)
 
 	if err = c.request(paramsRequest{
 		verb: "POST",
