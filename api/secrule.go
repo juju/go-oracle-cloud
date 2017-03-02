@@ -12,17 +12,17 @@ import (
 )
 
 type SecRuleParams struct {
-	Permit      common.SecRule `json:"permit"`
-	Application string         `json:"application"`
-	Description string         `json:"description,omitempty"`
-	Disabled    bool           `json:"disabled"`
-	Dst_list    string         `json:"dst_list"`
-	Name        string         `json:"name"`
-	Src_list    string         `json:"src_list"`
+	Action      common.SecRuleAction `json:"permit"`
+	Application string               `json:"application"`
+	Description string               `json:"description,omitempty"`
+	Disabled    bool                 `json:"disabled"`
+	Dst_list    string               `json:"dst_list"`
+	Name        string               `json:"name"`
+	Src_list    string               `json:"src_list"`
 }
 
 func (s SecRuleParams) Validate() (err error) {
-	if err = s.Permit.Validate(); err != nil {
+	if err = s.Action.Validate(); err != nil {
 		return err
 	}
 

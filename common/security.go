@@ -2,18 +2,18 @@ package common
 
 import "errors"
 
-type SecRule string
+type SecRuleAction string
 
-func (s SecRule) Validate() (err error) {
+func (s SecRuleAction) Validate() (err error) {
 	if s == "" {
 		return errors.New("go-oracle-cloud: Empty secure rule permission")
 	}
-
 	return nil
 }
 
 const (
-	DefaultSecRule SecRule = "PERMIT"
+	SecRulePermit SecRuleAction = "PERMIT"
+	SecRuleDeny   SecRuleAction = "DENY"
 )
 
 type FlowDirection string
