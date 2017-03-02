@@ -167,3 +167,26 @@ func (c *Client) AllSecApplications(filter []Filter) (resp response.AllSecApplic
 
 	return resp, nil
 }
+
+// DefaultSecApplications retrieves details of the default security applications that are
+// defined in the cloud. The Oracle cloud defines a number of pre defined rules that
+// can be used
+func (c *Client) DefaultSecApplications(filter []Filter) (resp response.AllSecApplications, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	url := fmt.Sprintf("%s/oracle/public/",
+		c.endpoints["secapplication"], c.identify, c.username)
+
+	if err = c.request(paramsRequest{
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}

@@ -7,9 +7,12 @@ type SecRule struct {
 	Application string               `json:"application"`
 	Description string               `json:"description,omitempty"`
 	Disabled    bool                 `json:"disabled"`
+	Dst_is_ip   bool                 `json:"dst_is_ip"`
 	Dst_list    string               `json:"dst_list"`
 	Name        string               `json:"name"`
-	src_list    string               `json:"src_list"`
+	Id          string               `json:"id"`
+	Src_is_ip   bool                 `json:"src_is_ip"`
+	Src_list    string               `json:"src_list"`
 	Uri         string               `json:"uri"`
 }
 

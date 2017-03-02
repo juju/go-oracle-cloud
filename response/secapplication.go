@@ -59,8 +59,20 @@ type SecApplication struct {
 
 	// Uri is the Uniform Resource Identifier
 	Uri string `json:"uri"`
+
+	// Not in the documentation, but the API returns Value1 which holds the port range start
+	// Should coincide with Dport if only one port is opened
+	Value1 int `json:"value1"`
+
+	// Not in the documentation, but the API returns Value2 which holds the port range end
+	// If only one port is opened, this value will hold the value -1. If multiple ports are
+	// opened, this value will hold the second element (delimited by - ) from Dport
+	Value2 int `json:"value2"`
+
+	// Not in the documentation. No idea what this is. My crystal ball is broken.
+	Id string `json:"id"`
 }
 
 type AllSecApplications struct {
-	Result SecApplication `json:"result,omitempty"`
+	Result []SecApplication `json:"result,omitempty"`
 }
