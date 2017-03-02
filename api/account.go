@@ -37,7 +37,7 @@ func (c *Client) AccountDetails(name string) (resp response.Account, err error) 
 // AllAccounts retrives details of the accounts that are in the
 // specified identity domain. You can use this HTTP request to
 // get details of the account that you must specify while creating a machine image.
-func (c *Client) AllAccounts() (resp response.AllAccounts, err error) {
+func (c *Client) AllAccounts(filter []Filter) (resp response.AllAccounts, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -45,9 +45,10 @@ func (c *Client) AllAccounts() (resp response.AllAccounts, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/", endpoints["account"], c.identify)
 
 	if err = c.request(paramsRequest{
-		verb: "GET",
-		url:  url,
-		resp: &resp,
+		verb:   "GET",
+		url:    url,
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

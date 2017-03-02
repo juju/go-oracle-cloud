@@ -12,7 +12,7 @@ import (
 
 // AllIpNetworks retrieves details of all the IP networks
 // that are available in the specified container.
-func (c *Client) AllIpNetworks() (resp response.AllIpNetworks, err error) {
+func (c *Client) AllIpNetworks(filter []Filter) (resp response.AllIpNetworks, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -21,9 +21,10 @@ func (c *Client) AllIpNetworks() (resp response.AllIpNetworks, err error) {
 		c.endpoints["ipnetwork"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

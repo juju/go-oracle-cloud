@@ -127,9 +127,10 @@ func (c *Client) AllSecRules(filter []Filter) (resp response.AllSecRules, err er
 		c.endpoints["secrule"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

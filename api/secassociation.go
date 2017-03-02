@@ -111,7 +111,7 @@ func (c *Client) SecAssociationDetails(
 }
 
 // AllSecAssociations retrives all security associations in the oracle cloud account
-func (c *Client) AllSecAssociations() (resp response.AllSecAssociations, err error) {
+func (c *Client) AllSecAssociations(filter []Filter) (resp response.AllSecAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -120,9 +120,10 @@ func (c *Client) AllSecAssociations() (resp response.AllSecAssociations, err err
 		c.endpoints["secassociation"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

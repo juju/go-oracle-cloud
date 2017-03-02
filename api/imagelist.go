@@ -40,7 +40,7 @@ func (c *Client) ImageListDetails(
 
 // AllImageLists retrieves details of all the available
 // image lists in the specified container.
-func (c *Client) AllImageLists() (resp response.AllImageLists, err error) {
+func (c *Client) AllImageLists(filter []Filter) (resp response.AllImageLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -49,9 +49,10 @@ func (c *Client) AllImageLists() (resp response.AllImageLists, err error) {
 		c.endpoints["imagelist"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		verb: "GET",
-		url:  url,
-		resp: &resp,
+		verb:   "GET",
+		url:    url,
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

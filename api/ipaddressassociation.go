@@ -36,7 +36,7 @@ func (c *Client) IpAddressAssociationDetails(name string) (resp response.IpAddre
 }
 
 // AllIpAddressAssociation Retrieves details of the specified IP address association.
-func (c *Client) AllIpAddressAssociations() (resp response.AllIpAddressAssociations, err error) {
+func (c *Client) AllIpAddressAssociations(filter []Filter) (resp response.AllIpAddressAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -45,9 +45,10 @@ func (c *Client) AllIpAddressAssociations() (resp response.AllIpAddressAssociati
 		c.endpoints["ipaddressassociation"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

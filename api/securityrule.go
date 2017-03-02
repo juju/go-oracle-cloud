@@ -171,7 +171,7 @@ func (c *Client) SecurityRuleDetails(
 
 // AllSecurityRules retrieves details of all the security rules
 // in the specified container.
-func (c *Client) AllSecurityRules() (resp response.AllSecurityRules, err error) {
+func (c *Client) AllSecurityRules(filter []Filter) (resp response.AllSecurityRules, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -180,9 +180,10 @@ func (c *Client) AllSecurityRules() (resp response.AllSecurityRules, err error) 
 		c.endpoints["securityrule"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

@@ -111,7 +111,7 @@ func (c *Client) DeleteSecurityProtocol(name string) (err error) {
 
 // AllSecurityProtocols retrieve details of all security
 // protocols in the specified container.
-func (c *Client) AllSecurityProtocols() (resp response.AllSecurityProtocols, err error) {
+func (c *Client) AllSecurityProtocols(filter []Filter) (resp response.AllSecurityProtocols, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -120,9 +120,10 @@ func (c *Client) AllSecurityProtocols() (resp response.AllSecurityProtocols, err
 		c.endpoints["securityprotocol"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		verb: "GET",
-		url:  url,
-		resp: &resp,
+		verb:   "GET",
+		url:    url,
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

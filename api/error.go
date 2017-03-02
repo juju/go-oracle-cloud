@@ -49,7 +49,7 @@ type ErrNotAuthorized struct{ message string }
 func (e ErrNotAuthorized) Error() string { return e.message }
 func (e *ErrNotAuthorized) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + ",Raw: " + string(body)
+	e.message = e.message + " ,Raw: " + string(body)
 	return e
 
 }
@@ -59,7 +59,7 @@ type ErrBadRequest struct{ message string }
 func (e ErrBadRequest) Error() string { return e.message }
 func (e *ErrBadRequest) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + ",Raw: " + string(body)
+	e.message = e.message + " ,Raw: " + string(body)
 	return e
 }
 
@@ -68,7 +68,7 @@ type ErrInternalApi struct{ message string }
 func (e ErrInternalApi) Error() string { return e.message }
 func (e *ErrInternalApi) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + ",Raw: " + string(body)
+	e.message = e.message + " ,Raw: " + string(body)
 	return e
 }
 
@@ -77,7 +77,7 @@ type ErrNotFound struct{ message string }
 func (e ErrNotFound) Error() string { return e.message }
 func (e *ErrNotFound) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + ",Raw: " + string(body)
+	e.message = e.message + " ,Raw: " + string(body)
 	return e
 }
 
@@ -86,7 +86,7 @@ type ErrStatusConflict struct{ message string }
 func (e ErrStatusConflict) Error() string { return e.message }
 func (e *ErrStatusConflict) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + ",Raw: " + string(body)
+	e.message = e.message + " ,Raw: " + string(body)
 	return e
 }
 
@@ -94,7 +94,7 @@ func (e *ErrStatusConflict) DumpApiError(r io.Reader) error {
 func dumpApiError(resp *http.Response) error {
 	body, _ := ioutil.ReadAll(resp.Body)
 	return fmt.Errorf(
-		"go-oracle-cloud: Error api response %d , Raw: %s",
+		"go-oracle-cloud: Error api response %d ,Raw: %s",
 		resp.Status, string(body),
 	)
 }

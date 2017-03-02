@@ -36,7 +36,7 @@ func (c *Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
 }
 
 // AllVirtualNics returns all virtual nic that are in the oracle account
-func (c *Client) AllVirtualNics() (resp response.AllVirtualNics, err error) {
+func (c *Client) AllVirtualNics(filter []Filter) (resp response.AllVirtualNics, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -44,9 +44,10 @@ func (c *Client) AllVirtualNics() (resp response.AllVirtualNics, err error) {
 	url := c.endpoints["vnc"] + "/"
 
 	if err = c.request(paramsRequest{
-		verb: "GET",
-		url:  url,
-		resp: &resp,
+		verb:   "GET",
+		url:    url,
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

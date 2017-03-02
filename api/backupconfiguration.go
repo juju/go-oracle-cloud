@@ -156,7 +156,7 @@ func (c *Client) BackupConfigurationDetails(
 
 // AllBackupConfigurations retrieves details for all backup
 // configuration objects the current user has permission to access
-func (c *Client) AllBackupConfigurations() (resp []response.BackupConfiguration, err error) {
+func (c *Client) AllBackupConfigurations(filter []Filter) (resp []response.BackupConfiguration, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -165,9 +165,10 @@ func (c *Client) AllBackupConfigurations() (resp []response.BackupConfiguration,
 	url := c.endpoints["backupconfiguration"] + "/"
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

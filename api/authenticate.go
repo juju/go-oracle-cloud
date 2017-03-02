@@ -41,7 +41,7 @@ func (c *Client) Authenticate() (err error) {
 			cookies := resp.Cookies()
 			if len(cookies) != 1 {
 				return fmt.Errorf(
-					"go-oracle-cloud: Invalid number of session cookies: %q", cookies,
+					"go-oracle-cloud: Invalid number of session cookies: %s", cookies,
 				)
 			}
 			// take the cookie
