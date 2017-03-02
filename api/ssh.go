@@ -99,7 +99,8 @@ func (c *Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 }
 
 // AllSShKeys returns list of all keys with all the details
-func (c *Client) AllSSHKeys() (resp response.AllSSH, err error) {
+// You can filter by name
+func (c *Client) AllSSHKeys(filter []Filter) (resp response.AllSSH, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -108,9 +109,10 @@ func (c *Client) AllSSHKeys() (resp response.AllSSH, err error) {
 		c.endpoints["sshkeys"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

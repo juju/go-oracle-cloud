@@ -148,7 +148,7 @@ func (c *Client) SecApplicationDetails(name string) (resp response.SecApplicatio
 }
 
 // AllSecApplications retrieves details of the security applications that are in the specified container
-func (c *Client) AllSecApplications() (resp response.AllSecApplications, err error) {
+func (c *Client) AllSecApplications(filter []Filter) (resp response.AllSecApplications, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -157,9 +157,10 @@ func (c *Client) AllSecApplications() (resp response.AllSecApplications, err err
 		c.endpoints["secapplication"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

@@ -3,7 +3,7 @@
 
 package response
 
-// An IP network allows you to define an IP subnet in your account.
+// IpNetwork is an ip network that allows you to define an IP subnet in your account.
 // The size of the IP subnet and the set IP addresses in the subnet
 // are determined by the IP address prefix that you specify while creating
 // the IP network. These IP addresses aren't part of the common pool
@@ -12,7 +12,7 @@ package response
 // IP address in that subnet. You can assign IP addresses to instances
 // either statically or dynamically, depending on your business needs.
 // So you have complete control over the IP addresses assigned to your instances
-type Ip struct {
+type IpNetwork struct {
 
 	// Description of the object.
 	Description string `json:"description,omitempty"`
@@ -61,8 +61,8 @@ type Ip struct {
 	Uri string `json:"uri"`
 }
 
-// AllIps holds a slice of all ip networks in the
+// AllIpNetworks holds a slice of all ip networks in the
 // oracle cloud account
-type AllIps struct {
-	Result []Ip `json:"result,omitempty"`
+type AllIpNetworks struct {
+	Result []IpNetwork `json:"result,omitempty"`
 }

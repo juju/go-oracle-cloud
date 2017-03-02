@@ -12,6 +12,7 @@ import (
 )
 
 // AllIpReservations Retrieves details of the IP reservations that are available
+// You can filter by tags, used and permanent.
 func (c *Client) AllIpReservations(filter []Filter) (resp response.AllIpReservations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth

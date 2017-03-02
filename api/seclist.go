@@ -78,7 +78,8 @@ func (c *Client) DeleteSecList(name string) (err error) {
 
 // AllSecLists retrieves details of the security lists that are in the specified
 // container and match the specified query criteria.
-func (c *Client) AllSecLists() (resp response.AllSecLists, err error) {
+// You can filter by name
+func (c *Client) AllSecLists(filter []Filter) (resp response.AllSecLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -87,9 +88,10 @@ func (c *Client) AllSecLists() (resp response.AllSecLists, err error) {
 		c.endpoints["seclist"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 
 		return resp, err

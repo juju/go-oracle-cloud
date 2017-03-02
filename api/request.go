@@ -26,7 +26,7 @@ var endpoints = map[string]string{
 	"ipaddressreservation":  "%s/network/v1/ipreservation",
 	"ipassociation":         "%s/ip/association",
 	"ipnetworkexchange":     "%s/network/v1/ipnetworkexchange",
-	"ipnetworks":            "%s/network/v1/ipnetwork",
+	"ipnetwork":             "%s/network/v1/ipnetwork",
 	"ipreservation":         "%s/ip/reservation",
 	"launchplan":            "%s/launchplan/",
 	"machineimage":          "%s/machineimage",
@@ -86,17 +86,27 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 	}
 }
 
+// Filter type that holds A Arg-Value, this should be present
+// as argument in all functions that start with the prefix All
 type Filter struct {
-	Arg, Value string
+	// Arg is the key of the Key-Value pair
+	Arg string
+	// Value is the value of the Key-Value pair
+	Value string
 }
 
 // paramsRequest used to fill up the params for the request function
+// this will hold different configurations such as the url of the request
+// directory flag, treat function, filters, etc.
 type paramsRequest struct {
 	// directory is the type of directory request
+	// this will make the request have a special
+	// Header request appended in order to make the api
+	// list names,containers
 	directory bool
 	// url this will not be checked so, make sure it is valid
 	url string
-	// verb contains an http verb POST, GET, PUT, PATH
+	// verb contains an http verb like for example POST,PUT,GET,DELETE
 	verb string
 	// body will contain the http body request if any
 	// for Get request this should be leaved nil
@@ -107,7 +117,7 @@ type paramsRequest struct {
 	// resp will contains a json object where the
 	// request function will decode
 	resp interface{}
-	// query args
+	// filter is the query args for All* type functions
 	filter []Filter
 }
 
@@ -132,11 +142,16 @@ func (c *Client) request(cfg paramsRequest) (err error) {
 		return err
 	}
 
+	// if the filter is specified in the config
+	// this means we want the query to be filtered
 	if cfg.filter != nil && len(cfg.filter) > 0 {
 		q := req.URL.Query()
 		for _, val := range cfg.filter {
+			// add the key-value query pair
 			q.Add(val.Arg, val.Value)
 		}
+		// after we've added all filters
+		// we now encode them into the base url
 		req.URL.RawQuery = q.Encode()
 	}
 

@@ -13,6 +13,7 @@ import (
 
 // AllIpAssociation retrieves the names of objects and subcontainers
 // that you can access in the specified container.
+// You can filter by parentpool, reservation and vcable
 func (c *Client) AllIpAssociations(filter []Filter) (resp response.AllIpAssociations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth

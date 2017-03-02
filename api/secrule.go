@@ -118,7 +118,7 @@ func (c *Client) SecRuleDetails(name string) (resp response.SecRule, err error) 
 }
 
 // AllSecRules retrives all security rulues from the oracle cloud account
-func (c *Client) AllSecRules() (resp response.AllSecRules, err error) {
+func (c *Client) AllSecRules(filter []Filter) (resp response.AllSecRules, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

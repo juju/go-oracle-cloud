@@ -107,7 +107,8 @@ func (c *Client) RebootInstanceRequestDetails(
 }
 
 //AllRebootInstanceRequests retrieves details of the reboot instance requests that are available in the specified container
-func (c *Client) AllRebootInstanceRequests() (resp response.AllRebootInstanceRequests, err error) {
+// You can filte by hard, instance, and name
+func (c *Client) AllRebootInstanceRequests(filter []Filter) (resp response.AllRebootInstanceRequests, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -116,9 +117,10 @@ func (c *Client) AllRebootInstanceRequests() (resp response.AllRebootInstanceReq
 		c.endpoints["rebootinstancerequest"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		verb: "GET",
-		url:  url,
-		resp: &resp,
+		verb:   "GET",
+		url:    url,
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

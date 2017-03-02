@@ -10,15 +10,15 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
-// AllIps retrieves details of all the IP networks
+// AllIpNetworks retrieves details of all the IP networks
 // that are available in the specified container.
-func (c *Client) AllIps() (resp response.AllIps, err error) {
+func (c *Client) AllIpNetworks() (resp response.AllIpNetworks, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
-	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/",
-		c.endpoint, c.identify, c.username)
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["ipnetwork"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
 		url:  url,
@@ -31,9 +31,9 @@ func (c *Client) AllIps() (resp response.AllIps, err error) {
 	return resp, nil
 }
 
-// IpDetails retrives details of a an IP network
+// IpNetworkDetails retrives details of a an IP network
 // that is available in the oracle account
-func (c *Client) IpDetails(name string) (resp response.Ip, err error) {
+func (c *Client) IpNetworkDetails(name string) (resp response.IpNetwork, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -42,8 +42,8 @@ func (c *Client) IpDetails(name string) (resp response.Ip, err error) {
 		return resp, errors.New("go-oracle-cloud: The given ip name is empty")
 	}
 
-	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s",
+		c.endpoints["ipnetwork"], name)
 
 	if err = c.request(paramsRequest{
 		url:  url,
@@ -56,20 +56,20 @@ func (c *Client) IpDetails(name string) (resp response.Ip, err error) {
 	return resp, nil
 }
 
-// CreateIp creates an IP network. An IP network allows you to define
+// CreateIpNetwork creates an IP network. An IP network allows you to define
 // an IP subnet in your account. With an IP network you can isolate
 // instances by creating separate IP networks and adding instances
 // to specific networks. Traffic can flow between instances within
 // the same IP network, but by default each network is isolated
 // from other networks and from the public Internet.
-func (c *Client) CreateIp(
+func (c *Client) CreateIpNetwork(
 	description string,
 	ipAddressPrefix string,
 	ipNetworkExchange string,
 	name string,
 	publicNaptEnabledFlag bool,
 	tags []string,
-) (resp response.Ip, err error) {
+) (resp response.IpNetwork, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -83,9 +83,9 @@ func (c *Client) CreateIp(
 		return resp, errors.New("go-oracle-cloud: Empty ip network name")
 	}
 
-	url := fmt.Sprintf("%s/network/v1/ipnetwork/", c.endpoint)
+	url := c.endpoints["ipnetwork"] + "/"
 
-	params := response.Ip{
+	params := response.IpNetwork{
 		Description:       description,
 		IpAddressPrefix:   ipAddressPrefix,
 		IpNetworkExchange: ipNetworkExchange,
@@ -106,8 +106,8 @@ func (c *Client) CreateIp(
 	return resp, nil
 }
 
-// DeleteIp deletes an IP network with a given name
-func (c *Client) DeleteIp(name string) (err error) {
+// DeleteIpNetwork deletes an IP network with a given name
+func (c *Client) DeleteIpNetwork(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
 	}
@@ -116,8 +116,7 @@ func (c *Client) DeleteIp(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty ip network name")
 	}
 
-	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, name)
+	url := fmt.Sprintf("%s%s", c.endpoints["ipnetwork"], name)
 
 	if err = c.request(paramsRequest{
 		url:  url,
@@ -129,7 +128,7 @@ func (c *Client) DeleteIp(name string) (err error) {
 	return nil
 }
 
-// UpdateIp can update an IP network and change the specified IP address prefix
+// UpdateIpNetwork can update an IP network and change the specified IP address prefix
 // for the network after you've created the network and attached instances to it.
 // However, when you change an IP address prefix, it could cause the IP addresses
 //currently assigned to existing instances to fall outside the specified IP network.
@@ -147,7 +146,7 @@ func (c *Client) DeleteIp(name string) (err error) {
 // to 192.168.1.0/20. Don't, however, change the IP address.
 // This ensures that all IP addresses that have been currently allocated
 // to instances remain valid in the updated IP network.
-func (c *Client) UpdateIp(
+func (c *Client) UpdateIpNetwork(
 	currentName string,
 	newName string,
 	description string,
@@ -155,7 +154,7 @@ func (c *Client) UpdateIp(
 	ipAddressPrefix string,
 	publicNaptEnabledFlag bool,
 	tags []string,
-) (resp response.Ip, err error) {
+) (resp response.IpNetwork, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -173,10 +172,9 @@ func (c *Client) UpdateIp(
 		newName = currentName
 	}
 
-	url := fmt.Sprintf("%s/network/v1/ipnetwork/Compute-%s/%s/%s",
-		c.endpoint, c.identify, c.username, currentName)
+	url := fmt.Sprintf("%s%s", c.endpoints["ipnetwork"], currentName)
 
-	params := response.Ip{
+	params := response.IpNetwork{
 		Description:       description,
 		IpAddressPrefix:   ipAddressPrefix,
 		IpNetworkExchange: ipNetworkExchange,

@@ -119,7 +119,8 @@ func (c *Client) IpSecListDetail(name string) (resp response.SecIpList, err erro
 }
 
 // AllSecIpLists retrieves details of the security IP lists that are in the account
-func (c *Client) AllSecIpLists() (resp response.AllSecIpLists, err error) {
+// You can filter by name
+func (c *Client) AllSecIpLists(filter []Filter) (resp response.AllSecIpLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -128,8 +129,9 @@ func (c *Client) AllSecIpLists() (resp response.AllSecIpLists, err error) {
 		c.endpoints["seciplist"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
+		url:    url,
+		verb:   "GET",
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}

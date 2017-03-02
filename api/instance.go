@@ -38,6 +38,7 @@ func (c *Client) DeleteInstance(name string) (err error) {
 // container and match the specified query criteria.
 // If you don't specify any query criteria, then details
 // of all the instances in the container are displayed.
+// You can filter by tags.
 func (c *Client) AllInstances(filter []Filter) (resp response.AllInstances, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth

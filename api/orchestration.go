@@ -180,7 +180,8 @@ func (c *Client) OrchestrationDetails(name string) (resp response.Orchestration,
 }
 
 // AllOrchestrations retrives all orchestration
-func (c *Client) AllOrchestrations() (resp response.AllOrchestrations, err error) {
+// You can filter by status
+func (c *Client) AllOrchestrations(filter []Filter) (resp response.AllOrchestrations, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -189,9 +190,10 @@ func (c *Client) AllOrchestrations() (resp response.AllOrchestrations, err error
 		c.endpoints["orchestration"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}
