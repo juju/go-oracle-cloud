@@ -1,0 +1,114 @@
+package api
+
+import (
+	"errors"
+
+	"github.com/hoenirvili/go-oracle-cloud/response"
+)
+
+// StorageSnapshotParams
+type StorageSnapshotParams struct {
+
+	// Description is the description of the storage
+	// snapshot
+	Description string `json:"description,omitempty"`
+
+	// Name is the name of the snapshot
+	Name string `json:"name"`
+
+	// Parent_volume_bootable field indicating
+	// whether the parent storage volume is bootable
+	Parent_volume_bootable string `json:"parent_volume_bootable"`
+
+	// Property that describes:
+	// If you don't specify a value, a remote snapshot is created.
+	// Remote snapshots aren't stored in the
+	// same location as the original storage volume. Instead,
+	// they are reduced and stored in the associated Oracle
+	// Storage Cloud Service instance. Remote snapshots are useful
+	// if your domain spans multiple sites.
+	// With remote snapshots, you can create a snapshot in one
+	// site, then switch to another site and create a copy of the
+	// storage volume on that site. However, creating a
+	// remote snapshot and restoring a storage volume from a remote
+	// snapshot can take quite a long time depending on the size
+	// of the storage volume, as data is written to and from
+	// the Oracle Storage Cloud Service instance.
+	// Specify /oracle/private/storage/snapshot/collocated to
+	// create a collocated snapshot. Colocated snapshots
+	// are stored in the same physical location as the
+	// original storage volume and each snapshot uses the
+	// same amount of storage as the original volume.
+	// Colocated snapshots and volumes from colocated snapshots can
+	// be created very quickly. Colocated snapshots are useful
+	// for quickly cloning storage volumes within a site.
+	// However, you can't restore volumes across sites using colocated snapshots
+	Property string `json:"property"`
+
+	// Tags are strings that describe the
+	// storage snapshot and help you identify it
+	Tags []string `json:"tags,omitempty"`
+
+	// Volume is the volume name you wish to create
+	// the snapshot
+	Volume string `json:"volume"`
+}
+
+// validate will validate the storage snapshot params
+func (s StorageSnapshotParams) validate() (err error) {
+	if s.Name == "" {
+		return errors.New(
+			"go-oracle-cloud: Empty storage snapshot name",
+		)
+	}
+
+	if s.Volume == "" {
+		return errors.New(
+			"go-oracle-cloud: Empty storage snapshot volume name target",
+		)
+	}
+
+	return nil
+}
+
+// CreateStorageSnapshot creates a storage volume snapshot.
+// Creating a storage volume snapshot enables you to capture
+// the current state of the storage volume.
+// You can retain snapshots as a backup, or use
+// them to create new, identical storage volumes.
+// You can create a snapshot of a storage volume either
+// when it is attached to an instance or after detaching it.
+// If the storage volume is attached to an instance, then only
+// data that has already been written to the storage volume will
+// be captured in the snapshot. Data that is cached by the
+// application or the operating system will be excluded from
+// the snapshot. To create a snapshot of a bootable storage
+// volume that is currently being used by an instance, you
+// should delete the instance before you create the snapshot,
+// to ensure the consistency of data. You can create
+// the instance again later on, after the snapshot is created.
+func (c *Client) CreateStorageSnapshot(
+	p StorageSnapshotParams,
+) (resp response.StorageSnapshot, err error) {
+
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	if err = p.validate(); err != nil {
+		return resp, nil
+	}
+
+	url := c.endpoints["storagesnapshot"] + "/"
+
+	if err = c.request(paramsRequest{
+		verb: "POST",
+		url:  url,
+		resp: &resp,
+		body: &p,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
