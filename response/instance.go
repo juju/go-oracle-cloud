@@ -3,7 +3,11 @@
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import (
+	"fmt"
+
+	"github.com/hoenirvili/go-oracle-cloud/common"
+)
 
 type LaunchPlan struct {
 	Relationships []string   `json:"relationships,omitempty"`
@@ -100,40 +104,110 @@ type Attributes map[string]interface{}
 // Every key is the name of the interface example eth0,eth1, etc.
 // And every valu is a predefined json objects that holds infromation
 // about the interface
-type Networking map[string]interface{}
+type Networking map[string]map[string]interface{}
 
 // Nic type used to hold information from a
-// given inteface in the instance response
+// given interface card
+// This wil be used to dump all information from the
+// Netowrking type above
 type Nic struct {
-	Model     string   `json:"model,omitempty"`
-	Seclists  []string `json:"seclists"`
-	Dns       []string `json:"dns"`
-	Nat       []string `json:"nat,omitempty"`
-	Vethernet string   `json:"vethernet"`
+	Vethernet string
+	Nat       string
+	Model     string
+	Seclists  []string
+	Dns       []string
 }
 
-// Interfaces returns a map of interfaces from the response instance
-// this should be called in order to take details of about the interfaces
-// that the instance uses
-// Nil value returns means that the response is empty
-func (c Networking) Interfaces() (interfaces map[string]Nic) {
-	if c == nil || len(c) == 0 {
-		return nil
+// Interfaces returns a map of Nics from the response instance
+// If we have some unexpected values in the response other than what we
+// expect(declared in the Nic struct above), we return a descriptfull error
+// If the response is empty the func will return nil, nil
+func (n Networking) Interfaces() (interfaces map[string]Nic, err error) {
+	if n == nil || len(n) == 0 {
+		return nil, nil
 	}
 
-	for key, val := range c {
-		data, ok := val.(Nic)
-		if !ok {
-			continue
+	interfaces = make(map[string]Nic)
+
+	// for every interface nic eth0, eth1..
+	for nic, v := range n {
+		// make a new default nic
+		ic := Nic{}
+
+		// for every key in the nic
+		for key, k := range v {
+
+			// decide on what kind of type the key has
+			switch k.(type) {
+
+			// if we are dealing with the string type
+			// that means we should assume we have
+			// this keys "vethernet", "model" and "nat"
+			case string:
+				switch key {
+				case "vethernet":
+					ic.Vethernet = k.(string)
+				case "model":
+					ic.Model = k.(string)
+				case "nat":
+					ic.Nat = k.(string)
+
+				// if there is other key bail out
+				default:
+					return nil, fmt.Errorf(
+						"Unknown key %s in nic", key,
+					)
+				}
+
+			// if we are dealing with the []interface type
+			// that means we should assume we have
+			// this keys seclists and dns
+			case []interface{}:
+				switch key {
+				case "seclists":
+					for _, m := range k.([]interface{}) {
+						// append into the slice the value
+						elem, ok := m.(string)
+						// if it's not a slice of strings we should bail out
+						if !ok {
+							return nil, fmt.Errorf(
+								"Different type in seclists, type %T", m,
+							)
+						}
+
+						ic.Seclists = append(ic.Seclists, elem)
+					}
+				case "dns":
+					for _, m := range k.([]interface{}) {
+						elem, ok := m.(string)
+						if !ok {
+							return nil, fmt.Errorf(
+								"Different type in dns, type %T", m,
+							)
+						}
+
+						ic.Dns = append(ic.Dns, elem)
+					}
+
+				// if there is other key bail out
+				default:
+					return nil, fmt.Errorf(
+						"Unknown key %s in nic ", key,
+					)
+				}
+
+			// if have other type, bail out
+			default:
+				return nil, fmt.Errorf(
+					"Unknown key types, recived type %T", k,
+				)
+			}
 		}
-		interfaces[key] = data
+		// assign the new nic
+		interfaces[nic] = ic
 	}
 
-	if len(interfaces) == 0 {
-		return nil
-	}
-
-	return interfaces
+	return interfaces, nil
 }
 
 type Storage struct {
