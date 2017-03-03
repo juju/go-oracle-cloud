@@ -47,7 +47,7 @@ var endpoints = map[string]string{
 	"snapshot":              "%s/snapshot",
 	"sshkey":                "%s/sshkey",
 	"storageattachment":     "%s/storage/attachment",
-	"storagepropertie":      "%s/property/storage",
+	"storageproperty":       "%s/property/storage",
 	"storagesnapshot":       "%s/storage/snapshot",
 	"storagevolume":         "%s/storage/volume",
 	"virtualnic":            "%s/network/v1/vnic",

@@ -226,14 +226,6 @@ type Dns struct {
 	Vcable_eth0 string `json:"nimbula_vcable-eth0"`
 }
 
-type Network struct {
-	Vcable_eth0    Vcable   `json:"nimbula_vcable-eth0"`
-	Model          string   `json:"model,omitempty"`
-	Vethernet_type string   `json:"vethernet_type"`
-	Id             string   `json:"id"`
-	Dhcp_options   []string `json:"dhcp_options,omitempty"`
-}
-
 type Vcable struct {
 	Vethernet_id   string   `json:"vethernet_id"`
 	Vethernet      string   `json:"vethernet"`
