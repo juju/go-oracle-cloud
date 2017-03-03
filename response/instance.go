@@ -3,11 +3,7 @@
 
 package response
 
-import (
-	"fmt"
-
-	"github.com/hoenirvili/go-oracle-cloud/common"
-)
+import "github.com/hoenirvili/go-oracle-cloud/common"
 
 type LaunchPlan struct {
 	Relationships []string   `json:"relationships,omitempty"`
@@ -98,116 +94,71 @@ type Instance struct {
 // the instance response
 // This attributes can have user data scripts or any other
 // key, value passed to be executed when the instance will strat, inits
-type Attributes map[string]interface{}
+type Attributes struct {
+	Dns                   map[string]string  `json:"dns"`
+	Network               map[string]Network `json:"network"`
+	Nimbula_orchestration string             `json:"nimbula_orchestration"`
+	Sshkeys               []string           `json:"sshkeys"`
+	Userdata              Userdata           `json:"userdata"`
+}
+
+// Userdata key value pair
+// In order to read elements from it you should use the build in
+// function for this type StringValue
+type Userdata map[string]interface{}
+
+// StringValue returns a string from a given key in the userdata
+func (u Userdata) StringValue(key string) string {
+	if u == nil {
+		return ""
+	}
+
+	val, ok := u[key].(string)
+	if !ok {
+		return ""
+	}
+
+	return val
+}
+
+type Network struct {
+	Address        []string `json:"address"`
+	Dhcp_options   []string `json:"dhcp_options,omitempty"`
+	Id             string   `json:"id"`
+	Model          string   `json:"model"`
+	Vethernet      string   `json:"vethernet"`
+	Vethernet_id   string   `json:"vethernet_id"`
+	Vethernet_type string   `josn:"vethernet_type"`
+	Instance       string   `json:"instance,omitmepty"`
+	Ipassociations []string `json:"ipassociations,omitempty"`
+	Ipattachment   string   `json:"ipattachment"`
+	Ipnetwork      string   `json:"ipnetwork"`
+	Vnic           string   `json:"vnic"`
+	Vnicsets       []string `json:"vnicsets"`
+}
+
+type Dns struct {
+	Domain      string `json:"domain"`
+	Hostname    string `json:"hostname"`
+	Vcable_eth0 string `json:"nimbula_vcable-eth0"`
+}
 
 // Networking is a json object of string keys
 // Every key is the name of the interface example eth0,eth1, etc.
 // And every valu is a predefined json objects that holds infromation
 // about the interface
-type Networking map[string]map[string]interface{}
+type Networking map[string]Nic
 
 // Nic type used to hold information from a
 // given interface card
 // This wil be used to dump all information from the
 // Netowrking type above
 type Nic struct {
-	Vethernet string
-	Nat       string
-	Model     string
-	Seclists  []string
-	Dns       []string
-}
-
-// Interfaces returns a map of Nics from the response instance
-// If we have some unexpected values in the response other than what we
-// expect(declared in the Nic struct above), we return a descriptfull error
-// If the response is empty the func will return nil, nil
-func (n Networking) Interfaces() (interfaces map[string]Nic, err error) {
-	if n == nil || len(n) == 0 {
-		return nil, nil
-	}
-
-	interfaces = make(map[string]Nic)
-
-	// for every interface nic eth0, eth1..
-	for nic, v := range n {
-		// make a new default nic
-		ic := Nic{}
-
-		// for every key in the nic
-		for key, k := range v {
-
-			// decide on what kind of type the key has
-			switch k.(type) {
-
-			// if we are dealing with the string type
-			// that means we should assume we have
-			// this keys "vethernet", "model" and "nat"
-			case string:
-				switch key {
-				case "vethernet":
-					ic.Vethernet = k.(string)
-				case "model":
-					ic.Model = k.(string)
-				case "nat":
-					ic.Nat = k.(string)
-
-				// if there is other key bail out
-				default:
-					return nil, fmt.Errorf(
-						"Unknown key %s in nic", key,
-					)
-				}
-
-			// if we are dealing with the []interface type
-			// that means we should assume we have
-			// this keys seclists and dns
-			case []interface{}:
-				switch key {
-				case "seclists":
-					for _, m := range k.([]interface{}) {
-						// append into the slice the value
-						elem, ok := m.(string)
-						// if it's not a slice of strings we should bail out
-						if !ok {
-							return nil, fmt.Errorf(
-								"Different type in seclists, type %T", m,
-							)
-						}
-
-						ic.Seclists = append(ic.Seclists, elem)
-					}
-				case "dns":
-					for _, m := range k.([]interface{}) {
-						elem, ok := m.(string)
-						if !ok {
-							return nil, fmt.Errorf(
-								"Different type in dns, type %T", m,
-							)
-						}
-
-						ic.Dns = append(ic.Dns, elem)
-					}
-
-				// if there is other key bail out
-				default:
-					return nil, fmt.Errorf(
-						"Unknown key %s in nic ", key,
-					)
-				}
-
-			// if have other type, bail out
-			default:
-				return nil, fmt.Errorf(
-					"Unknown key types, recived type %T", k,
-				)
-			}
-		}
-		// assign the new nic
-		interfaces[nic] = ic
-	}
-
-	return interfaces, nil
+	Vethernet string   `json:"vethernet"`
+	Nat       string   `json:"nat"`
+	Model     string   `json:"model,omitempty"`
+	Seclists  []string `json:"seclists"`
+	Dns       []string `json:"dns"`
 }
 
 type Storage struct {
@@ -218,22 +169,6 @@ type Storage struct {
 
 type Hypervisor struct {
 	Mode string `json:"mode"`
-}
-
-type Dns struct {
-	Domain      string `json:"domain"`
-	Hostname    string `json:"hostname"`
-	Vcable_eth0 string `json:"nimbula_vcable-eth0"`
-}
-
-type Vcable struct {
-	Vethernet_id   string   `json:"vethernet_id"`
-	Vethernet      string   `json:"vethernet"`
-	Address        []string `json:"address"`
-	Model          string   `json:"model,omitempty"`
-	Vethernet_type string   `json:"vethernet_type"`
-	Id             string   `json:"id"`
-	Dhcp_options   []string `json:"dhcp_options,omitempty"`
 }
 
 type ResourceRequirments struct {
