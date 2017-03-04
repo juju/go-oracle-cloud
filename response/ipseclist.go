@@ -30,7 +30,7 @@ type SecIpList struct {
 	Uri string `json:"uri"`
 
 	// the group id of the secure ip list
-	Group_id int `json:"group_id"`
+	Group_id string `json:"group_id"`
 
 	// the id of the secure ip list
 	Id string `json:"id"`

@@ -8,7 +8,11 @@ import (
 	"fmt"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
+
+	"github.com/juju/loggo"
 )
+
+var logger = loggo.GetLogger("oracle.client")
 
 // CreateSecIpList a security IP list. Note that, after creating a
 // security IP list, you can add additional IP addresses to the list
@@ -111,6 +115,7 @@ func (c *Client) IpSecListDetail(name string) (resp response.SecIpList, err erro
 	if err = c.request(paramsRequest{
 		url:  url,
 		verb: "GET",
+		resp: &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -132,6 +137,7 @@ func (c *Client) AllSecIpLists(filter []Filter) (resp response.AllSecIpLists, er
 		url:    url,
 		verb:   "GET",
 		filter: filter,
+		resp:   &resp,
 	}); err != nil {
 		return resp, err
 	}
@@ -153,6 +159,7 @@ func (c *Client) AllDefaultSecIpLists(filter []Filter) (resp response.AllSecIpLi
 		url:    url,
 		verb:   "GET",
 		filter: filter,
+		resp:   &resp,
 	}); err != nil {
 		return resp, err
 	}

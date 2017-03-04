@@ -10,22 +10,22 @@ import (
 )
 
 const (
-    PublicNATPool string = "ippool:/oracle/public/ippool"
+	PublicNATPool string = "ippool:/oracle/public/ippool"
 )
 
 type VEthernet struct {
-	Dns      []string `json:"dns"`
-	Nat      string   `json:"nat"`
-	SecLists []string `json:"seclists"`
-	Model    string   `json:"model"`
+	Dns      []string `json:"dns,omitempty"`
+	Nat      string   `json:"nat,omitempty"`
+	SecLists []string `json:"seclists,omitempty"`
+	Model    string   `json:"model,omitempty"`
 }
 
 type VNic struct {
-	Dns       []string `json:"dns"`
-	Nat       string   `json:"nat"`
-	SecLists  []string `json:"seclists"`
-	Model     string   `json:"model"`
-	IPNetwork string   `json:"ipnetwork"`
+	Dns       []string `json:"dns,omitempty"`
+	Nat       string   `json:"nat,omitempty"`
+	SecLists  []string `json:"seclists,omitempty"`
+	Model     string   `json:"model,omitempty"`
+	IPNetwork string   `json:"ipnetwork,omitempty"`
 }
 
 type Instances struct {

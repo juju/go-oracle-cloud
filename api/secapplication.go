@@ -64,7 +64,7 @@ type SecApplicationParams struct {
 	// The following text representations are allowed:
 	// tcp, udp, icmp, igmp, ipip, rdp, esp, ah, gre, icmpv6, ospf, pim, sctp, mplsip, all.
 	// To specify all protocols, set this to all.
-	Protocol common.Protocol
+	Protocol common.Protocol `json:"protocol"`
 }
 
 func (s SecApplicationParams) validate() (err error) {
