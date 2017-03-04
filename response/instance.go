@@ -94,46 +94,71 @@ type Instance struct {
 // the instance response
 // This attributes can have user data scripts or any other
 // key, value passed to be executed when the instance will strat, inits
-type Attributes map[string]interface{}
+type Attributes struct {
+	Dns                   map[string]string  `json:"dns"`
+	Network               map[string]Network `json:"network"`
+	Nimbula_orchestration string             `json:"nimbula_orchestration"`
+	Sshkeys               []string           `json:"sshkeys"`
+	Userdata              Userdata           `json:"userdata"`
+}
+
+// Userdata key value pair
+// In order to read elements from it you should use the build in
+// function for this type StringValue
+type Userdata map[string]interface{}
+
+// StringValue returns a string from a given key in the userdata
+func (u Userdata) StringValue(key string) string {
+	if u == nil {
+		return ""
+	}
+
+	val, ok := u[key].(string)
+	if !ok {
+		return ""
+	}
+
+	return val
+}
+
+type Network struct {
+	Address        []string `json:"address"`
+	Dhcp_options   []string `json:"dhcp_options,omitempty"`
+	Id             string   `json:"id"`
+	Model          string   `json:"model"`
+	Vethernet      string   `json:"vethernet"`
+	Vethernet_id   string   `json:"vethernet_id"`
+	Vethernet_type string   `josn:"vethernet_type"`
+	Instance       string   `json:"instance,omitmepty"`
+	Ipassociations []string `json:"ipassociations,omitempty"`
+	Ipattachment   string   `json:"ipattachment"`
+	Ipnetwork      string   `json:"ipnetwork"`
+	Vnic           string   `json:"vnic"`
+	Vnicsets       []string `json:"vnicsets"`
+}
+
+type Dns struct {
+	Domain      string `json:"domain"`
+	Hostname    string `json:"hostname"`
+	Vcable_eth0 string `json:"nimbula_vcable-eth0"`
+}
 
 // Networking is a json object of string keys
 // Every key is the name of the interface example eth0,eth1, etc.
 // And every valu is a predefined json objects that holds infromation
 // about the interface
-type Networking map[string]interface{}
+type Networking map[string]Nic
 
 // Nic type used to hold information from a
-// given inteface in the instance response
+// given interface card
+// This wil be used to dump all information from the
+// Netowrking type above
 type Nic struct {
+	Vethernet string   `json:"vethernet"`
+	Nat       string   `json:"nat"`
 	Model     string   `json:"model,omitempty"`
 	Seclists  []string `json:"seclists"`
 	Dns       []string `json:"dns"`
-	Nat       []string `json:"nat,omitempty"`
-	Vethernet string   `json:"vethernet"`
-}
-
-// Interfaces returns a map of interfaces from the response instance
-// this should be called in order to take details of about the interfaces
-// that the instance uses
-// Nil value returns means that the response is empty
-func (c Networking) Interfaces() (interfaces map[string]Nic) {
-	if c == nil || len(c) == 0 {
-		return nil
-	}
-
-	for key, val := range c {
-		data, ok := val.(Nic)
-		if !ok {
-			continue
-		}
-		interfaces[key] = data
-	}
-
-	if len(interfaces) == 0 {
-		return nil
-	}
-
-	return interfaces
 }
 
 type Storage struct {
@@ -144,30 +169,6 @@ type Storage struct {
 
 type Hypervisor struct {
 	Mode string `json:"mode"`
-}
-
-type Dns struct {
-	Domain      string `json:"domain"`
-	Hostname    string `json:"hostname"`
-	Vcable_eth0 string `json:"nimbula_vcable-eth0"`
-}
-
-type Network struct {
-	Vcable_eth0    Vcable   `json:"nimbula_vcable-eth0"`
-	Model          string   `json:"model,omitempty"`
-	Vethernet_type string   `json:"vethernet_type"`
-	Id             string   `json:"id"`
-	Dhcp_options   []string `json:"dhcp_options,omitempty"`
-}
-
-type Vcable struct {
-	Vethernet_id   string   `json:"vethernet_id"`
-	Vethernet      string   `json:"vethernet"`
-	Address        []string `json:"address"`
-	Model          string   `json:"model,omitempty"`
-	Vethernet_type string   `json:"vethernet_type"`
-	Id             string   `json:"id"`
-	Dhcp_options   []string `json:"dhcp_options,omitempty"`
 }
 
 type ResourceRequirments struct {
