@@ -99,7 +99,7 @@ type Attributes struct {
 	Network               map[string]Network `json:"network"`
 	Nimbula_orchestration string             `json:"nimbula_orchestration"`
 	Sshkeys               []string           `json:"sshkeys"`
-	Userdata              Userdata           `json:"userdata"`
+	Userdata              interface{}        `json:"userdata"`
 }
 
 // Userdata key value pair

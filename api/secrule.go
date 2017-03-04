@@ -12,7 +12,7 @@ import (
 )
 
 type SecRuleParams struct {
-	Action      common.SecRuleAction `json:"permit"`
+	Action      common.SecRuleAction `json:"action"`
 	Application string               `json:"application"`
 	Description string               `json:"description,omitempty"`
 	Disabled    bool                 `json:"disabled"`

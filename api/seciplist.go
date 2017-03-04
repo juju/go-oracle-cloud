@@ -125,7 +125,7 @@ func (c *Client) AllSecIpLists(filter []Filter) (resp response.AllSecIpLists, er
 		return resp, errNotAuth
 	}
 
-	url := fmt.Sprintf("%s/Compute-%s/%s",
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["seciplist"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
@@ -142,24 +142,23 @@ func (c *Client) AllSecIpLists(filter []Filter) (resp response.AllSecIpLists, er
 // AllDefaultSecIpLists retrieves details of the security IP lists that are defined by default in
 // the oracle compute cloud.
 func (c *Client) AllDefaultSecIpLists(filter []Filter) (resp response.AllSecIpLists, err error) {
-    if !c.isAuth() {
-        return resp, errNotAuth
-    }
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
 
-    url := fmt.Sprintf("%s/oracle/public/",
-        c.endpoints["seciplist"], c.identify, c.username)
+	url := fmt.Sprintf("%s/oracle/public/",
+		c.endpoints["seciplist"])
 
-    if err = c.request(paramsRequest{
-        url:    url,
-        verb:   "GET",
-        filter: filter,
-    }); err != nil {
-        return resp, err
-    }
+	if err = c.request(paramsRequest{
+		url:    url,
+		verb:   "GET",
+		filter: filter,
+	}); err != nil {
+		return resp, err
+	}
 
-    return resp, nil
+	return resp, nil
 }
-
 
 // UpdateSecIpList updates IP addresses and description of
 // the specified security IP list. Note that this command replaces

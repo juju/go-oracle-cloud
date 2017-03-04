@@ -9,6 +9,25 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
+const (
+    PublicNATPool string = "ippool:/oracle/public/ippool"
+)
+
+type VEthernet struct {
+	Dns      []string `json:"dns"`
+	Nat      string   `json:"nat"`
+	SecLists []string `json:"seclists"`
+	Model    string   `json:"model"`
+}
+
+type VNic struct {
+	Dns       []string `json:"dns"`
+	Nat       string   `json:"nat"`
+	SecLists  []string `json:"seclists"`
+	Model     string   `json:"model"`
+	IPNetwork string   `json:"ipnetwork"`
+}
+
 type Instances struct {
 	// Shape represents every instance in oracle cloud has a predefined shape
 	// in order to create a virtual instance
@@ -38,6 +57,8 @@ type Instances struct {
 	// an instance listing.
 	// These tags aren’t available from within the instance.
 	Tags []string `json:"tags,omitempty"`
+
+	Networking map[string]interface{} `json:"networking,omitempty"`
 
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
 

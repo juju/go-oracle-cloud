@@ -177,7 +177,7 @@ func (c *Client) DefaultSecApplications(filter []Filter) (resp response.AllSecAp
 	}
 
 	url := fmt.Sprintf("%s/oracle/public/",
-		c.endpoints["secapplication"], c.identify, c.username)
+		c.endpoints["secapplication"])
 
 	if err = c.request(paramsRequest{
 		url:    url,
