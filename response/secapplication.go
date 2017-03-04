@@ -1,6 +1,10 @@
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import (
+    "fmt"
+
+    "github.com/hoenirvili/go-oracle-cloud/common"
+)
 
 type SecApplication struct {
 
@@ -71,6 +75,17 @@ type SecApplication struct {
 
 	// Not in the documentation. No idea what this is. My crystal ball is broken.
 	Id string `json:"id"`
+}
+
+func (s *SecApplication) String() string {
+    return s.Name
+}
+
+func (s *SecApplication) PortProtocolPair() string {
+    if s.Dport == "" {
+        return ""
+    }
+    return fmt.Sprintf("%s/%s", s.Dport, s.Protocol)
 }
 
 type AllSecApplications struct {

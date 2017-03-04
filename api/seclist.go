@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hoenirvili/go-oracle-cloud/common"
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
@@ -17,8 +18,8 @@ import (
 func (c *Client) CreateSecList(
 	description string,
 	name string,
-	outbound_cidr_policy string,
-	policy string,
+	outbound_cidr_policy common.SecRuleAction,
+	policy common.SecRuleAction,
 ) (resp response.SecList, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -29,10 +30,10 @@ func (c *Client) CreateSecList(
 	}
 
 	params := struct {
-		Description          string `json:"description,omitempty"`
-		Name                 string `json:"name"`
-		Outbound_cidr_policy string `json:"outbound_cidr_policy"`
-		Policy               string `json:"policy"`
+		Description          string               `json:"description,omitempty"`
+		Name                 string               `json:"name"`
+		Outbound_cidr_policy common.SecRuleAction `json:"outbound_cidr_policy"`
+		Policy               common.SecRuleAction `json:"policy"`
 	}{
 		Description:          description,
 		Name:                 name,

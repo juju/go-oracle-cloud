@@ -139,6 +139,28 @@ func (c *Client) AllSecIpLists(filter []Filter) (resp response.AllSecIpLists, er
 	return resp, nil
 }
 
+// AllDefaultSecIpLists retrieves details of the security IP lists that are defined by default in
+// the oracle compute cloud.
+func (c *Client) AllDefaultSecIpLists(filter []Filter) (resp response.AllSecIpLists, err error) {
+    if !c.isAuth() {
+        return resp, errNotAuth
+    }
+
+    url := fmt.Sprintf("%s/oracle/public/",
+        c.endpoints["seciplist"], c.identify, c.username)
+
+    if err = c.request(paramsRequest{
+        url:    url,
+        verb:   "GET",
+        filter: filter,
+    }); err != nil {
+        return resp, err
+    }
+
+    return resp, nil
+}
+
+
 // UpdateSecIpList updates IP addresses and description of
 // the specified security IP list. Note that this command replaces
 // the values in the secipentries and description fields with
