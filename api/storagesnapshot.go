@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
@@ -106,6 +107,106 @@ func (c *Client) CreateStorageSnapshot(
 		url:  url,
 		resp: &resp,
 		body: &p,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// DeleteStorageSnapshot deletes the specified storage volume snapshot
+func (c *Client) DelteStorageSnapshot(
+	name string,
+) (err error) {
+
+	if !c.isAuth() {
+		return errNotAuth
+	}
+
+	if name == "" {
+		return errors.New(
+			"go-oracle-cloud: Empty storage snapshot name",
+		)
+	}
+
+	url := fmt.Sprintf("%s%s", c.endpoints["storagesnapshot"], name)
+
+	if err = c.request(paramsRequest{
+		verb: "DELETE",
+		url:  url,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// StorageSnapshotDetails retrieves details about the specified storage volume snapshot
+func (c *Client) StorageSnapshotDetails(
+	name string,
+) (resp response.StorageSnapshot, err error) {
+
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty storage snapshot name",
+		)
+	}
+
+	url := fmt.Sprintf("%s%s", c.endpoints["storagesnapshot"], name)
+
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// AllStorageSnapshots retrieves details of the storage volume snapshots that
+// are available in the specified container and match the specified query criteria
+func (c *Client) AllStorageSnapshots(
+	filter []Filter,
+) (resp response.AllStorageSnapshots, err error) {
+
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
+		c.endpoints["storagesnapshot"], c.identify, c.username)
+
+	if err = c.request(paramsRequest{
+		verb: "GET",
+		url:  url,
+		resp: &resp,
+	}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// StorageSnapshotNames retrieves the names of objects and subcontainers that you can access in the specified container
+func (c *Client) StorageSnapshotNames() (resp response.DirectoryNames, err error) {
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
+	url := fmt.Sprintf("%/Compute-%s/%s/",
+		c.endpoints["storagesnapshot"], c.identify, c.username)
+
+	if err = c.request(paramsRequest{
+		directory: true,
+		verb:      "GET",
+		url:       url,
+		resp:      &resp,
 	}); err != nil {
 		return resp, err
 	}
