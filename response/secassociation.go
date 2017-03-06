@@ -35,5 +35,5 @@ type SecAssociation struct {
 // AllSecAssociations is a list of all seurity association
 // in the oracle cloud account
 type AllSecAssociations struct {
-	Restul []SecAssociation `json:"result,omitempty"`
+	Result []SecAssociation `json:"result,omitempty"`
 }
