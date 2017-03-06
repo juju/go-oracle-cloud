@@ -119,6 +119,11 @@ type paramsRequest struct {
 	resp interface{}
 	// filter is the query args for All* type functions
 	filter []Filter
+
+	// In case of authentication error, we need to refresh
+	// the token and retry the request. This allows us to track
+	// whether or not this is a retry or the initial request
+	isRetry bool
 }
 
 // request function is a wrapper around building the request,
@@ -211,6 +216,12 @@ func (c *Client) request(cfg paramsRequest) (err error) {
 	if IsNotAuthorized(errTreat) && c.isAuth() {
 		if err := c.RefreshCookie(); err != nil {
 			return err
+		}
+		if !cfg.isRetry {
+			// resend the request after the refresh
+			newCfg := cfg
+			newCfg.isRetry = true
+			return c.request(newCfg)
 		}
 	} else if errTreat != nil {
 		return errTreat
