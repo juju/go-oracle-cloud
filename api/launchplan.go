@@ -133,7 +133,7 @@ type Instances struct {
 	Boot_order []int `json:"boot_order,omitempty"`
 
 	// Storage_attachments holds the stroge volume and index for creating the instance
-	Storage_attachments StorageAttachment `json:"storage_attachments,omitempty"`
+	Storage_attachments []string `json:"storage_attachments,omitempty"`
 
 	// Reverse_dns boolean flag that represents:
 	// If set to true (default), then reverse DNS records are created.
@@ -141,23 +141,23 @@ type Instances struct {
 	Reverse_dns bool `json:"reverse_dns,omiempty"`
 }
 
-// StorageAttachment represents a storage to which the instance
-// wants to attach
-type StorageAttachment struct {
-	// Volume is the three-part name (/Compute-identity_domain/user/object_name)
-	// of the storage volume that you want to attach to the instance.
-	// Note that volumes attached to an instance at launch time can't be detached.
-	Volume string `json:"volume"`
-	// Index is the index number for the volume.
-	// The allowed range is 1 to 10. If you want to use a storage volume as the boot disk for an
-	// instance, you must specify the index number for that volume as 1.
-	// The index determines the device name by which the volume is exposed to the instance.
-	// Index 0 is allocated to a nonpersistent boot disk, /dev/xvda.
-	// An attachment with index 1 is exposed to the instance as /dev/xvdb, an attachment
-	// with index 2 is exposed as /dev/xvdc, and so on.
-	Index int `json:"index"`
-}
-
+// // StorageAttachment represents a storage to which the instance
+// // wants to attach
+// type StorageAttachment struct {
+// 	// Volume is the three-part name (/Compute-identity_domain/user/object_name)
+// 	// of the storage volume that you want to attach to the instance.
+// 	// Note that volumes attached to an instance at launch time can't be detached.
+// 	Volume string `json:"volume"`
+// 	// Index is the index number for the volume.
+// 	// The allowed range is 1 to 10. If you want to use a storage volume as the boot disk for an
+// 	// instance, you must specify the index number for that volume as 1.
+// 	// The index determines the device name by which the volume is exposed to the instance.
+// 	// Index 0 is allocated to a nonpersistent boot disk, /dev/xvda.
+// 	// An attachment with index 1 is exposed to the instance as /dev/xvdb, an attachment
+// 	// with index 2 is exposed as /dev/xvdc, and so on.
+// 	Index int `json:"index"`
+// }
+//
 // Networker type used for providing
 // different implementations in the
 // NewNetowrking creation method
