@@ -82,7 +82,7 @@ func (c *Client) DeleteSecRule(name string) (err error) {
 		return errors.New("go-oracle-cloud: Empty secure rule name")
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["secrule"], name)
+	url := fmt.Sprintf("%s/%s", c.endpoints["secrule"], name)
 
 	if err = c.request(paramsRequest{
 		url:  url,
