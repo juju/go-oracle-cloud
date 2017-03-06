@@ -134,7 +134,7 @@ func (c Client) ComposeName(name string) string {
 // It extends the expiry of the current authentication token,
 // but not beyond the session expiry time, which is 3 hours.
 func (c *Client) RefreshCookie() (err error) {
-	url := c.endpoints["refreshcookie"] + "/"
+	url := c.endpoints["refreshtoken"] + "/"
 
 	if err = c.request(paramsRequest{
 		verb: "GET",
