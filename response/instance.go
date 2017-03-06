@@ -122,19 +122,45 @@ func (u Userdata) StringValue(key string) string {
 }
 
 type Network struct {
-	Address        []string `json:"address"`
-	Dhcp_options   []string `json:"dhcp_options,omitempty"`
-	Id             string   `json:"id"`
-	Model          string   `json:"model"`
-	Vethernet      string   `json:"vethernet"`
-	Vethernet_id   string   `json:"vethernet_id"`
-	Vethernet_type string   `josn:"vethernet_type"`
-	Instance       string   `json:"instance,omitmepty"`
+	// The MAC address of the interface, in hexadecimal format
+	// This can contains ipv4 addresses also
+	Address []string `json:"address"`
+
+	Dhcp_options []string `json:"dhcp_options,omitempty"`
+
+	// Id you want to associate a static private
+	// IP address with the instance, specify
+	// an available IP address from the IP
+	// address range of the specified ipnetwork.
+	Id string `json:"id"`
+
+	// Model is the type of network
+	// interface card (NIC).
+	// The only allowed value is e1000.
+	Model string `json:"model"`
+
+	Vethernet string `json:"vethernet"`
+
+	Vethernet_id string `json:"vethernet_id"`
+
+	Vethernet_type string `josn:"vethernet_type"`
+
+	Instance string `json:"instance,omitmepty"`
+
 	Ipassociations []string `json:"ipassociations,omitempty"`
-	Ipattachment   string   `json:"ipattachment"`
-	Ipnetwork      string   `json:"ipnetwork"`
-	Vnic           string   `json:"vnic"`
-	Vnicsets       []string `json:"vnicsets"`
+
+	Ipattachment string `json:"ipattachment"`
+
+	// Ipnetwork is the name of the IP network
+	// that you want to add the instance to
+	Ipnetwork string `json:"ipnetwork"`
+
+	// Nnic is the virtual nic
+	Vnic string `json:"vnic"`
+
+	// Vnicsets are names of the vNICsets
+	// that you want to add this interface to
+	Vnicsets []string `json:"vnicsets"`
 }
 
 type Dns struct {
@@ -154,11 +180,19 @@ type Networking map[string]Nic
 // This wil be used to dump all information from the
 // Netowrking type above
 type Nic struct {
-	Vethernet string   `json:"vethernet"`
-	Nat       string   `json:"nat"`
-	Model     string   `json:"model,omitempty"`
-	Seclists  []string `json:"seclists"`
-	Dns       []string `json:"dns"`
+	Vethernet string `json:"vethernet"`
+
+	// Nat indicates whether a temporary or permanent
+	// public IP address should be assigned
+	// to the instance
+	Nat string `json:"nat"`
+
+	Model string `json:"model,omitempty"`
+
+	// Seclits is the security lists that you want to add the instance
+	Seclists []string `json:"seclists"`
+
+	Dns []string `json:"dns"`
 }
 
 type Storage struct {
