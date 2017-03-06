@@ -111,7 +111,7 @@ type StorageVolume struct {
 
 	// Storage_pool is the storage
 	// pool from which this volume is allocated
-	Storage_pool
+	Storage_pool string `json:"storage_pool"`
 
 	// Tags are strings that you can use to tag the storage volume.
 	Tags []string `json:"tags,omitempty"`
