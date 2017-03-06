@@ -45,8 +45,7 @@ func (c *Client) AllStorageProperties(
 		return resp, errNotAuth
 	}
 
-	url := fmt.Sprintf("%s/Compute-%s/%s/",
-		c.endpoints["storageproperty"], c.identify, c.username)
+	url := fmt.Sprintf("%s/oracle/public/", c.endpoints["storageproperty"])
 
 	if err = c.request(paramsRequest{
 		verb:   "GET",

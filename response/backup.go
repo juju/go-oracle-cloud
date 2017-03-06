@@ -1,66 +1,65 @@
-// Copyright 2017 Canonical Ltd.
-// Licensed under the AGPLv3, see LICENCE file for details.
-
 package response
 
-// BackupConfiguration you can schedule backups to be taken
-// automatically at defined intervals.
-// Scheduling a backup creates a snapshot of the specified
-// storage volume and the snapshot is stored in
-// the associated Oracle Storage Cloud Service instance.
-type BackupConfiguration struct {
-	// Uri is the Uniform Resource Identifier
-	Uri string `json:"uri,omitempty"`
+import "github.com/hoenirvili/go-oracle-cloud/common"
 
-	// RunAsUser represents any actions on this
-	// model will be performed as this user.
-	RunAsUser string `json:"runAsUser,omitempty"`
+// Backup allows you to create a backup right
+// away using a specified backup configuration.
+// You can also view scheduled backups and their status,
+// or delete a specified backup and the corresponding snapshot.
+type Backup struct {
 
-	// Name is the name of the backup configuration
-	Name string `json:"name,omitempty"`
+	// BackupConfigurationName is the name of the backup configuration
+	BackupConfigurationName string `json:"backupConfigurationName"`
 
-	// Enabled flag for:
-	// when true, backups will automatically
-	// be generated based on the interval.
-	Enabled bool `json:"enabled,omitempty"`
+	// Bootable is the volume this Backup is associated with a bootable volume
+	Bootable bool `json:"bootable"`
 
-	// BackupRetentionCount represents how many backups to retain
-	BackupRetentionCount uint32 `json:"backupRetentionCount,omitempty"`
-
-	// Scheduled time for next backup execution
-	NextScheduledRun string `json:"nextScheduledRun,omitempty"`
-
-	// Interval represents the interval in the backup configuration.
-	// There are two kinds of Intervals. Each Interval has its own JSON format.
-	// Your Interval field should look like one of the following:
-	//
-	// "interval":{
-	//   "Hourly":{
-	//     "hourlyInterval":2
-	//	 }
-	// }
-	//
-	//
-	// {"DailyWeekly":
-	// 	{
-	//	  "daysOfWeek":["MONDAY"],
-	//	  "timeOfDay":"03:15",
-	// 	  "userTimeZone":"America/Los_Angeles"
-	//  }
-	// }
-	// Days of the week is any day of the week
-	// fully capitalized (MONDAY, TUESDAY, etc).
-	// The user time zone is any IANA user timezone.
-	//For example user time zones see List of IANA time zones.
-	Interval interface{} `json:"Interval,omitempty"`
-
-	// VolumeUri is the complete URI of the storage
-	// volume that you want to backup.
-	VolumeUri string `json:"volumeUri,omitempty"`
-
-	// Description of this Backup Configuration
+	// Description is the description of the Backup
 	Description string `json:"description,omitempty"`
 
-	// TagId is the ID used to tag other cloud resources
-	TagId string `json:"tagId,omitempty"`
+	// detailedErrorMessage is a human readable detailed error message
+	DetailedErrorMessage string `json:"detailedErrorMessage,omitempty"`
+	// ErrorMessage is a human readable error message
+	ErrorMessage string `json:"errorMessage,omitempty"`
+
+	// Name is the name of the backup
+	Name string `json:"name"`
+	//RunAsUser is any actions on this model will be performed as this user
+	RunAsUser string `json:"runAsUser"`
+
+	// Shared ss the volume this Backup is associated with a shared volume
+	Shared bool `json:"shared"`
+
+	// SnapshotSize is the size of the snapshot
+	SnapshotSize string `json:"snapshotSize"`
+
+	// SnapshotUri is the snapshot created by this Backup
+	SnapshotUri string `json:"snapshotUri"`
+
+	// State of this resource.
+	// Allowed Values:
+	// common.Submitted,
+	// common.Inprogress,
+	// common.Completed,
+	// common.Failed,
+	// common.Canceling,
+	// common.Canceled,
+	// common.Timeout,
+	// common.DeleteSubmitted,
+	// common.Deleting,
+	// common.Deleted,
+	State common.BackupState `json:"state"`
+
+	// TagID used to tag other cloud resources
+	TagID string `json:"tagId"`
+
+	// Uri is the Uniform Resource Identifier
+	Uri string `json:"uri"`
+
+	// VolumeUri is the Backup that was created from
+	VolumeUri string `json:"volumeUri"`
+}
+
+type AllBackups struct {
+	Result []Backup `json:"result"`
 }
