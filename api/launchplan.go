@@ -15,6 +15,21 @@ const (
 	PublicNATPool string = "ippool:/oracle/public/ippool"
 )
 
+type VEthernet struct {
+	Dns      []string `json:"dns,omitempty"`
+	Nat      string   `json:"nat,omitempty"`
+	SecLists []string `json:"seclists,omitempty"`
+	Model    string   `json:"model,omitempty"`
+}
+
+type VNic struct {
+	Dns       []string `json:"dns,omitempty"`
+	Nat       string   `json:"nat,omitempty"`
+	SecLists  []string `json:"seclists,omitempty"`
+	Model     string   `json:"model,omitempty"`
+	IPNetwork string   `json:"ipnetwork,omitempty"`
+}
+
 // InstancesParams params for the CreateInstance method
 type Instances struct {
 	// Shape represents every instance in oracle cloud has a predefined shape
