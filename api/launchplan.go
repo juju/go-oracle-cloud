@@ -212,7 +212,7 @@ type SharedNetwork struct {
 
 	// seclits are the security lists that
 	// you want to add the instance to.
-	Seclists []string `json:"seclists"`
+	Seclists []string `json:"seclists,omitempty"`
 
 	// Nat indicates whether a temporary or
 	// permanent public IP address should
@@ -230,11 +230,11 @@ type SharedNetwork struct {
 	// when it is created. If required,
 	// you can associate an IP address with
 	// the instance after the instance has been created
-	Nat []Nat `json:"nat"`
+	Nat []Nat `json:"nat,omitempty"`
 
 	// Dns name for this instance.
 	// This name is relative to the internal DNS domain
-	Dns []string `json:"dns"`
+	Dns []string `json:"dns,omitempty"`
 
 	// Model is the type of network
 	// interface card (NIC). The only allowed value is e1000
@@ -293,7 +293,7 @@ type IPNetwork struct {
 
 	// Ipnetwork is the name of the IP network
 	// that you want to add the instance to
-	Ipnetwork string `json:"ipnetwork"`
+	Ipnetwork string `json:"ipnetwork,omitempty"`
 
 	// IP If you want to associate a static private
 	// IP address with the instance, specify an available
