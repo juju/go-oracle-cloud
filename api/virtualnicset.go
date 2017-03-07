@@ -132,6 +132,7 @@ func (c *Client) VnicSetDetails(name string) (resp response.VnicSet, err error) 
 	return resp, nil
 }
 
+// UpdateVnicSet changes option, specification, atributes in a vNicSet
 func (c *Client) UpdateVnicSet(
 	p VnicSetParams,
 	currentName string,

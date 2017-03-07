@@ -106,7 +106,7 @@ func (c *Client) AllSSHKeys(filter []Filter) (resp response.AllSSH, err error) {
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
-		c.endpoints["sshkeys"], c.identify, c.username)
+		c.endpoints["sshkey"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
 		url:    url,
@@ -127,7 +127,7 @@ func (c *Client) AllSSHKeyNames() (resp response.AllSSHNames, err error) {
 	}
 
 	url := fmt.Sprintf("%s/Compute-%s/%s/",
-		c.endpoints["sshkeys"], c.identify, c.username)
+		c.endpoints["sshkey"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
 		directory: true,
@@ -176,7 +176,7 @@ func (c *Client) UpdateSSHKey(
 		Name:    newName,
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], ssh.Name)
+	url := fmt.Sprintf("%s%s", c.endpoints["sshkey"], ssh.Name)
 
 	if err = c.request(paramsRequest{
 		body: &ssh,

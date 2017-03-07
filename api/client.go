@@ -122,21 +122,31 @@ func (c Client) Password() string {
 	return c.password
 }
 
+func (c Client) Cookie() string {
+	return c.cookie.String()
+}
 func (c Client) ComposeName(name string) string {
 	return fmt.Sprintf("/Compute-%s/%s/%s",
 		c.identify, c.username, name)
 }
 
-// RefreshCookie refreshes the authentication tokens
+// RefreshCookie re authenticates the client into
+// the oracle api
+func (c *Client) RefreshCookie() (err error) {
+	c.cookie = nil
+	return c.Authenticate()
+}
+
+// RefreshToken refreshes the authentication token
 // that expires usually around 30 minutes.
 // This request extends the expiry of a valid authentication
 // token by 30 minutes from the time you run the command.
 // It extends the expiry of the current authentication token,
 // but not beyond the session expiry time, which is 3 hours.
-func (c *Client) RefreshCookie() (err error) {
+func (c *Client) RefreshToken() (err error) {
 	url := c.endpoints["refreshtoken"] + "/"
 
-	if err = c.request(paramsRequest{
+	return c.request(paramsRequest{
 		verb: "GET",
 		url:  url,
 		treat: func(resp *http.Response, verbRequest string) (err error) {
@@ -154,12 +164,8 @@ func (c *Client) RefreshCookie() (err error) {
 			}
 
 			// take the cookie
-			*c.cookie = *cookies[0]
+			c.cookie = cookies[0]
 			return nil
 		},
-	}); err != nil {
-		return err
-	}
-
-	return nil
+	})
 }
