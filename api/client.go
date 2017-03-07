@@ -122,9 +122,6 @@ func (c Client) Password() string {
 	return c.password
 }
 
-func (c Client) Cookie() string {
-	return c.cookie.String()
-}
 func (c Client) ComposeName(name string) string {
 	return fmt.Sprintf("/Compute-%s/%s/%s",
 		c.identify, c.username, name)
