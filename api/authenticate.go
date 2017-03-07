@@ -18,6 +18,9 @@ func (c *Client) Authenticate() (err error) {
 		return nil
 	}
 
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
 	// build the json authentication
 	params := map[string]string{
 		"user":     fmt.Sprintf("/Compute-%s/%s", c.identify, c.username),

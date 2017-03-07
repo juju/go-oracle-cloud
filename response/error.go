@@ -3,6 +3,7 @@
 
 package response
 
+// Error internal response error type
 type Error struct {
 	Message string `json:"message"`
 }

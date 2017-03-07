@@ -1,3 +1,6 @@
+// Copyright 2017 Canonical Ltd.
+// Licensed under the AGPLv3, see LICENCE file for details.
+
 package response
 
 import "github.com/hoenirvili/go-oracle-cloud/common"
@@ -23,7 +26,6 @@ type IpAddressReservation struct {
 	// an IP address from this pool to an instance, the instance
 	// can communicate privately (that is, without traffic going over
 	// the public Internet) with other Oracle Cloud services, such as the
-	// TODO(sgiulitti) more research on this type
 	IpAddressPool common.IPPool `json:"ipAddressPool,omitempty"`
 
 	// Name is the name of the ip address reservation

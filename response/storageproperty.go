@@ -1,3 +1,6 @@
+// Copyright 2017 Canonical Ltd.
+// Licensed under the AGPLv3, see LICENCE file for details.
+
 package response
 
 // StorageProperty are storage properties used to describe the characteristics

@@ -1,9 +1,12 @@
+// Copyright 2017 Canonical Ltd.
+// Licensed under the AGPLv3, see LICENCE file for details.
+
 package response
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/hoenirvili/go-oracle-cloud/common"
+	"github.com/hoenirvili/go-oracle-cloud/common"
 )
 
 type SecApplication struct {
@@ -78,14 +81,14 @@ type SecApplication struct {
 }
 
 func (s *SecApplication) String() string {
-    return s.Name
+	return s.Name
 }
 
 func (s *SecApplication) PortProtocolPair() string {
-    if s.Dport == "" {
-        return ""
-    }
-    return fmt.Sprintf("%s/%s", s.Dport, s.Protocol)
+	if s.Dport == "" {
+		return ""
+	}
+	return fmt.Sprintf("%s/%s", s.Dport, s.Protocol)
 }
 
 type AllSecApplications struct {

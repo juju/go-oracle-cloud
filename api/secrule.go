@@ -11,17 +11,45 @@ import (
 	"github.com/hoenirvili/go-oracle-cloud/response"
 )
 
+// SecRuleParams type used as params in CreateSecRule func
 type SecRuleParams struct {
-	Action      common.SecRuleAction `json:"action"`
-	Application string               `json:"application"`
-	Description string               `json:"description,omitempty"`
-	Disabled    bool                 `json:"disabled"`
-	Dst_list    string               `json:"dst_list"`
-	Name        string               `json:"name"`
-	Src_list    string               `json:"src_list"`
+
+	// Action is the security rule
+	Action common.SecRuleAction `json:"action"`
+
+	// Application is the application securiy name
+	Application string `json:"application"`
+
+	// Description is the description of the security rule
+	Description string `json:"description,omitempty"`
+
+	// Disabled flag indicates whether the security rule
+	// is enabled (set to false) or disabled (true).
+	// The default setting is false
+	Disabled bool `json:"disabled"`
+
+	// Name is the name of the security rule
+	Name string `json:"name"`
+
+	// Dst_list is the name
+	// of the destination security list or security IP list.
+	// You must use the prefix seclist: or seciplist
+	// : to identify the list type.
+	// Note: You can specify a security IP list as
+	// the destination in a secrule, provided src_list is
+	// a security list that has DENY as its outbound policy.
+	// You cannot specify any of the security IP lists
+	// in the /oracle/public container as a destination in a secrule.
+	Dst_list string `json:"dst_list"`
+
+	// Scr_list is the name of the source security
+	// list or security IP list. You must use the prefix seclist:
+	// or seciplist: to identify the list type
+	Src_list string `json:"src_list"`
 }
 
-func (s SecRuleParams) Validate() (err error) {
+// validate will validate all the sec rule params
+func (s SecRuleParams) validate() (err error) {
 	if err = s.Action.Validate(); err != nil {
 		return err
 	}
@@ -53,7 +81,7 @@ func (c *Client) CreateSecRule(p SecRuleParams) (resp response.SecRule, err erro
 		return resp, errNotAuth
 	}
 
-	if err = p.Validate(); err != nil {
+	if err = p.validate(); err != nil {
 		return resp, err
 	}
 
@@ -140,12 +168,16 @@ func (c *Client) AllSecRules(filter []Filter) (resp response.AllSecRules, err er
 }
 
 // UpdateSecRule modifies the security rule with the currentName
-func (c *Client) UpdateSecRule(p SecRuleParams, currentName string) (resp response.SecRule, err error) {
+func (c *Client) UpdateSecRule(
+	p SecRuleParams,
+	currentName string,
+) (resp response.SecRule, err error) {
+
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
-	if err = p.Validate(); err != nil {
+	if err = p.validate(); err != nil {
 		return resp, err
 	}
 

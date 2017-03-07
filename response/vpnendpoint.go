@@ -1,3 +1,6 @@
+// Copyright 2017 Canonical Ltd.
+// Licensed under the AGPLv3, see LICENCE file for details.
+
 package response
 
 // VpnEndpoint you can create secure IPSec-based tunnels between your data

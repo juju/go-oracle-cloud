@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"sync"
 )
 
 // Config represents the significant details that a client
@@ -62,15 +63,19 @@ type Client struct {
 	username string
 	// the password of the oracle account
 	password string
+	// the endpoint of the oracle account
+	endpoint string
+	// internal http client
+	http http.Client
+	// intenrla map of endpoints of the entire
+	// oracle cloud api
+	endpoints map[string]string
+
+	// mutex protects the cookie
+	mutex *sync.Mutex
 	// internal http cookie
 	// this cookie will be generated based on the client connection
 	cookie *http.Cookie
-	// the endpoint of the oracle account
-	endpoint string
-
-	// internal http client
-	http      http.Client
-	endpoints map[string]string
 }
 
 // NewClient returns a new client based on the cfg provided
@@ -93,6 +98,7 @@ func NewClient(cfg Config) (*Client, error) {
 		endpoint:  cfg.Endpoint,
 		http:      http.Client{},
 		endpoints: e,
+		mutex:     &sync.Mutex{},
 	}
 
 	return cli, nil

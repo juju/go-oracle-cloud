@@ -1,3 +1,6 @@
+// Copyright 2017 Canonical Ltd.
+// Licensed under the AGPLv3, see LICENCE file for details.
+
 package response
 
 // Orchestration is an orchestration defines the attributes and interdependencies of a collection of compute,
@@ -98,6 +101,7 @@ type Objects struct {
 }
 
 // todo(sgiulitti) test it make sure.
+// TODO(make this used map[string]Networker type instead
 type NetworkingOrchestration struct {
 	Interfaces map[string]interface{}
 }
