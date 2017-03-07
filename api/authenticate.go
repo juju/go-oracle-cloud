@@ -8,11 +8,14 @@ import (
 	"net/http"
 )
 
-// Authenticate this request returns an authentication token in the Set-Cookie response header.
-// The token expires after 30 minutes. A valid (that is, unexpired) authentication
-// token must be included in every request to the service, in the Cookie: request header.
-// The client making the API call must examine the cookie expiry time and discard it if the cookie has expired.
-// Requests sent with expired cookies will result in an Unauthorized error in the response.
+// Authenticate this request returns an authentication token
+// in the Set-Cookie response header. The token expires after 30 minutes.
+// A valid (that is, unexpired) authentication
+// token must be included in every request to the service,
+// in the Cookie: request header. The client making the API call must examine
+// the cookie expiry time and discard it if the cookie has expired.
+// Requests sent with expired cookies will result
+// in an Unauthorized error in the response.
 func (c *Client) Authenticate() (err error) {
 	if c.isAuth() {
 		return nil
