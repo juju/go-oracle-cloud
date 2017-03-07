@@ -20,7 +20,6 @@ func (c *Client) Authenticate() (err error) {
 	if c.isAuth() {
 		return nil
 	}
-
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 
