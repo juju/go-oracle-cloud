@@ -46,3 +46,28 @@ func (cl clientTest) TestAuthentication(c *gc.C) {
 	err := client.Authenticate()
 	c.Assert(err, gc.IsNil)
 }
+
+func (cl clientTest) TestUnauthorizedAuthentication(c *gc.C) {
+	errHTTP := []byte(`{"message": "unauthorized request"}`)
+
+	ts, client := cl.StartTestServer(httpParams{
+		check:              c,
+		manualHeaderStatus: true,
+		handler: func(w http.ResponseWriter, r *http.Request) {
+			c.Assert(r.Method, gc.Equals, http.MethodPost)
+			c.Assert(r.Header.Get("Content-Type"), gc.DeepEquals, json)
+			c.Assert(r.Header.Get("Accept"), gc.DeepEquals, json)
+
+			// give the client a new cookie
+			w.Header().Set("Set-Cookie", cookie)
+			w.Header().Set("Content-Type", json)
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write(errHTTP)
+		},
+	})
+
+	defer ts.Close()
+
+	err := client.Authenticate()
+	c.Assert(err, gc.NotNil)
+}
