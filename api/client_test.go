@@ -4,97 +4,162 @@
 package api_test
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strconv"
 
 	"github.com/hoenirvili/go-oracle-cloud/api"
 	gc "gopkg.in/check.v1"
 )
 
-type clientTest struct {
-	srv *httptest.Server
-	c   *api.Client
-}
+type clientTest struct{}
 
 var _ = gc.Suite(&clientTest{})
 
-// DefaultConfig returns a predefined config for testing
-// the client interactions
-func (cli clientTest) DefaultConfig() api.Config {
-	return api.Config{
-		Username: "oracleusername@oracle.com",
-		Password: "Password123",
-		Identify: "myIdentify",
-		Endpoint: "http://localhost",
+// findHostAndPortFromURL extracts the
+// host and port part of a full url
+// (like http://address:port/path#fragment)
+func findHostAndPortFromURL(rawurl string) (string, int, error) {
+	url, err := url.Parse(rawurl)
+	if err != nil {
+		return "", 0, err
 	}
+	host, port, err := net.SplitHostPort(url.Host)
+	if err != nil {
+		return "", 0, err
+	}
+	iport, err := strconv.Atoi(port)
+	if err != nil {
+		return "", 0, err
+	}
+	return host, iport, nil
 }
-
-// NewClient returns a a new client default client for testing
-func (cli clientTest) NewClient(c *gc.C) *api.Client {
-	cfg := cli.DefaultConfig()
-	client, err := api.NewClient(cfg)
-	c.Assert(err, gc.IsNil)
-	c.Assert(client, gc.NotNil)
-	return client
-}
-
-// handler_test type used for defining a handler test method
-type handler_test func(w http.ResponseWriter, r *http.Request)
 
 type httpParams struct {
-	c *gc.C
+	// body for providing the test function
+	// to send content back to the api client
+	body []byte
 
-	// handler is the handler
-	handler handler_test
-	// the json structure where the decoding will point to
-	marshall interface{}
-	// http status expected
-	status int
+	// check is the assert library
+	check *gc.C
 
-	// the url that the server will
-	// response to
-	url string
+	// in contains the post/put body
+	in interface{}
+
+	// handler for manual testing the
+	// http.ResponseWriter and http.Reqeust
+	handler http.HandlerFunc
 }
 
-// Start will start a http server for testing the handler_test
-func (cli *clientTest) Start(h httpParams) {
+const (
+	json = "application/oracle-compute-v3+json"
+	dir  = "application/oracle-compute-v3+directory+json"
+)
 
-	// if the client is not inited init it with the default clientr
-	if cli.c == nil {
-		cli.c = cli.NewClient(h.c)
+func handlerHeader(w http.ResponseWriter, r *http.Request) (err error) {
+	switch r.Method {
+	case http.MethodPost, http.MethodGet, http.MethodPut, http.MethodDelete:
+		value := r.Header.Get("Content-Type")
+		switch value {
+		case json:
+			w.Header().Set("Accept", json)
+			w.Header().Set("Content-Type", json)
+			return nil
+		case dir:
+			w.Header().Set("Accept", dir)
+			w.Header().Set("Content-Type", dir)
+			return nil
+		default:
+			return fmt.Errorf("oracle api does not support this header value %s", value)
+		}
+
+	default:
+		return fmt.Errorf("oracle api does not support this method %s", r.Method)
 	}
 
-	cli.srv = httptest.NewServer(
-		http.HandlerFunc(
-			func(w http.ResponseWriter, r *http.Request) {
-
-				fmt.Println(w)
-				fmt.Println(*r)
-				if h.status != 0 {
-					w.WriteHeader(h.status)
-				}
-
-				if h.marshall != nil {
-					err := json.NewDecoder(r.Body).Decode(h.marshall)
-					h.c.Assert(err, gc.IsNil)
-					h.c.Assert(r.Body.Close(), gc.IsNil)
-				}
-
-				if h.handler != nil {
-					h.handler(w, r)
-				}
-			},
-		),
-	)
-
-	h.c.Assert(cli.srv, gc.NotNil)
+	return errors.New("Unexpected error")
 }
 
-// Stop will close the http test server
-func (cli *clientTest) Stop() {
-	cli.srv.Close()
+// TODO
+func handlerStatus(w http.ResponseWriter, r *http.Request) (err error) {
+	switch r.Method {
+	case http.MethodPost:
+		w.WriteHeader(http.StatusCreated)
+		return nil
+	case http.MethodGet:
+		w.WriteHeader(http.StatusOK)
+		return nil
+	case http.MethodDelete:
+		w.WriteHeader(http.StatusNoContent)
+		return nil
+	default:
+		return fmt.Errorf("Unsupported status method %s", r.Method)
+	}
+
+	return errors.New("Unexpected error")
+}
+
+// StartTestServer will start an httptest server on a random port
+// with the given httpParams and then return the oracle client implementation
+func (cli clientTest) StartTestServer(
+	params httpParams,
+) (*httptest.Server, *api.Client) {
+	// create a new http server for testing
+	ts := httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+
+			// handler the header if it's somthing wrong then
+			// bail out
+			err := handlerHeader(w, r)
+			params.check.Assert(err, gc.IsNil)
+
+			// handler the status based on the method
+			// if it's somthing wrong bail out
+			err = handlerStatus(w, r)
+			params.check.Assert(err, gc.IsNil)
+
+			// treat the w and *r here in a custom way
+			if params.handler != nil {
+				params.handler(w, r)
+			}
+
+			// if the caller is expecting the
+			// server to send some response,
+			// we should include that response from body
+			// and send it back
+			m := len(params.body)
+			if m > 0 {
+				// write the response
+				n, err := w.Write(params.body)
+				params.check.Assert(err, gc.IsNil)
+				params.check.Assert(m, gc.Equals, n)
+			}
+		}))
+
+	// find the host and port from the http server url
+	host, port, err := findHostAndPortFromURL(ts.URL)
+	// always test if the finding is valid
+	params.check.Assert(err, gc.IsNil)
+
+	// create a new config
+	cfg := api.Config{
+		Username: "OracleAdmin@oracle.com",
+		Password: "GreatSuperPassword",
+		Identify: "qtqqd",
+		Endpoint: fmt.Sprintf("http://%s:%d", host, port),
+	}
+
+	// create a new client based on the config
+	client, err := api.NewClient(cfg)
+	params.check.Assert(err, gc.IsNil)
+	params.check.Assert(client, gc.NotNil)
+
+	// return the new started server and the oracle client
+	return ts, client
 }
 
 func (cl clientTest) TestNewClient(c *gc.C) {
@@ -144,7 +209,12 @@ func (cl clientTest) TestNewClient(c *gc.C) {
 		"go-oracle-cloud: The endpoint provided is invalid")
 
 	// provide some valid configuration
-	cfg := cl.DefaultConfig()
+	cfg := api.Config{
+		Username: "OracleAdmin@oracle.com",
+		Password: "GreatSuperPassword",
+		Identify: "qtqqd",
+		Endpoint: "http://edz.api55.oracle.com",
+	}
 	cli, err = api.NewClient(cfg)
 	c.Assert(err, gc.IsNil)
 	c.Assert(cli, gc.NotNil)
