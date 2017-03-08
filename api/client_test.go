@@ -4,7 +4,6 @@
 package api_test
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -53,54 +52,54 @@ type httpParams struct {
 	// handler for manual testing the
 	// http.ResponseWriter and http.Reqeust
 	handler http.HandlerFunc
+
+	// handler manual the header
+	// and header status
+	manualHeaderStatus bool
 }
 
 const (
+	// content-type values for json requests and directory request
 	json = "application/oracle-compute-v3+json"
 	dir  = "application/oracle-compute-v3+directory+json"
 )
 
-func handlerHeader(w http.ResponseWriter, r *http.Request) (err error) {
-	switch r.Method {
-	case http.MethodPost, http.MethodGet, http.MethodPut, http.MethodDelete:
-		value := r.Header.Get("Content-Type")
-		switch value {
-		case json:
-			w.Header().Set("Accept", json)
-			w.Header().Set("Content-Type", json)
-			return nil
-		case dir:
-			w.Header().Set("Accept", dir)
-			w.Header().Set("Content-Type", dir)
-			return nil
-		default:
-			return fmt.Errorf("oracle api does not support this header value %s", value)
-		}
+const (
+	username = "gooraclecloudadmin@oracle.com"
+	password = "some1337eleetpasswd"
+	identify = "qraffd"
+)
 
+func hdr(value string, w http.ResponseWriter, r *http.Request) (err error) {
+	switch value {
+	case json:
+		w.Header().Set("Accept", json)
+		w.Header().Set("Content-Type", json)
+		return nil
+	case dir:
+		w.Header().Set("Accept", dir)
+		w.Header().Set("Content-Type", dir)
+		return nil
 	default:
-		return fmt.Errorf("oracle api does not support this method %s", r.Method)
+		return fmt.Errorf("oracle api does not support this header value %s", value)
 	}
-
-	return errors.New("Unexpected error")
 }
 
-// TODO
-func handlerStatus(w http.ResponseWriter, r *http.Request) (err error) {
+func handlerHeaderStatus(w http.ResponseWriter, r *http.Request) (err error) {
+	value := r.Header.Get("Content-Type")
 	switch r.Method {
 	case http.MethodPost:
 		w.WriteHeader(http.StatusCreated)
-		return nil
-	case http.MethodGet:
+		return hdr(value, w, r)
+	case http.MethodGet, http.MethodPut:
 		w.WriteHeader(http.StatusOK)
-		return nil
+		return hdr(value, w, r)
 	case http.MethodDelete:
 		w.WriteHeader(http.StatusNoContent)
-		return nil
+		return hdr(value, w, r)
 	default:
-		return fmt.Errorf("Unsupported status method %s", r.Method)
+		return fmt.Errorf("oracle api does not support this method %s", r.Method)
 	}
-
-	return errors.New("Unexpected error")
 }
 
 // StartTestServer will start an httptest server on a random port
@@ -112,15 +111,12 @@ func (cli clientTest) StartTestServer(
 	ts := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 
-			// handler the header if it's somthing wrong then
-			// bail out
-			err := handlerHeader(w, r)
-			params.check.Assert(err, gc.IsNil)
-
-			// handler the status based on the method
-			// if it's somthing wrong bail out
-			err = handlerStatus(w, r)
-			params.check.Assert(err, gc.IsNil)
+			if !params.manualHeaderStatus {
+				// handler the header if it's somthing wrong then
+				// handler the status based on the method
+				err := handlerHeaderStatus(w, r)
+				params.check.Assert(err, gc.IsNil)
+			}
 
 			// treat the w and *r here in a custom way
 			if params.handler != nil {
@@ -138,6 +134,11 @@ func (cli clientTest) StartTestServer(
 				params.check.Assert(err, gc.IsNil)
 				params.check.Assert(m, gc.Equals, n)
 			}
+
+			defer func() {
+				err := r.Body.Close()
+				params.check.Assert(err, gc.IsNil)
+			}()
 		}))
 
 	// find the host and port from the http server url
@@ -147,9 +148,9 @@ func (cli clientTest) StartTestServer(
 
 	// create a new config
 	cfg := api.Config{
-		Username: "OracleAdmin@oracle.com",
-		Password: "GreatSuperPassword",
-		Identify: "qtqqd",
+		Username: username,
+		Password: password,
+		Identify: identify,
 		Endpoint: fmt.Sprintf("http://%s:%d", host, port),
 	}
 

@@ -4,8 +4,8 @@
 package api_test
 
 import (
+	enc "encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	gc "gopkg.in/check.v1"
@@ -16,13 +16,28 @@ var cookie = `nimbula=eyJpZGVudGl0eSI6ICJ7XCJyZWFsbVwiOiBcInVzY29tLWNlbnRyYWwtMV
 func (cl clientTest) TestAuthentication(c *gc.C) {
 
 	ts, client := cl.StartTestServer(httpParams{
-		check: c,
+		check:              c,
+		manualHeaderStatus: true,
 		handler: func(w http.ResponseWriter, r *http.Request) {
 			c.Assert(r.Method, gc.Equals, http.MethodPost)
-			w.Header().Set("Set-Cookie", cookie)
-			raw, err := ioutil.ReadAll(r.Body)
+			c.Assert(r.Header.Get("Content-Type"), gc.DeepEquals, json)
+			c.Assert(r.Header.Get("Accept"), gc.DeepEquals, json)
+
+			auth := struct {
+				User     string `json:"user"`
+				Password string `json:"password"`
+			}{}
+
+			err := enc.NewDecoder(r.Body).Decode(&auth)
 			c.Assert(err, gc.IsNil)
-			fmt.Println(string(raw))
+			c.Assert(auth.User, gc.DeepEquals, fmt.Sprintf("/Compute-%s/%s",
+				identify, username))
+			c.Assert(auth.Password, gc.DeepEquals, password)
+
+			// give the client a new cookie
+			w.Header().Set("Set-Cookie", cookie)
+			w.Header().Set("Content-Type", json)
+			w.WriteHeader(http.StatusNoContent)
 		},
 	})
 	defer ts.Close()
