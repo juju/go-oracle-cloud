@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/juju/go-oracle-cloud/api"
 	gc "gopkg.in/check.v1"
@@ -160,7 +161,7 @@ func (cli clientTest) StartTestServer(
 	return ts, client
 }
 
-func makeClientAuth(
+func authClient(
 	c *gc.C,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -168,6 +169,7 @@ func makeClientAuth(
 	c.Assert(r.Method, gc.Equals, http.MethodPost)
 	c.Assert(r.Header.Get("Content-Type"), gc.DeepEquals, json)
 	c.Assert(r.Header.Get("Accept"), gc.DeepEquals, json)
+	c.Assert(len(r.Cookies()), gc.Equals, 0)
 
 	auth := struct {
 		User     string `json:"user"`
@@ -192,16 +194,12 @@ func makeClientAuth(
 func (cl clientTest) StartTestServerAuth(
 	params httpParams,
 ) (*httptest.Server, *api.Client) {
-	i := 0
-
 	// create a new http server for testing
 	ts := httptest.NewServer(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-
 			// we are dealing with the first auth request
-			if i == 0 {
-				makeClientAuth(params.check, w, r)
-				i++
+			if strings.Contains(r.RequestURI, "/authenticate/") {
+				authClient(params.check, w, r)
 				return
 			}
 
@@ -260,5 +258,41 @@ func (cl clientTest) StartTestServerAuth(
 	// return the new started server and the oracle client
 	// that has been already authenticated
 	return ts, client
-
 }
+
+// createResponse creates a new json response and returns it
+// this can be used to construct the body in the httpParams type
+func createResponse(c *gc.C, representation interface{}) []byte {
+	body, err := enc.Marshal(representation)
+	c.Assert(err, gc.IsNil)
+	return body
+}
+
+// ErrorAPI type used in errors return
+type ErrorAPI struct {
+	Message string `json:"message"`
+}
+
+// NewErrorAPI returns a new ready json structure error message
+func NewErrorAPI(message string) ErrorAPI {
+	return ErrorAPI{Message: message}
+}
+
+// errAPI is an example of an error api message:
+var errAPI = NewErrorAPI("This resource has errors")
+
+// errFuncCheck type signature used for
+// specifying the error func that will be used
+type errFuncCheck func(err error) bool
+
+var (
+	// httpStatusErrors a map of error - errorFuncCheck
+	// used for testing all error returns in a api resource
+	// method
+	httpStatusErrors = map[int]errFuncCheck{
+		http.StatusNotFound:            api.IsNotFound,
+		http.StatusBadRequest:          api.IsBadRequest,
+		http.StatusInternalServerError: api.IsInternalApi,
+		http.StatusConflict:            api.IsStatusConflict,
+	}
+)

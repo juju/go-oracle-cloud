@@ -42,7 +42,7 @@ func (c *Client) AllAccounts(filter []Filter) (resp response.AllAccounts, err er
 		return resp, errNotAuth
 	}
 
-	url := fmt.Sprintf("%s/Compute-%s/", endpoints["account"], c.identify)
+	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["account"], c.identify)
 
 	if err = c.request(paramsRequest{
 		verb:   "GET",
