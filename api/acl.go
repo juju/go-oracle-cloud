@@ -28,7 +28,7 @@ func (c *Client) CreateAcl(
 
 	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Cannot create acl because name provided is empty",
+			"go-oracle-cloud: Empty acl name",
 		)
 	}
 
@@ -80,6 +80,12 @@ func (c *Client) DeleteAcl(name string) (err error) {
 		return errNotAuth
 	}
 
+	if name == "" {
+		return errors.New(
+			"Empty acl name",
+		)
+	}
+
 	url := fmt.Sprintf("%s%s", c.endpoints["acl"], name)
 
 	if err = c.request(paramsRequest{
@@ -94,7 +100,7 @@ func (c *Client) DeleteAcl(name string) (err error) {
 
 // AllAcls retrieves details of all the ACLs
 // that are available in the specified container.
-func (c *Client) AllAcls() (resp response.AllAcls, err error) {
+func (c *Client) AllAcls(filter []Filter) (resp response.AllAcls, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -102,9 +108,10 @@ func (c *Client) AllAcls() (resp response.AllAcls, err error) {
 	url := fmt.Sprintf("%s/Compute-%s/", c.endpoints["acl"], c.identify)
 
 	if err = c.request(paramsRequest{
-		url:  url,
-		verb: "GET",
-		resp: &resp,
+		url:    url,
+		verb:   "GET",
+		resp:   &resp,
+		filter: filter,
 	}); err != nil {
 		return resp, err
 	}
@@ -120,7 +127,7 @@ func (c *Client) AclDetails(name string) (resp response.Acl, err error) {
 
 	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Cannot list acl details because name provided is empty",
+			"go-oracle-cloud: Empty acl name",
 		)
 	}
 
@@ -155,7 +162,7 @@ func (c *Client) UpdateAcl(
 
 	if currentName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: acl name provided is empty",
+			"go-oracle-cloud: Empty acl name",
 		)
 	}
 

@@ -13,7 +13,7 @@ import (
 	gc "gopkg.in/check.v1"
 )
 
-func (cl clientTest) TestAccountDetailsWithNoAuthentication(c *gc.C) {
+func (cl clientTest) TestAccountResourceWithNoAuthentication(c *gc.C) {
 	ts, client := cl.StartTestServer(httpParams{
 		check: c,
 	})
@@ -23,6 +23,68 @@ func (cl clientTest) TestAccountDetailsWithNoAuthentication(c *gc.C) {
 	_, err := client.AccountDetails(name)
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
+
+	_, err = client.AllAccounts(nil)
+	c.Assert(err, gc.NotNil)
+	c.Assert(api.IsNotAuth(err), gc.Equals, true)
+
+	_, err = client.AllAccountNames()
+	c.Assert(err, gc.NotNil)
+	c.Assert(api.IsNotAuth(err), gc.Equals, true)
+
+	_, err = client.DirectoryAccount()
+	c.Assert(err, gc.NotNil)
+	c.Assert(api.IsNotAuth(err), gc.Equals, true)
+
+}
+
+func (cl clientTest) TestAccountResourceWithErrors(c *gc.C) {
+
+	for key, val := range httpStatusErrors {
+		ts, client := cl.StartTestServerAuth(httpParams{
+			manualHeaderStatus: true,
+			check:              c,
+			body:               createResponse(c, errAPI),
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(key)
+			},
+		})
+
+		name := client.ComposeName("someName")
+		_, err := client.AccountDetails(name)
+		c.Assert(err, gc.NotNil)
+		c.Assert(val(err), gc.Equals, true)
+		c.Assert(
+			strings.Contains(err.Error(), errAPI.Message),
+			gc.Equals,
+			true)
+
+		_, err = client.AllAccounts(nil)
+		c.Assert(err, gc.NotNil)
+		c.Assert(val(err), gc.Equals, true)
+		c.Assert(
+			strings.Contains(err.Error(), errAPI.Message),
+			gc.Equals,
+			true)
+
+		_, err = client.AllAccountNames()
+		c.Assert(err, gc.NotNil)
+		c.Assert(val(err), gc.Equals, true)
+		c.Assert(
+			strings.Contains(err.Error(), errAPI.Message),
+			gc.Equals,
+			true)
+
+		_, err = client.DirectoryAccount()
+		c.Assert(err, gc.NotNil)
+		c.Assert(val(err), gc.Equals, true)
+		c.Assert(
+			strings.Contains(err.Error(), errAPI.Message),
+			gc.Equals,
+			true)
+
+		ts.Close()
+	}
 }
 
 func (cl clientTest) TestAccountDetailsWithEmptyName(c *gc.C) {
@@ -68,30 +130,6 @@ func (cl clientTest) TestAccountDetails(c *gc.C) {
 	c.Assert(resp, gc.DeepEquals, accountDetails)
 }
 
-func (cl clientTest) TestAccountDetailsErrors(c *gc.C) {
-	for key, val := range httpStatusErrors {
-		ts, client := cl.StartTestServerAuth(httpParams{
-			manualHeaderStatus: true,
-			check:              c,
-			body:               createResponse(c, errAPI),
-			handler: func(w http.ResponseWriter, r *http.Request) {
-				w.WriteHeader(key)
-			},
-		})
-
-		name := client.ComposeName("someName")
-		_, err := client.AccountDetails(name)
-		c.Assert(err, gc.NotNil)
-		c.Assert(val(err), gc.Equals, true)
-		c.Assert(
-			strings.Contains(err.Error(), errAPI.Message),
-			gc.Equals,
-			true)
-
-		ts.Close()
-	}
-}
-
 func (cl clientTest) TestAllAccounts(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allaccounts),
@@ -102,29 +140,6 @@ func (cl clientTest) TestAllAccounts(c *gc.C) {
 	resp, err := client.AllAccounts(nil)
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, allaccounts)
-}
-
-func (cl clientTest) TestAllAccountsErrors(c *gc.C) {
-	for key, val := range httpStatusErrors {
-		ts, client := cl.StartTestServerAuth(httpParams{
-			manualHeaderStatus: true,
-			check:              c,
-			body:               createResponse(c, errAPI),
-			handler: func(w http.ResponseWriter, r *http.Request) {
-				w.WriteHeader(key)
-			},
-		})
-
-		_, err := client.AllAccounts(nil)
-		c.Assert(err, gc.NotNil)
-		c.Assert(val(err), gc.Equals, true)
-		c.Assert(
-			strings.Contains(err.Error(), errAPI.Message),
-			gc.Equals,
-			true)
-
-		ts.Close()
-	}
 }
 
 func (cl clientTest) TestAccountNames(c *gc.C) {
@@ -139,29 +154,6 @@ func (cl clientTest) TestAccountNames(c *gc.C) {
 	c.Assert(resp, gc.DeepEquals, accountnames)
 }
 
-func (cl clientTest) TestAccountNamesErrors(c *gc.C) {
-	for key, val := range httpStatusErrors {
-		ts, client := cl.StartTestServerAuth(httpParams{
-			manualHeaderStatus: true,
-			check:              c,
-			body:               createResponse(c, errAPI),
-			handler: func(w http.ResponseWriter, r *http.Request) {
-				w.WriteHeader(key)
-			},
-		})
-
-		_, err := client.AllAccountNames()
-		c.Assert(err, gc.NotNil)
-		c.Assert(val(err), gc.Equals, true)
-		c.Assert(
-			strings.Contains(err.Error(), errAPI.Message),
-			gc.Equals,
-			true)
-
-		ts.Close()
-	}
-}
-
 func (cl clientTest) TestDirectoryAccount(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &accountnames),
@@ -172,27 +164,4 @@ func (cl clientTest) TestDirectoryAccount(c *gc.C) {
 	resp, err := client.DirectoryAccount()
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, accountnames)
-}
-
-func (cl clientTest) TestDirectoryAccountErrors(c *gc.C) {
-	for key, val := range httpStatusErrors {
-		ts, client := cl.StartTestServerAuth(httpParams{
-			manualHeaderStatus: true,
-			check:              c,
-			body:               createResponse(c, errAPI),
-			handler: func(w http.ResponseWriter, r *http.Request) {
-				w.WriteHeader(key)
-			},
-		})
-
-		_, err := client.DirectoryAccount()
-		c.Assert(err, gc.NotNil)
-		c.Assert(val(err), gc.Equals, true)
-		c.Assert(
-			strings.Contains(err.Error(), errAPI.Message),
-			gc.Equals,
-			true)
-
-		ts.Close()
-	}
 }
