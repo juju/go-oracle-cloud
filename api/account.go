@@ -18,7 +18,7 @@ func (c *Client) AccountDetails(name string) (resp response.Account, err error) 
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: empty account name")
+		return resp, errors.New("go-oracle-cloud: Empty account name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["account"], name)
