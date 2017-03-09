@@ -1,10 +1,10 @@
 // Copyright 2017 Canonical Ltd.
-// Licensed under the AGPLv3, see LICENCE file for details.
+// Licensed under the LGPLv3, see LICENCE file for details.
 
 package response
 
 import (
-	"github.com/hoenirvili/go-oracle-cloud/common"
+	"github.com/juju/go-oracle-cloud/common"
 )
 
 // StorageAttachment is a storage attachment is an association

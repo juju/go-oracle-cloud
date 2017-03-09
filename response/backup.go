@@ -1,6 +1,6 @@
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 // Backup allows you to create a backup right
 // away using a specified backup configuration.

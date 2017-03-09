@@ -1,9 +1,9 @@
 // Copyright 2017 Canonical Ltd.
-// Licensed under the AGPLv3, see LICENCE file for details.
+// Licensed under the LGPLv3, see LICENCE file for details.
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 // SecAssociation is a security association, a relationship between a security
 // list and the vcable of an instance. The vcable is an attachment

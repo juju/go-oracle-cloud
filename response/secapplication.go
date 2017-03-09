@@ -1,12 +1,12 @@
 // Copyright 2017 Canonical Ltd.
-// Licensed under the AGPLv3, see LICENCE file for details.
+// Licensed under the LGPLv3, see LICENCE file for details.
 
 package response
 
 import (
 	"fmt"
 
-	"github.com/hoenirvili/go-oracle-cloud/common"
+	"github.com/juju/go-oracle-cloud/common"
 )
 
 type SecApplication struct {

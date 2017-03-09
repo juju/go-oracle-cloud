@@ -1,5 +1,5 @@
 // Copyright 2017 Canonical Ltd.
-// Licensed under the AGPLv3, see LICENCE file for details.
+// Licensed under the LGPLv3, see LICENCE file for details.
 
 package api
 
@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hoenirvili/go-oracle-cloud/common"
-	"github.com/hoenirvili/go-oracle-cloud/response"
+	"github.com/juju/go-oracle-cloud/common"
+	"github.com/juju/go-oracle-cloud/response"
 )
 
 type SecurityRuleParams struct {

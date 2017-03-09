@@ -1,5 +1,5 @@
 // Copyright 2017 Canonical Ltd.
-// Licensed under the AGPLv3, see LICENCE file for details.
+// Licensed under the LGPLv3, see LICENCE file for details.
 
 package api_test
 
@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/hoenirvili/go-oracle-cloud/api"
+	"github.com/juju/go-oracle-cloud/api"
 	gc "gopkg.in/check.v1"
 )
 
