@@ -3,7 +3,7 @@
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 // SecurityProtocol is a security protocol allows you to specify a transport protocol
 // and the source and destination ports to be used with the specified protocol.

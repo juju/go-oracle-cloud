@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hoenirvili/go-oracle-cloud/common"
-	"github.com/hoenirvili/go-oracle-cloud/response"
+	"github.com/juju/go-oracle-cloud/common"
+	"github.com/juju/go-oracle-cloud/response"
 )
 
 // AllIpReservations Retrieves details of the IP reservations that are available

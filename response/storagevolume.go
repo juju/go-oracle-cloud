@@ -3,7 +3,7 @@
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 // StorageVolueme is a storage volume is virtual
 // disk drive that provides block storage for

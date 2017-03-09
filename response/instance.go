@@ -3,7 +3,7 @@
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 type LaunchPlan struct {
 	Relationships []string   `json:"relationships,omitempty"`

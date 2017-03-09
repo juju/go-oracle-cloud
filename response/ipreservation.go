@@ -3,7 +3,7 @@
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 // IpReservation is an IP reservation is the allocation of a public IP address
 // from an IP address pool. After creating an IP reservation,

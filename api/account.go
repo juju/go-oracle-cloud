@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hoenirvili/go-oracle-cloud/response"
+	"github.com/juju/go-oracle-cloud/response"
 )
 
 // AccountDetails retrieves details of the specified account.

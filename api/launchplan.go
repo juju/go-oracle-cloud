@@ -8,7 +8,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/hoenirvili/go-oracle-cloud/response"
+	"github.com/juju/go-oracle-cloud/response"
 )
 
 const (

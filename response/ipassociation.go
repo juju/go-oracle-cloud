@@ -3,7 +3,7 @@
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 // IpAssociation is a link between an IP reservation
 // and the vcable of an instance. A vcable is an attachment

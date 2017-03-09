@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hoenirvili/go-oracle-cloud/response"
+	"github.com/juju/go-oracle-cloud/response"
 )
 
 // CreateSSHKey adds into the oracle cloud account an ssh key

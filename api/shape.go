@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hoenirvili/go-oracle-cloud/response"
+	"github.com/juju/go-oracle-cloud/response"
 )
 
 // ShapeDetails retrieves the CPU and memory details of the specified shape.

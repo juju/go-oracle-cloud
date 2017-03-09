@@ -4,7 +4,7 @@
 package response
 
 import (
-	"github.com/hoenirvili/go-oracle-cloud/common"
+	"github.com/juju/go-oracle-cloud/common"
 )
 
 // StorageAttachment is a storage attachment is an association

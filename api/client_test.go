@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/hoenirvili/go-oracle-cloud/api"
+	"github.com/juju/go-oracle-cloud/api"
 	gc "gopkg.in/check.v1"
 )
 

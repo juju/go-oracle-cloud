@@ -6,7 +6,7 @@ package api
 import (
 	"fmt"
 
-	"github.com/hoenirvili/go-oracle-cloud/response"
+	"github.com/juju/go-oracle-cloud/response"
 )
 
 // InstanceConsoleDetails retrieves the messages that

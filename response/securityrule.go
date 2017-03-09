@@ -3,7 +3,7 @@
 
 package response
 
-import "github.com/hoenirvili/go-oracle-cloud/common"
+import "github.com/juju/go-oracle-cloud/common"
 
 // SecurityRule is a  security rule permits traffic from a specified
 // source or to a specified destination. You must specify the direction
