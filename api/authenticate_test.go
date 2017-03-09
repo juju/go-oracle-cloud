@@ -1,5 +1,5 @@
 // Copyright 2017 Canonical Ltd.
-// Licensed under the AGPLv3, see LICENCE file for details.
+// Licensed under the LGPLv3, see LICENCE file for details.
 
 package api_test
 
