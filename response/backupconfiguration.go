@@ -17,7 +17,7 @@ type BackupConfiguration struct {
 	RunAsUser string `json:"runAsUser,omitempty"`
 
 	// Name is the name of the backup configuration
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 
 	// Enabled flag for:
 	// when true, backups will automatically
@@ -52,11 +52,23 @@ type BackupConfiguration struct {
 	// fully capitalized (MONDAY, TUESDAY, etc).
 	// The user time zone is any IANA user timezone.
 	//For example user time zones see List of IANA time zones.
-	Interval interface{} `json:"Interval,omitempty"`
+	//
+	//
+	// But for the caller of this api can use one of the types provided
+	// in the common package
+	// common.Interval
+	// common.DailyWeekly
+	//
+	// If you want to be sure what are you passing is correcly and checked
+	// use this function from the common package instead
+	// common.NewInterval
+	// common.NewDailyWeekly
+	//
+	Interval interface{} `json:"Interval"`
 
 	// VolumeUri is the complete URI of the storage
 	// volume that you want to backup.
-	VolumeUri string `json:"volumeUri,omitempty"`
+	VolumeUri string `json:"volumeUri"`
 
 	// Description of this Backup Configuration
 	Description string `json:"description,omitempty"`
