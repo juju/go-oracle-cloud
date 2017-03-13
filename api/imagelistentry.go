@@ -13,7 +13,7 @@ import (
 // ImageListEntryDetails retrieves details of the specified image list entry.
 func (c *Client) ImageListEntryDetails(
 	name string,
-	version string,
+	version int,
 ) (resp response.ImageListEntry, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -25,13 +25,13 @@ func (c *Client) ImageListEntryDetails(
 		)
 	}
 
-	if version == "" {
+	if version == 0 {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty image list entry verion",
+			"go-oracle-cloud: Empty image list entry version",
 		)
 	}
 
-	url := fmt.Sprintf("%s%s/entry/%s",
+	url := fmt.Sprintf("%s%s/entry/%d",
 		c.endpoints["imagelistentrie"], name, version)
 
 	if err = c.request(paramsRequest{
@@ -48,7 +48,7 @@ func (c *Client) ImageListEntryDetails(
 // DeleteImageListEntry deletes an Image List Entry
 func (c *Client) DeleteImageListEntry(
 	name string,
-	version string,
+	version int,
 ) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
@@ -56,17 +56,17 @@ func (c *Client) DeleteImageListEntry(
 
 	if name == "" {
 		return errors.New(
-			"go-oracle-cloud: Cannot retrive entry from empty image list name",
+			"go-oracle-cloud: Empty image list entry name",
 		)
 	}
 
-	if version == "" {
+	if version == 0 {
 		return errors.New(
 			"go-oracle-cloud: Empty image list entry verion",
 		)
 	}
 
-	url := fmt.Sprintf("%s%s/entry/%s",
+	url := fmt.Sprintf("%s%s/entry/%d",
 		c.endpoints["imagelistentrie"], name, version)
 
 	if err = c.request(paramsRequest{
@@ -94,24 +94,24 @@ func (c *Client) CreateImageListEntry(
 
 	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Cannot create entry from empty image list name",
-		)
-	}
-
-	if attributes == nil {
-		return resp, errors.New(
-			"go-oracle-cloud: Cannot create entry from nil attributes",
+			"go-oracle-cloud: Empty image list entry name",
 		)
 	}
 
 	if machineImages == nil {
 		return resp, errors.New(
-			"go-oracle-cloud: Cannot create entry from nil machineImages",
+			"go-oracle-cloud: Empty image list entry machine images",
+		)
+	}
+
+	if version == 0 {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty image list entry verion",
 		)
 	}
 
 	params := struct {
-		Attributes    map[string]interface{} `json:"attributes"`
+		Attributes    map[string]interface{} `json:"attributes,omitempty"`
 		MachineImages []string               `json:"machineImages"`
 		Version       int                    `json:"version"`
 	}{

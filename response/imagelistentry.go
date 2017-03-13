@@ -23,6 +23,7 @@ type ImageListEntry struct {
 
 	// Machineimages represetns a slice of machine images.
 	Machineimages []string `json:"machineimages"`
+
 	// Uri is the Uniform Resource Identifier
 	Uri string `json:"uri"`
 }

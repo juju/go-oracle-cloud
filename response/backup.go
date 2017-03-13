@@ -15,12 +15,13 @@ type Backup struct {
 	Bootable bool `json:"bootable"`
 
 	// Description is the description of the Backup
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 
 	// detailedErrorMessage is a human readable detailed error message
-	DetailedErrorMessage string `json:"detailedErrorMessage,omitempty"`
+	DetailedErrorMessage *string `json:"detailedErrorMessage,omitempty"`
+
 	// ErrorMessage is a human readable error message
-	ErrorMessage string `json:"errorMessage,omitempty"`
+	ErrorMessage *string `json:"errorMessage,omitempty"`
 
 	// Name is the name of the backup
 	Name string `json:"name"`
@@ -31,10 +32,10 @@ type Backup struct {
 	Shared bool `json:"shared"`
 
 	// SnapshotSize is the size of the snapshot
-	SnapshotSize string `json:"snapshotSize"`
+	SnapshotSize *string `json:"snapshotSize"`
 
 	// SnapshotUri is the snapshot created by this Backup
-	SnapshotUri string `json:"snapshotUri"`
+	SnapshotUri *string `json:"snapshotUri"`
 
 	// State of this resource.
 	// Allowed Values:

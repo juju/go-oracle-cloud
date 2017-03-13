@@ -18,7 +18,7 @@ type ImageList struct {
 	Default int `json:"default"`
 
 	// Description is a description of this image list.
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 
 	// Entries represents each machine image in an
 	// image list is identified by an image list entry.

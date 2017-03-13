@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	backupParams = api.BackupConfigurationParams{
+	backupConfigurationParams = api.BackupConfigurationParams{
 		Name:                 "/Compute-acme/jack.jones@example.com/backupConfigVol1",
 		Enabled:              false,
 		BackupRetentionCount: 2,
@@ -29,19 +29,19 @@ func (cl clientTest) TestBackupConfigratuionWithNoAuthentication(c *gc.C) {
 
 	defer ts.Close()
 
-	_, err := client.CreateBackupConfiguration(backupParams)
+	_, err := client.CreateBackupConfiguration(backupConfigurationParams)
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
 
-	_, err = client.UpdateBackupConfiguration(backupParams, backupParams.Name)
+	_, err = client.UpdateBackupConfiguration(backupConfigurationParams, backupConfigurationParams.Name)
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
 
-	err = client.DeleteBackupConfiguration(backupParams.Name)
+	err = client.DeleteBackupConfiguration(backupConfigurationParams.Name)
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
 
-	_, err = client.BackupConfigurationDetails(backupParams.Name)
+	_, err = client.BackupConfigurationDetails(backupConfigurationParams.Name)
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
 
@@ -61,7 +61,7 @@ func (cl clientTest) TestBackupConfigratuionWithErrors(c *gc.C) {
 			},
 		})
 
-		_, err := client.CreateBackupConfiguration(backupParams)
+		_, err := client.CreateBackupConfiguration(backupConfigurationParams)
 		c.Assert(err, gc.NotNil)
 		c.Assert(val(err), gc.Equals, true)
 		c.Assert(
@@ -74,7 +74,7 @@ func (cl clientTest) TestBackupConfigratuionWithErrors(c *gc.C) {
 		// this means for the delete resource point of view to not be
 		// an acutal error and it will return nil so we don't need to check this
 		if key != http.StatusNotFound {
-			err = client.DeleteBackupConfiguration(backupParams.Name)
+			err = client.DeleteBackupConfiguration(backupConfigurationParams.Name)
 			c.Assert(err, gc.NotNil)
 			c.Assert(val(err), gc.Equals, true)
 			c.Assert(
@@ -91,7 +91,7 @@ func (cl clientTest) TestBackupConfigratuionWithErrors(c *gc.C) {
 			gc.Equals,
 			true)
 
-		_, err = client.BackupConfigurationDetails(backupParams.Name)
+		_, err = client.BackupConfigurationDetails(backupConfigurationParams.Name)
 		c.Assert(err, gc.NotNil)
 		c.Assert(val(err), gc.Equals, true)
 		c.Assert(
@@ -99,7 +99,7 @@ func (cl clientTest) TestBackupConfigratuionWithErrors(c *gc.C) {
 			gc.Equals,
 			true)
 
-		_, err = client.UpdateBackupConfiguration(backupParams, backupParams.Name)
+		_, err = client.UpdateBackupConfiguration(backupConfigurationParams, backupConfigurationParams.Name)
 		c.Assert(err, gc.NotNil)
 		c.Assert(val(err), gc.Equals, true)
 		c.Assert(
@@ -130,7 +130,7 @@ func (cl clientTest) TestBackupConfigurationResourceWithEmptyName(c *gc.C) {
 	c.Assert(err, gc.NotNil)
 	c.Assert(strings.Contains(err.Error(), "Empty backup configuration name"), gc.Equals, true)
 
-	_, err = client.UpdateBackupConfiguration(backupParams, "")
+	_, err = client.UpdateBackupConfiguration(backupConfigurationParams, "")
 	c.Assert(err, gc.NotNil)
 	c.Assert(strings.Contains(err.Error(), "Empty backup configuration current name"), gc.Equals, true)
 }
@@ -159,12 +159,12 @@ func (cl clientTest) TestCreateBackupConfiguration(c *gc.C) {
 			var req api.BackupConfigurationParams
 			err := enc.NewDecoder(r.Body).Decode(&req)
 			c.Assert(err, gc.IsNil)
-			c.Assert(req, gc.DeepEquals, backupParams)
+			c.Assert(req, gc.DeepEquals, backupConfigurationParams)
 		},
 	})
 	defer ts.Close()
 
-	resp, err := client.CreateBackupConfiguration(backupParams)
+	resp, err := client.CreateBackupConfiguration(backupConfigurationParams)
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, backupConfigurationDetails)
 }
@@ -175,7 +175,7 @@ func (cl clientTest) TestDeleteBackupConfiguration(c *gc.C) {
 	})
 	defer ts.Close()
 
-	err := client.DeleteBackupConfiguration(backupParams.Name)
+	err := client.DeleteBackupConfiguration(backupConfigurationParams.Name)
 	c.Assert(err, gc.IsNil)
 }
 
@@ -186,7 +186,7 @@ func (cl clientTest) TestBackupConfigurationDetails(c *gc.C) {
 	})
 	defer ts.Close()
 
-	resp, err := client.BackupConfigurationDetails(backupParams.Name)
+	resp, err := client.BackupConfigurationDetails(backupConfigurationParams.Name)
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, backupConfigurationDetails)
 }
@@ -211,12 +211,12 @@ func (cl clientTest) TestUpdateBackupConfiguration(c *gc.C) {
 			var req api.BackupConfigurationParams
 			err := enc.NewDecoder(r.Body).Decode(&req)
 			c.Assert(err, gc.IsNil)
-			c.Assert(req, gc.DeepEquals, backupParams)
+			c.Assert(req, gc.DeepEquals, backupConfigurationParams)
 		},
 	})
 	defer ts.Close()
 
-	resp, err := client.UpdateBackupConfiguration(backupParams, backupParams.Name)
+	resp, err := client.UpdateBackupConfiguration(backupConfigurationParams, backupConfigurationParams.Name)
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, backupConfigurationDetails)
 }

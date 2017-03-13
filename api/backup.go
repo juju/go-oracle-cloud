@@ -12,6 +12,7 @@ import (
 
 // BackupParams used as params to CreateBackup function
 type BackupParams struct {
+
 	// BackupConfigurationName multi-part name of the backup configuration.
 	BackupConfigurationName string `json:"backupConfigurationName"`
 
@@ -27,7 +28,7 @@ func (b BackupParams) validate() (err error) {
 
 	if b.BackupConfigurationName == "" {
 		return errors.New(
-			"go-oracle-cloud: Empty backup configuration name",
+			"go-oracle-cloud: Empty backup name",
 		)
 	}
 
