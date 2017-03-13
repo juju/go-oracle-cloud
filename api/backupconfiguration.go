@@ -1,5 +1,5 @@
-// Copyright 2017 Canonical Ltd.
 // Licensed under the LGPLv3, see LICENCE file for details.
+// Copyright 2017 Canonical Ltd.
 
 package api
 
@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/juju/go-oracle-cloud/common"
 	"github.com/juju/go-oracle-cloud/response"
 )
 
@@ -53,15 +54,21 @@ type BackupConfigurationParams struct {
 	// Days of the week is any day of the week
 	// fully capitalized (MONDAY, TUESDAY, etc).
 	// The user time zone is any IANA user timezone.
-	//For example user time zones see List of IANA time zones.
-	Interval interface{} `json:"interval"`
+	// For example user time zones see List of IANA time zones.
+	//
+	Interval common.Interval `json:"interval"`
 }
 
+// validate will validate the backup configuration params passed
 func (c BackupConfigurationParams) validate() (err error) {
 	if c.Name == "" {
 		return errors.New(
 			"go-oracle-cloud: Empty backup configuration name",
 		)
+	}
+
+	if err = c.Interval.Validate(); err != nil {
+		return err
 	}
 
 	return nil

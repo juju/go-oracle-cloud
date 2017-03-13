@@ -3,6 +3,8 @@
 
 package response
 
+import "github.com/juju/go-oracle-cloud/common"
+
 // BackupConfiguration you can schedule backups to be taken
 // automatically at defined intervals.
 // Scheduling a backup creates a snapshot of the specified
@@ -64,7 +66,7 @@ type BackupConfiguration struct {
 	// common.NewInterval
 	// common.NewDailyWeekly
 	//
-	Interval interface{} `json:"Interval"`
+	Interval common.Interval `json:"Interval"`
 
 	// VolumeUri is the complete URI of the storage
 	// volume that you want to backup.

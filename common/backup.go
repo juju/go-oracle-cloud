@@ -22,19 +22,6 @@ const (
 	Deleted         BackupState = "DELETED"
 )
 
-// Interval type used for providing an Interval in the
-// BackupCOnfigurationParams
-type Interval struct {
-	// Hourly is the count of backups in a hour
-	Hourly Hour `json:"Hourly"`
-}
-
-// Hour represents the how many backup should be performed
-type Hour struct {
-	// HourlyInterval number of backups
-	HourlyInterval int `json:"hourlyInterval"`
-}
-
 // Week type for using all week days
 type Week string
 
@@ -48,22 +35,30 @@ const (
 	Sunday    Week = "SUNDAY"
 )
 
-// DailyWeekly type used for providing an Interval in the
-// BackupConfigurationParams
-type DailyWeekly struct {
+// Interval type used for providing an Interval in the
+// BackupCOnfigurationParams
+type Interval struct {
+	// Hourly is the count of backups in a hour
+	Hourly Hour `json:"Hourly,omitempty"`
 	// DaysOfWeek what are the days the backup should run
-	DaysOfWeek []Week `json:"DaysOfWeek"`
+	DaysOfWeek []Week `json:"DaysOfWeek,omitempty"`
 	// TimeOfDay is the time of the day that the backup should run
-	TimeOfDay string `json:"timeOfDay"`
+	TimeOfDay string `json:"timeOfDay,omitempty"`
 	// UserTimeZone the user timezone
 	// The user timezone is IANA user timezone
-	UserTimeZone string `json:"userTimeZone"`
+	UserTimeZone string `json:"userTimeZone,omitempty"`
+}
+
+// Hour represents the how many backup should be performed
+type Hour struct {
+	// HourlyInterval number of backups
+	HourlyInterval int `json:"hourlyInterval,omitempty"`
 }
 
 // NewInterval returns a new Interval used for constructing the
 // interval in the backup configuration params
-func NewInterval(hourlyInterval int) *Interval {
-	return &Interval{
+func NewInterval(hourlyInterval int) Interval {
+	return Interval{
 		Hourly: Hour{
 			HourlyInterval: hourlyInterval,
 		},
@@ -76,46 +71,67 @@ func NewDailyWeekly(
 	days []Week,
 	time string,
 	timezone string,
-) (*DailyWeekly, error) {
-	if days == nil {
-		return nil, errors.New("go-oracle-cloud: Empty days")
-	}
-
-	weeks := map[Week]Week{
-		Monday:    Monday,
-		Tuesday:   Tuesday,
-		Wednesday: Wednesday,
-		Thursday:  Thursday,
-		Friday:    Friday,
-		Saturday:  Saturday,
-		Sunday:    Sunday,
-	}
-
-	for _, val := range days {
-		if _, ok := weeks[val]; !ok {
-			return nil, errors.New(
-				"go-oracle-cloud: Invalid week day",
-			)
-		}
-	}
-
-	n := strings.SplitN(time, ":", 2)
-	if n[0] == "" && n[1] == "" {
-		return nil, errors.New(
-			"go-oracle-cloud: Invalid time format",
-		)
-	}
-
-	m := strings.SplitN(timezone, ":", 2)
-	if m[0] == "" && m[1] == "" {
-		return nil, errors.New(
-			"go-oracle-cloud: Invalid timezone format",
-		)
-	}
-
-	return &DailyWeekly{
+) Interval {
+	return Interval{
 		DaysOfWeek:   days,
 		TimeOfDay:    time,
 		UserTimeZone: timezone,
-	}, nil
+	}
+}
+
+// Validate will validate the interval in the backup configuration params
+func (i Interval) Validate() (err error) {
+
+	if i.DaysOfWeek != nil &&
+		i.TimeOfDay != "" &&
+		i.UserTimeZone != "" &&
+		i.Hourly.HourlyInterval != 0 {
+		return errors.New(
+			"go-oracle-cloud: Cannot use both invervals",
+		)
+	}
+
+	if i.DaysOfWeek != nil &&
+		i.TimeOfDay != "" &&
+		i.UserTimeZone != "" {
+
+		if i.DaysOfWeek == nil {
+			return errors.New("go-oracle-cloud: Empty days")
+		}
+
+		weeks := map[Week]Week{
+			Monday:    Monday,
+			Tuesday:   Tuesday,
+			Wednesday: Wednesday,
+			Thursday:  Thursday,
+			Friday:    Friday,
+			Saturday:  Saturday,
+			Sunday:    Sunday,
+		}
+
+		for _, val := range i.DaysOfWeek {
+			if _, ok := weeks[val]; !ok {
+				return errors.New(
+					"go-oracle-cloud: Invalid week day",
+				)
+			}
+		}
+
+		n := strings.SplitN(i.TimeOfDay, ":", 2)
+		if n[0] == "" && n[1] == "" {
+			return errors.New(
+				"go-oracle-cloud: Invalid time format",
+			)
+		}
+
+		m := strings.SplitN(i.UserTimeZone, ":", 2)
+		if m[0] == "" && m[1] == "" {
+			return errors.New(
+				"go-oracle-cloud: Invalid timezone format",
+			)
+		}
+
+	}
+
+	return nil
 }
