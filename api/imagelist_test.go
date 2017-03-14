@@ -77,7 +77,7 @@ func (cl clientTest) TestImageListResourceWithNoAuthentication(c *gc.C) {
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
 
-	_, err = client.AllImageListNames()
+	_, err = client.ImageListNames()
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
 }
@@ -135,7 +135,7 @@ func (cl clientTest) TestImageListWithErrors(c *gc.C) {
 			gc.Equals,
 			true)
 
-		_, err = client.AllImageListNames()
+		_, err = client.ImageListNames()
 		c.Assert(err, gc.NotNil)
 		c.Assert(val(err), gc.Equals, true)
 		c.Assert(
@@ -274,7 +274,17 @@ func (cl clientTest) TestImageListNames(c *gc.C) {
 	})
 	defer ts.Close()
 
-	resp, err := client.AllImageListNames()
+	resp, err := client.ImageListNames()
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, imagelistnames)
+}
+
+func (cl clientTest) TestDeleteImageList(c *gc.C) {
+	ts, client := cl.StartTestServerAuth(httpParams{
+		check: c,
+	})
+	defer ts.Close()
+
+	err := client.DeleteImageList(imageListParams.Name)
+	c.Assert(err, gc.IsNil)
 }
