@@ -60,15 +60,16 @@ func (c *Client) AllImageLists(filter []Filter) (resp response.AllImageLists, er
 	return resp, nil
 }
 
-// AllImageListNames retrieves the names of objects and
+// ImageListNames retrieves the names of objects and
 // subcontainers that you can access in the specified container.
-func (c *Client) AllImageListNames() (resp response.DirectoryNames, err error) {
+func (c *Client) ImageListNames() (resp response.DirectoryNames, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
-	url := fmt.Sprintf("%s/Compute-%s/%s/", c.endpoints["imageList"])
+	url := fmt.Sprintf("%s/Compute-%s/%s/", c.endpoints["imagelist"],
+		c.identify, c.username)
 
 	if err = c.request(paramsRequest{
 		directory: true,
@@ -91,6 +92,12 @@ func (c *Client) CreateImageList(
 
 	if !c.isAuth() {
 		return resp, errNotAuth
+	}
+
+	if name == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty image list name",
+		)
 	}
 
 	params := struct {
@@ -130,7 +137,7 @@ func (c *Client) DeleteImageList(name string) (err error) {
 		return errors.New("go-oracle-api: Empty image list name")
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["endpoints"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["imagelist"], name)
 
 	if err = c.request(paramsRequest{
 		url:  url,
@@ -158,7 +165,7 @@ func (c *Client) UpdateImageList(
 
 	if currentName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty curret image list name",
+			"go-oracle-cloud: Empty image list current name",
 		)
 	}
 
