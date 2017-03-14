@@ -4,6 +4,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/juju/go-oracle-cloud/response"
@@ -21,6 +22,11 @@ func (c *Client) InstanceConsoleDetails(
 		return resp, errNotAuth
 	}
 
+	if name == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty instance console name",
+		)
+	}
 	url := fmt.Sprintf("%s%s", c.endpoints["instanceconsole"], name)
 
 	if err = c.request(paramsRequest{
