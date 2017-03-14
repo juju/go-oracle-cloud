@@ -384,15 +384,28 @@ type InstanceParams struct {
 }
 
 func (i InstanceParams) validate() (err error) {
+
+	if i.Instances == nil || len(i.Instances) == 0 {
+		return errors.New(
+			"go-oracle-cloud: Empty instances in instance params",
+		)
+	}
+
 	for _, val := range i.Instances {
+		if val.Name == "" {
+			return errors.New(
+				"go-oracle-cloud: Empty instance name",
+			)
+
+		}
 		if val.Imagelist == "" {
 			return errors.New(
-				"go-oracle-cloud: Empty image list in instance parameters",
+				"go-oracle-cloud: Empty instance image list",
 			)
 		}
 		if val.Label == "" {
 			return errors.New(
-				"go-oracle-cloud: Empty label in instance parameters",
+				"go-oracle-cloud: Empty instance label",
 			)
 		}
 
@@ -407,10 +420,6 @@ func (i InstanceParams) validate() (err error) {
 }
 
 func (c *Client) CreateInstance(params InstanceParams) (resp response.LaunchPlan, err error) {
-	if params.Instances == nil || len(params.Instances) == 0 {
-		return resp, errors.New("go-oracle-cloud: Empty slice of instance parameters")
-	}
-
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

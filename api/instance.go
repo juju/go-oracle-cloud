@@ -66,6 +66,12 @@ func (c *Client) InstanceDetails(name string) (resp response.Instance, err error
 		return resp, errNotAuth
 	}
 
+	if name == "" {
+		return resp, errors.New(
+			"go-oracle-cloud: Empty instance name",
+		)
+	}
+
 	url := fmt.Sprintf("%s%s", c.endpoints["instance"], name)
 
 	if err = c.request(paramsRequest{
@@ -81,7 +87,7 @@ func (c *Client) InstanceDetails(name string) (resp response.Instance, err error
 
 // AllInstanceNames retrieves the names of objects and subcontainers
 // that you can access in the specified container.
-func (c *Client) AllInstanceNames(filter []Filter) (resp response.DirectoryNames, err error) {
+func (c *Client) AllInstanceNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
@@ -93,7 +99,6 @@ func (c *Client) AllInstanceNames(filter []Filter) (resp response.DirectoryNames
 		url:       url,
 		verb:      "GET",
 		resp:      &resp,
-		filter:    filter,
 	}); err != nil {
 		return resp, err
 	}
