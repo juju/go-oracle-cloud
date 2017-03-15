@@ -105,6 +105,10 @@ func (c *Client) UpdateIpAddressReservation(
 		return resp, errNotAuth
 	}
 
+	if err = p.validate(); err != nil {
+		return resp, err
+	}
+
 	if currentName == "" {
 		return resp, errors.New(
 			"go-oracle-cloud: Empty ip address reservation current name",

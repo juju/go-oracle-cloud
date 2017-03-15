@@ -15,7 +15,7 @@ import "github.com/juju/go-oracle-cloud/common"
 type IpAddressReservation struct {
 
 	// Description is the description of the ip address reservation
-	Description string `json:"description,omitmepty"`
+	Description *string `json:"description,omitmepty"`
 
 	// IpAddressPool is the IP address pool from which you want
 	// to reserve an IP address. Enter one of the following:
@@ -27,6 +27,9 @@ type IpAddressReservation struct {
 	// can communicate privately (that is, without traffic going over
 	// the public Internet) with other Oracle Cloud services, such as the
 	IpAddressPool common.IPPool `json:"ipAddressPool,omitempty"`
+
+	// IpAddress reserved NAT IPv4 address from the IP address pool
+	IpAddress string `json:"ipAddress,omitempty"`
 
 	// Name is the name of the ip address reservation
 	Name string `json:"name"`
