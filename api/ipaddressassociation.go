@@ -18,7 +18,7 @@ func (c *Client) IpAddressAssociationDetails(name string) (resp response.IpAddre
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: The given ip name is empty")
+		return resp, errors.New("go-oracle-cloud: Empty ip address association name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipaddressassociation"], name)
@@ -72,16 +72,16 @@ func (c *Client) CreateIpAddressAssociation(
 		return resp, errNotAuth
 	}
 
-	if ipAddressReservation == "" {
-		return resp, errors.New("go-oracle-cloud: Empty ip address reservation")
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty ip address association name")
 	}
 
-	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Empty ip name")
+	if ipAddressReservation == "" {
+		return resp, errors.New("go-oracle-cloud: Empty ip address association reservation")
 	}
 
 	if vnic == "" {
-		return resp, errors.New("go-oracle-cloud: Empty vnic name")
+		return resp, errors.New("go-oracle-cloud: Empty ip address association vnic")
 	}
 
 	// construct the body for the post request
@@ -153,15 +153,15 @@ func (c *Client) UpdateIpAddressAssociation(
 	}
 
 	if currentName == "" {
-		return resp, errors.New("go-oracle-cloud: Given name is empty")
+		return resp, errors.New("go-oracle-cloud: Empty ip address association current name")
 	}
 
 	if ipAddressReservation == "" {
-		return resp, errors.New("go-oracle-cloud: Given ip address reservation is empty")
+		return resp, errors.New("go-oracle-cloud: Empty ip address association reservation")
 	}
 
 	if vnic == "" {
-		return resp, errors.New("go-oracle-cloud: Given vnic is empty")
+		return resp, errors.New("go-oracle-cloud: Empty ip address association vnic")
 	}
 
 	if newName == "" {

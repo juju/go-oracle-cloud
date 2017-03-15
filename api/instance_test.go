@@ -1,7 +1,6 @@
 package api_test
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -151,7 +150,6 @@ func (cl clientTest) TestInstanceResourceWithEmptyName(c *gc.C) {
 			api.Instances{},
 		},
 	})
-	fmt.Println(err)
 	c.Assert(err, gc.NotNil)
 	c.Assert(strings.Contains(err.Error(), "Empty instance name"), gc.Equals, true)
 	//TODO(sgiulitti) more test cases
