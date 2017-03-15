@@ -10,10 +10,10 @@ package response
 type IpAddressPrefixSet struct {
 
 	// Description is a description of the ip address prefix set
-	Description string `json:"description,omitmepty"`
+	Description *string `json:"description,omitmepty"`
 
-	// IpAddressPrefixes is a list of CIDR IPv4 prefixes assigned in the virtual network.
 	IpAddressPrefixes []string `json:"ipAddressPrefixes"`
+	// IpAddressPrefixes is a list of CIDR IPv4 prefixes assigned in the virtual network.
 
 	// Name is the name of the ip address prefix set
 	Name string `json:"name"`
