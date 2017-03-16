@@ -25,8 +25,12 @@ type RebootInstanceRequest struct {
 	// State is the state of the request.
 	State string `json:"state"`
 
+	Instance_id string `json:"instance_id,omitempty"`
+
 	// Uri is the Uniform Resource Identifier
 	Uri string `json:"uri"`
+
+	Request_id string `json:"request_id,omitempty"`
 }
 
 // AllRebootInstanceRequests all reboot instance requests that are

@@ -28,7 +28,7 @@ func (c *Client) CreateRebootInstanceRequest(
 
 	if instanceName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty instance name",
+			"go-oracle-cloud: Empty reboot instance request name",
 		)
 	}
 
@@ -62,7 +62,7 @@ func (c *Client) DeleteRebootInstanceRequest(instanceName string) (err error) {
 	}
 
 	if instanceName == "" {
-		return errors.New("go-oracle-cloud: Empty instance name")
+		return errors.New("go-oracle-cloud: Empty reboot instance request name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["rebootinstancerequest"], instanceName)
@@ -89,11 +89,11 @@ func (c *Client) RebootInstanceRequestDetails(
 
 	if instanceName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty instance name",
+			"go-oracle-cloud: Empty reboot instance request name",
 		)
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["rebootinstrancerequest"], instanceName)
+	url := fmt.Sprintf("%s%s", c.endpoints["rebootinstancerequest"], instanceName)
 
 	if err = c.request(paramsRequest{
 		verb: "GET",
