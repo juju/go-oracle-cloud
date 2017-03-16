@@ -175,24 +175,43 @@ type Dns struct {
 // about the interface
 type Networking map[string]Nic
 
+type NicType string
+
+const (
+	VNic      NicType = "vnic"
+	VEthernet NicType = "vethernet"
+)
+
 // Nic type used to hold information from a
 // given interface card
 // This wil be used to dump all information from the
 // Netowrking type above
 type Nic struct {
-	Vethernet string `json:"vethernet"`
+	Dns []string `json:"dns,omitempty"`
+
+	Model string `json:"model,omitempty"`
 
 	// Nat indicates whether a temporary or permanent
 	// public IP address should be assigned
 	// to the instance
-	Nat string `json:"nat"`
-
-	Model string `json:"model,omitempty"`
+	Nat string `json:"nat,omitempty"`
 
 	// Seclits is the security lists that you want to add the instance
-	Seclists []string `json:"seclists"`
+	Seclists []string `json:"seclists,omitempty"`
 
-	Dns []string `json:"dns"`
+	Vethernet string `json:"vethernet,omitempty"`
+
+	Vnic string `json:"vnic,omitempty"`
+
+	Ipnetwork string `json:"ipnetwork,omitempty"`
+}
+
+func (n Nic) GetType() NicType {
+	if n.Vethernet != "" {
+		return VEthernet
+	}
+
+	return VNic
 }
 
 type Storage struct {
