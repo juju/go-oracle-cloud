@@ -7,8 +7,9 @@ package response
 // include multiple IP networks, but an IP network
 // can be added to only one IP network exchange.
 type IpNetworkExchange struct {
+
 	// Description is the description of the ip network exchange
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 
 	// Name si the name of the ip network exchange
 	Name string `json:"name"`
