@@ -15,9 +15,9 @@ package response
 type IpNetwork struct {
 
 	// Description of the object.
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 
-	// Specify the size of the IP subnet.
+	// IpAddressPrefix is the size of the IP subnet.
 	// It is a range of IPv4 addresses assigned in the
 	// virtual network, in CIDR address prefix format.
 	// While specifying the IP address prefix take care
@@ -39,19 +39,19 @@ type IpNetwork struct {
 	// DNS server of that IP network.
 	IpAddressPrefix string `json:"ipAddressPrefix"`
 
-	// Specify the IP network exchange to which the IP network belongs.
+	// IpNetworkExchange is the IP network exchange to which the IP network belongs.
 	// You can add an IP network to only one IP network exchange,
 	// but an IP network exchange can include multiple IP networks.
 	// An IP network exchange enables access between IP networks that
 	// have non-overlapping addresses, so that instances on these
 	// networks can exchange packets with each other without NAT.
-	IpNetworkExchange string `json:"ipNetworkExchange,omitempty"`
+	IpNetworkExchange *string `json:"ipNetworkExchange,omitempty"`
 
-	// Object names can contain only alphanumeric, underscore (_),
+	// Name object names can contain only alphanumeric, underscore (_),
 	// dash (-), and period (.) characters. Object names are case-sensitive.
 	Name string `json:"name"`
 
-	// If true, enable public internet access using NAPT for VNICs without any public IP reservation.
+	// PublicNaptEnabledFlag if true, enable public internet access using NAPT for VNICs without any public IP reservation.
 	PublicNaptEnabledFlag bool `json:"publicNaptEnabledFlag"`
 
 	// Tags associated with the object.

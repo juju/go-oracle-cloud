@@ -40,7 +40,7 @@ func (c *Client) IpNetworkDetails(name string) (resp response.IpNetwork, err err
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: The given ip name is empty")
+		return resp, errors.New("go-oracle-cloud: Empty ip network name")
 	}
 
 	url := fmt.Sprintf("%s%s",
@@ -76,20 +76,20 @@ func (c *Client) CreateIpNetwork(
 		return resp, errNotAuth
 	}
 
-	if ipAddressPrefix == "" {
-		return resp, errors.New("go-oracle-cloud: Empty ipAddressPrefix")
-	}
-
 	if name == "" {
 		return resp, errors.New("go-oracle-cloud: Empty ip network name")
+	}
+
+	if ipAddressPrefix == "" {
+		return resp, errors.New("go-oracle-cloud: Empty ip network address prefix")
 	}
 
 	url := c.endpoints["ipnetwork"] + "/"
 
 	params := response.IpNetwork{
-		Description:       description,
+		Description:       &description,
 		IpAddressPrefix:   ipAddressPrefix,
-		IpNetworkExchange: ipNetworkExchange,
+		IpNetworkExchange: &ipNetworkExchange,
 		Name:              name,
 		Tags:              tags,
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
@@ -162,11 +162,11 @@ func (c *Client) UpdateIpNetwork(
 	}
 
 	if currentName == "" {
-		return resp, errors.New("go-oracle-cloud: Empty network ip name")
+		return resp, errors.New("go-oracle-cloud: Empty ip network current name")
 	}
 
 	if ipAddressPrefix == "" {
-		return resp, errors.New("go-oracle-cloud: Empty ipAddressPrefix ")
+		return resp, errors.New("go-oracle-cloud: Empty ip network address prefix")
 	}
 
 	if newName == "" {
@@ -176,9 +176,9 @@ func (c *Client) UpdateIpNetwork(
 	url := fmt.Sprintf("%s%s", c.endpoints["ipnetwork"], currentName)
 
 	params := response.IpNetwork{
-		Description:       description,
+		Description:       &description,
 		IpAddressPrefix:   ipAddressPrefix,
-		IpNetworkExchange: ipNetworkExchange,
+		IpNetworkExchange: &ipNetworkExchange,
 		Name:              newName,
 		Tags:              tags,
 		PublicNaptEnabledFlag: publicNaptEnabledFlag,
