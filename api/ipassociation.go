@@ -103,7 +103,7 @@ func (c *Client) DeleteIpAssociation(name string) (err error) {
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: Empty ip association name provided")
+		return errors.New("go-oracle-cloud: Empty ip association name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipassociation"], name)
