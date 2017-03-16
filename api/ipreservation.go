@@ -42,7 +42,7 @@ func (c *Client) IpReservationDetails(name string) (resp response.IpReservation,
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Empty name provided")
+		return resp, errors.New("go-oracle-cloud: Empty ip reservation name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipreservation"], name)
@@ -62,8 +62,7 @@ func (c *Client) IpReservationDetails(name string) (resp response.IpReservation,
 // After creating an IP reservation, you can associate it with
 // an instance by using the CrateIpAddressAssociation method
 func (c *Client) CreateIpReservation(
-	currentName string,
-	newName string,
+	name string,
 	parentpool common.IPPool,
 	permanent bool,
 	tags []string,
@@ -73,14 +72,10 @@ func (c *Client) CreateIpReservation(
 		return resp, errNotAuth
 	}
 
-	if currentName == "" {
+	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty curret ip reservation name",
+			"go-oracle-cloud: Empty ip reservation name",
 		)
-	}
-
-	if newName == "" {
-		newName = currentName
 	}
 
 	params := struct {
@@ -91,7 +86,7 @@ func (c *Client) CreateIpReservation(
 	}{
 		Permanent:  permanent,
 		Tags:       tags,
-		Name:       newName,
+		Name:       name,
 		Parentpool: parentpool,
 	}
 
@@ -118,7 +113,9 @@ func (c *Client) DeleteIpReservation(name string) (err error) {
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: Empty name provided")
+		return errors.New(
+			"go-oracle-cloud: Empty ip reservation name",
+		)
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["ipreservation"], name)
@@ -151,9 +148,13 @@ func (c *Client) UpdateIpReservation(
 	tags []string,
 ) (resp response.IpReservation, err error) {
 
+	if !c.isAuth() {
+		return resp, errNotAuth
+	}
+
 	if currentName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty ip reservation name provided",
+			"go-oracle-cloud: Empty ip reservation current name",
 		)
 	}
 

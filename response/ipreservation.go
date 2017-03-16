@@ -39,7 +39,7 @@ type IpReservation struct {
 	Permanent bool `json:"permanent"`
 
 	// Quota is Not used
-	Quota string `json:"quota"`
+	Quota *string `json:"quota,omitempty"`
 
 	// Tags is a comma-separated list of strings
 	// which helps you to identify IP reservation.
