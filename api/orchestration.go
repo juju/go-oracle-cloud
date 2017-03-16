@@ -23,9 +23,26 @@ type OrchestrationParams struct {
 
 	// Name is the name of the orchestration
 	Name string `json:"name"`
+
+	// Schedule for an orchestration consists of
+	// the start and stop dates and times
+	Schedule Schedule `json:"schedule"`
 }
 
+// Schedule for an orchestration consists of
+// the start and stop dates and times
+type Schedule struct {
+	//Start_time when the orchestration will start
+	Start_time *string `json:"start_time,omitempty"`
+
+	// Stop_time when the orchestration will stop
+	Stop_time *string `json:"stop_time,omitempty"`
+}
+
+// Oplans orchestration plans holds important details
+// about the orchestration
 type Oplans struct {
+
 	// Ha_policy indicates that description is not available
 	Ha_policy string `json:"ha_policy,omitempty"`
 
@@ -40,23 +57,49 @@ type Oplans struct {
 	Objects []Objects `json:"objects"`
 }
 
+// Objects types used for storing object dictionaries
+// or object names for the orchestration
 type Objects struct {
-	Instances        []InstancesOrchestration `json:"instances"`
-	Status_timestamp string                   `json:"status_timestamp,omitmepty"`
+	// Instances list of instances
+	Instances []InstancesOrchestration `json:"instances"`
+
+	Status_timestamp string `json:"status_timestamp,omitmepty"`
 }
 
 type InstancesOrchestration struct {
-	Shape               string                  `json:"shape"`
-	Label               string                  `json:"label"`
-	Imagelist           string                  `json:"imagelist"`
-	Name                string                  `json:"name"`
-	Boot_order          []string                `json:"boot_order,omitempty"`
-	Attributes          AttributesOrchestration `json:"attributes,omitmepty"`
-	Storage_attachments []StorageOrhcestration  `json:"storage_attachments,omitmepty"`
-	Uri                 *string                 `json:"uri,omitempty"`
-	SSHkeys             []string                `json:"sshkeys,omitmepty"`
-	Tags                []string                `json:"tags,omitmepty"`
-	Networking          NetworkingOrchestration `json:"networking,omitempty"`
+
+	// Shape is the shape of the instnace
+	Shape string `json:"shape"`
+
+	// Label is the label of the instance
+	Label string `json:"label"`
+
+	// Imagelist is the image from what was created
+	Imagelist string `json:"imagelist"`
+
+	// Name of the instance
+	Name string `json:"name"`
+
+	// Boot_order is the number in what order the instance is booting
+	Boot_order []string `json:"boot_order,omitempty"`
+
+	// Attributes list of orchestration attributes
+	Attributes AttributesOrchestration `json:"attributes,omitmepty"`
+
+	// Storage_attachments list of storages that the instnaces has
+	Storage_attachments []StorageOrhcestration `json:"storage_attachments,omitmepty"`
+
+	// Uri of the instnace
+	Uri *string `json:"uri,omitempty"`
+
+	// SSHKeys of the instance
+	SSHkeys []string `json:"sshkeys,omitmepty"`
+
+	// Tags are a list of tags, aliases for the instance
+	Tags []string `json:"tags,omitmepty"`
+
+	// Networking information of the instance
+	Networking NetworkingOrchestration `json:"networking,omitempty"`
 }
 
 type StorageOrhcestration struct {
@@ -69,6 +112,7 @@ type AttributesOrchestration struct {
 }
 
 type NetworkingOrchestration struct {
+	//TODO(sgiulitti) this should be a type of response.Nic
 	Interfaces map[string]interface{}
 }
 
