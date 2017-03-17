@@ -18,6 +18,7 @@ import "github.com/juju/go-oracle-cloud/common"
 // orchestrations and the attributes for each object type, see Attributes in Orchestrations
 // in Using Oracle Compute Cloud Service (IaaS).
 type Orchestration struct {
+
 	// Relationships holds a slice of relationships that holds every
 	// relationship between the objects
 	Relationships []Relationship `json:"relationships,omitempty"`
@@ -42,7 +43,7 @@ type Orchestration struct {
 	Oplans []Oplans `json:"oplans"`
 
 	// Info the nested parameter errors shows which object
-	//  in the orchestration has encountered an error.
+	// in the orchestration has encountered an error.
 	// Empty if there are no errors.
 	Info Info `json:"info,omitempty"`
 
@@ -116,34 +117,72 @@ type Info struct {
 }
 
 type Objects struct {
-	Info              Info                     `json:"info,omitempty"`
-	Instances         []InstancesOrchestration `json:"instances,omitempty"`
-	Status            string                   `json:"status,omitempty"`
-	Name              string                   `json:"name,omitempty"`
-	Status_timestamp  string                   `json:"status_timestamp,omitmepty"`
-	Uri               *string                  `json:"uri,omitempty"`
-	Managed           bool                     `json:"managed,omitempty"`
-	Snapshot_account  *string                  `json:"snapshot_account,omitempty"`
-	Machineimage_name string                   `json:"machineimage_name,omitempty`
-	Snapshot_id       *string                  `json:"snapshot_id,omitempty"`
-	Imagelist         string                   `json:"imagelist,omitempty"`
-	Writecache        bool                     `json:"writecache,omitempty"`
-	Size              string                   `jon:"size,omitempty"`
-	Platform          string                   `json:"platform"`
-	Readonly          bool                     `json:"readonly"`
-	Storage_pool      string                   `json:"storage_pool,omitempty"`
-	Shared            bool                     `json:"shared,omitempty"`
-	Description       string                   `json:"description,omitempty"`
-	Tags              []string                 `json:"tags,omitempty"`
-	Quota             *string                  `json:"quota,omitempty"`
-	Properties        []string                 `json:"properties,omitempty"`
-	Account           string                   `json:"account"`
-	Bootable          bool                     `json:"bootable,omitempty"`
-	Hypervisor        *string                  `json:"hypervisor,omitempty"`
-	Imagelist_entry   int                      `json:"imagelist_entry,omitempty"`
-	Snapshot          *string                  `json:"snapshot,omitempty"`
+	Info Info `json:"info,omitempty"`
+	// Intances is generally populated when we are dealing with an
+	// instance orchestration
+	Instances        []InstancesOrchestration `json:"instances,omitempty"`
+	Status           string                   `json:"status,omitempty"`
+	Name             string                   `json:"name,omitempty"`
+	Status_timestamp string                   `json:"status_timestamp,omitmepty"`
+	Uri              *string                  `json:"uri,omitempty"`
+	//
+	// Below these fields are populated when we are dealing with an
+	// storage orchestration
+	//
+	// Managed flag true if the storage is managed
+	Managed           bool     `json:"managed,omitempty"`
+	Snapshot_account  *string  `json:"snapshot_account,omitempty"`
+	Machineimage_name string   `json:"machineimage_name,omitempty`
+	Snapshot_id       *string  `json:"snapshot_id,omitempty"`
+	Imagelist         string   `json:"imagelist,omitempty"`
+	Writecache        bool     `json:"writecache,omitempty"`
+	Size              string   `json:"size,omitempty"`
+	Platform          string   `json:"platform"`
+	Readonly          bool     `json:"readonly"`
+	Storage_pool      string   `json:"storage_pool,omitempty"`
+	Shared            bool     `json:"shared,omitempty"`
+	Description       string   `json:"description,omitempty"`
+	Tags              []string `json:"tags,omitempty"`
+	Quota             *string  `json:"quota,omitempty"`
+	Properties        []string `json:"properties,omitempty"`
+	Account           string   `json:"account"`
+	Bootable          bool     `json:"bootable,omitempty"`
+	Hypervisor        *string  `json:"hypervisor,omitempty"`
+	Imagelist_entry   int      `json:"imagelist_entry,omitempty"`
+	Snapshot          *string  `json:"snapshot,omitempty"`
 }
 
+// OType represents the orchestration type
+type OType string
+
+const (
+	// Instance is the instance orchestration type
+	OInstance OType = "Instance"
+	// Storage is the storage orchestration type
+	OStorage OType = "Storage"
+	// Master is the master orchestration type
+	OMaster OType = "Master"
+)
+
+// OrchestrationType returns the type of response orchestration we are
+// dealing with
+func (o Orchestration) OrchestrationType() OType {
+	for _, oplan := range o.Oplans {
+		for _, object := range oplan.Objects {
+			if object.Instances != nil && len(object.Instances) > 0 {
+				return OInstance
+			}
+
+			if object.Properties != nil && len(object.Properties) > 0 {
+				return OStorage
+			}
+		}
+	}
+	return OMaster
+}
+
+// InstanceOrchestration holds information for an instances inside
+// the orchestration object
 type InstancesOrchestration struct {
 	Hostname            string                  `json:"hostname,omitempty"`
 	Networking          Networking              `json:"networking,omitempty"`
