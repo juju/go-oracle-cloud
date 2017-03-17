@@ -69,7 +69,7 @@ func (e ErrNotAuthorized) Error() string { return e.message }
 // DumpApiError returns the error in a error format from a given reader source
 func (e *ErrNotAuthorized) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + " ,Raw: " + string(body)
+	e.message = e.message + " Raw: " + string(body)
 	return e
 
 }
@@ -84,7 +84,7 @@ func (e ErrBadRequest) Error() string { return e.message }
 // DumpApiError returns the error in a error format from a given reader source
 func (e *ErrBadRequest) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + " ,Raw: " + string(body)
+	e.message = e.message + " Raw: " + string(body)
 	return e
 }
 
@@ -98,7 +98,7 @@ func (e ErrInternalApi) Error() string { return e.message }
 // DumpApiError returns the error in a error format from a given reader source
 func (e *ErrInternalApi) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + " ,Raw: " + string(body)
+	e.message = e.message + " Raw: " + string(body)
 	return e
 }
 
@@ -112,7 +112,7 @@ func (e ErrNotFound) Error() string { return e.message }
 // DumpApiError returns the error in a error format from a given reader source
 func (e *ErrNotFound) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + " ,Raw: " + string(body)
+	e.message = e.message + " Raw: " + string(body)
 	return e
 }
 
@@ -126,7 +126,7 @@ func (e ErrStatusConflict) Error() string { return e.message }
 // DumpApiError returns the error in a error format from a given reader source
 func (e *ErrStatusConflict) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
-	e.message = e.message + " ,Raw: " + string(body)
+	e.message = e.message + " Raw: " + string(body)
 	return e
 }
 
@@ -134,7 +134,7 @@ func (e *ErrStatusConflict) DumpApiError(r io.Reader) error {
 func dumpApiError(resp *http.Response) error {
 	body, _ := ioutil.ReadAll(resp.Body)
 	return fmt.Errorf(
-		"go-oracle-cloud: Error api response %d ,Raw: %s",
+		"go-oracle-cloud: Error api response %d Raw: %s",
 		resp.StatusCode, string(body),
 	)
 }

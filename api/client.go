@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 )
 
@@ -84,6 +85,13 @@ func NewClient(cfg Config) (*Client, error) {
 
 	if err = cfg.validate(); err != nil {
 		return nil, err
+	}
+
+	// if the endpoint contains the as the last char a "/"
+	// just remove it or leave it alone
+	index := strings.LastIndex(cfg.Endpoint, "/")
+	if index == len(cfg.Endpoint)-1 {
+		cfg.Endpoint = strings.TrimRight(cfg.Endpoint, "/")
 	}
 
 	e := make(map[string]string, len(endpoints))

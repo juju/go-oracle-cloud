@@ -39,8 +39,9 @@ type Orchestration struct {
 	// Uri is the Uniform Resource Identifier
 	Uri string `json:"uri,omitempty"`
 
-	// List of oplans. An object plan, or oplan, is a top-level orchestration attribute.
-	Oplans []Oplans `json:"oplans"`
+	// List of oplans. An object plan, or oplan,
+	// is a top-level orchestration attribute.
+	Oplans []Oplan `json:"oplans"`
 
 	// Info the nested parameter errors shows which object
 	// in the orchestration has encountered an error.
@@ -93,9 +94,9 @@ type Schedule struct {
 	Stop_time *string `json:"stop_time,omitempty"`
 }
 
-// Oplans is an object plan, or oplan,
+// Oplan is an object plan, or oplan,
 // a top-level orchestration attribute
-type Oplans struct {
+type Oplan struct {
 
 	// Status is the most recent status.
 	Status string `json:"status"`
@@ -114,7 +115,7 @@ type Oplans struct {
 
 	// Objects list of object dictionaries
 	// or object names.
-	Objects []Objects `json:"objects"`
+	Objects []Object `json:"objects"`
 
 	// Status_timestamp Timestamp of the most-recent status change.
 	Status_timestamp string `json:"status_timestamp,omitempty"`
@@ -124,40 +125,98 @@ type Info struct {
 	Errors map[string]string `json:"errors,omitempty"`
 }
 
-type Objects struct {
+// Objects
+type Object struct {
+	// Info is the aditional information about the orchestration object
 	Info Info `json:"info,omitempty"`
+
+	//
 	// Intances is generally populated when we are dealing with an
 	// instance orchestration
-	Instances        []InstancesOrchestration `json:"instances,omitempty"`
-	Status           string                   `json:"status,omitempty"`
-	Name             string                   `json:"name,omitempty"`
-	Status_timestamp string                   `json:"status_timestamp,omitmepty"`
-	Uri              *string                  `json:"uri,omitempty"`
+	//
+	// Instances instances that are attached to this orchestration
+	Instances []InstancesOrchestration `json:"instances,omitempty"`
+
+	// Status is the status of the orchestration
+	Status string `json:"status,omitempty"`
+
+	// Name is the name of the object
+	Name string `json:"name,omitempty"`
+
+	// Status_timestamp is the status when the object was created
+	Status_timestamp string `json:"status_timestamp,omitmepty"`
+
+	// Uri is the endpoint uri that the object is located
+	Uri *string `json:"uri,omitempty"`
+
+	//
 	//
 	// Below these fields are populated when we are dealing with an
 	// storage orchestration
 	//
+	//
 	// Managed flag true if the storage is managed
-	Managed           bool     `json:"managed,omitempty"`
-	Snapshot_account  *string  `json:"snapshot_account,omitempty"`
-	Machineimage_name string   `json:"machineimage_name,omitempty`
-	Snapshot_id       *string  `json:"snapshot_id,omitempty"`
-	Imagelist         string   `json:"imagelist,omitempty"`
-	Writecache        bool     `json:"writecache,omitempty"`
-	Size              string   `json:"size,omitempty"`
-	Platform          string   `json:"platform"`
-	Readonly          bool     `json:"readonly"`
-	Storage_pool      string   `json:"storage_pool,omitempty"`
-	Shared            bool     `json:"shared,omitempty"`
-	Description       string   `json:"description,omitempty"`
-	Tags              []string `json:"tags,omitempty"`
-	Quota             *string  `json:"quota,omitempty"`
-	Properties        []string `json:"properties,omitempty"`
-	Account           string   `json:"account"`
-	Bootable          bool     `json:"bootable,omitempty"`
-	Hypervisor        *string  `json:"hypervisor,omitempty"`
-	Imagelist_entry   int      `json:"imagelist_entry,omitempty"`
-	Snapshot          *string  `json:"snapshot,omitempty"`
+	Managed bool `json:"managed,omitempty"`
+
+	// Snapshot_account is the account name that the snapshot was created from
+	Snapshot_account *string `json:"snapshot_account,omitempty"`
+
+	// Machineimage_name is the name of the machine image
+	// that the storage was/will bot from
+	Machineimage_name string `json:"machineimage_name,omitempty`
+
+	// Snapshot_id is the snapshot id
+	Snapshot_id *string `json:"snapshot_id,omitempty"`
+
+	// Imagelist is the image list that the storage was created from
+	Imagelist string `json:"imagelist,omitempty"`
+
+	// Writecache flag true if the write cache is enabled on the storage
+	Writecache bool `json:"writecache,omitempty"`
+
+	// Size is the storage size in the cloud
+	Size string `json:"size,omitempty"`
+	// Platform is the platform storage could be linux,windows, etc.
+	Platform string `json:"platform"`
+
+	// Readonly flag true if the storage is read only and does not permit
+	// write operation on
+	Readonly bool `json:"readonly"`
+
+	// Storage_pool is the storage endpoint pool that the storage
+	// belongs to
+	Storage_pool string `json:"storage_pool,omitempty"`
+
+	// Shared flag true if the storage is shared accross multiple instances
+	Shared bool `json:"shared,omitempty"`
+
+	// Description is the description of the object
+	Description string `json:"description,omitempty"`
+
+	// Tags are the tags, aliases of the object
+	Tags []string `json:"tags,omitempty"`
+
+	// Quota this field is not used
+	Quota *string `json:"quota,omitempty"`
+
+	// Properties of the storage obejct
+	Properties []string `json:"properties,omitempty"`
+
+	// Account is the account name of the object that has been created from
+	Account string `json:"account"`
+
+	// Bootable flag represents that the instance can boot from the storage
+	Bootable bool `json:"bootable,omitempty"`
+
+	// Hypervisor is the hypervisor name used in the object orchestration
+	Hypervisor *string `json:"hypervisor,omitempty"`
+
+	// Imagelist_entry is the index entry of the image that is used
+	// in the storage obejct
+	Imagelist_entry int `json:"imagelist_entry,omitempty"`
+
+	// Snapshot is the snapshot name of the storage
+	Snapshot *string `json:"snapshot,omitempty"`
 }
 
 // OType represents the orchestration type
