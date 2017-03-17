@@ -32,6 +32,7 @@ type OrchestrationParams struct {
 // Schedule for an orchestration consists of
 // the start and stop dates and times
 type Schedule struct {
+
 	//Start_time when the orchestration will start
 	Start_time *string `json:"start_time,omitempty"`
 
