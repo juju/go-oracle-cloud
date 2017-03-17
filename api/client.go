@@ -87,8 +87,7 @@ func NewClient(cfg Config) (*Client, error) {
 		return nil, err
 	}
 
-	// if the endpoint contains the as the last char a "/"
-	// just remove it or leave it alone
+	// if the endpoint contains the last char a "/" remove it
 	index := strings.LastIndex(cfg.Endpoint, "/")
 	if index == len(cfg.Endpoint)-1 {
 		cfg.Endpoint = strings.TrimRight(cfg.Endpoint, "/")
