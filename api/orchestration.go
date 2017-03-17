@@ -7,13 +7,17 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/juju/go-oracle-cloud/common"
 	"github.com/juju/go-oracle-cloud/response"
 )
 
+// OrchestrationParams orchestraiton params used as params in
+// CreateOrchestration and UpdateOrchestration
 type OrchestrationParams struct {
+
 	// Relationships is the relationship between the objects
 	// that are created by this orchestration.
-	Relationships []string `json:"relationships,omitempty"`
+	Relationships []Relationship `json:"relationships,omitempty"`
 
 	// Description is the description of this orchestration plan
 	Description string `json:"description,omitempty"`
@@ -29,14 +33,34 @@ type OrchestrationParams struct {
 	Schedule Schedule `json:"schedule"`
 }
 
+// Relationship type that will describe the relationship
+// between objects
+type Relationship struct {
+
+	// ToOplan to witch orchestration plan should
+	// be the orchestration in a relationship
+	ToOplan string `json:"to_oplan,omitempty"`
+
+	// Oplan orchestration plan
+	Oplan string `json:"oplan,omitempty"`
+
+	// The type of relationship that this orchestration
+	// has with the other one in the ToOplan field
+	Type string `json:"type,omitempty"`
+}
+
 // Schedule for an orchestration consists of
 // the start and stop dates and times
 type Schedule struct {
 
-	//Start_time when the orchestration will start
+	// Start_time when the orchestration will start
+	// Date and time, in ISO 8601 format, when you want to start the orchestration
+	// If you do not specify a value, the orchestration starts immediately
 	Start_time *string `json:"start_time,omitempty"`
 
 	// Stop_time when the orchestration will stop
+	// Date and time, in ISO 8601 format, when you want
+	// to stop the orchestration
 	Stop_time *string `json:"stop_time,omitempty"`
 }
 
@@ -67,6 +91,8 @@ type Objects struct {
 	Status_timestamp string `json:"status_timestamp,omitmepty"`
 }
 
+// InstancesOrchestration holds information for
+// an instances inside the orchestration object
 type InstancesOrchestration struct {
 
 	// Shape is the shape of the instnace
@@ -100,9 +126,10 @@ type InstancesOrchestration struct {
 	Tags []string `json:"tags,omitmepty"`
 
 	// Networking information of the instance
-	Networking NetworkingOrchestration `json:"networking,omitempty"`
+	Networking common.Networking `json:"networking,omitempty"`
 }
 
+//TODO
 type StorageOrhcestration struct {
 	Info map[string]string
 }
@@ -110,11 +137,6 @@ type StorageOrhcestration struct {
 type AttributesOrchestration struct {
 	Userdata              map[string]string `json:"userdata,omitempty"`
 	Nimbula_orchestration string            `json:"nimbula_orchestration,omitempty"`
-}
-
-type NetworkingOrchestration struct {
-	//TODO(sgiulitti) this should be a type of response.Nic
-	Interfaces map[string]interface{}
 }
 
 func (o OrchestrationParams) validate() (err error) {

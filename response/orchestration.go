@@ -64,9 +64,17 @@ type Orchestration struct {
 // Relationship type that will describe the relationship
 // between objects
 type Relationship struct {
-	ToOplna string `json:"to_oplan,omitempty"`
-	Oplan   string `json:"oplan,omitempty"`
-	Type    string `json:"type,omitempty"`
+
+	// ToOplan to witch orchestration plan should
+	// be the orchestration in a relationship
+	ToOplan string `json:"to_oplan,omitempty"`
+
+	// Oplan orchestration plan
+	Oplan string `json:"oplan,omitempty"`
+
+	// The type of relationship that this orchestration
+	// has with the other one in the ToOplan field
+	Type string `json:"type,omitempty"`
 }
 
 // AllOrchestrations a holds a slice of all
@@ -181,11 +189,11 @@ func (o Orchestration) OrchestrationType() OType {
 	return OMaster
 }
 
-// InstanceOrchestration holds information for an instances inside
-// the orchestration object
+// InstancesOrchestration holds information for
+// an instances inside the orchestration object
 type InstancesOrchestration struct {
 	Hostname            string                  `json:"hostname,omitempty"`
-	Networking          Networking              `json:"networking,omitempty"`
+	Networking          common.Networking       `json:"networking,omitempty"`
 	Name                string                  `json:"name,omitempty"`
 	Boot_order          []int                   `json:"boot_order,omitempty"`
 	Ip                  string                  `json:"ip,omitempty"`

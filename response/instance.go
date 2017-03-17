@@ -43,7 +43,7 @@ type Instance struct {
 	Relationships                   []string             `json:"relationships,omitempty"`
 	Target_node                     interface{}          `json:"target_node,omitempty"`
 	Availability_domain             interface{}          `json:"availability_domain,omitempty"`
-	Networking                      Networking           `json:"networking"`
+	Networking                      common.Networking    `json:"networking"`
 	Seclist_associations            interface{}          `json:"seclist_associations,omitempty"`
 	Hostname                        string               `json:"hostname"`
 	State                           common.InstanceState `json:"state"`
@@ -167,51 +167,6 @@ type Dns struct {
 	Domain      string `json:"domain"`
 	Hostname    string `json:"hostname"`
 	Vcable_eth0 string `json:"nimbula_vcable-eth0"`
-}
-
-// Networking is a json object of string keys
-// Every key is the name of the interface example eth0,eth1, etc.
-// And every valu is a predefined json objects that holds infromation
-// about the interface
-type Networking map[string]Nic
-
-type NicType string
-
-const (
-	VNic      NicType = "vnic"
-	VEthernet NicType = "vethernet"
-)
-
-// Nic type used to hold information from a
-// given interface card
-// This wil be used to dump all information from the
-// Netowrking type above
-type Nic struct {
-	Dns []string `json:"dns,omitempty"`
-
-	Model string `json:"model,omitempty"`
-
-	// Nat indicates whether a temporary or permanent
-	// public IP address should be assigned
-	// to the instance
-	Nat string `json:"nat,omitempty"`
-
-	// Seclits is the security lists that you want to add the instance
-	Seclists []string `json:"seclists,omitempty"`
-
-	Vethernet string `json:"vethernet,omitempty"`
-
-	Vnic string `json:"vnic,omitempty"`
-
-	Ipnetwork string `json:"ipnetwork,omitempty"`
-}
-
-func (n Nic) GetType() NicType {
-	if n.Vethernet != "" {
-		return VEthernet
-	}
-
-	return VNic
 }
 
 type Storage struct {

@@ -2,6 +2,60 @@ package common
 
 import "errors"
 
+// Networking is a json object of string keys
+// Every key is the name of the interface example eth0,eth1, etc.
+// And every valu is a predefined json objects that holds infromation
+// about the interface
+type Networking map[string]Nic
+
+// NicType type representing the
+// type of networking card we are dealing with
+// a vethernet type or a vnic type
+type NicType string
+
+const (
+	// Vnic is the networking virtual nic type
+	VNic NicType = "vnic"
+	// VEthernet is the virtual ethernet type
+	VEthernet NicType = "vethernet"
+)
+
+// Nic type used to hold information from a
+// given interface card
+// This wil be used to dump all information from the
+// Netowrking type above
+type Nic struct {
+	// Dns is the dns of the nic
+	Dns []string `json:"dns,omitempty"`
+
+	// Model is the model that has this nic attached
+	Model string `json:"model,omitempty"`
+
+	// Nat indicates whether a temporary or permanent
+	// public IP address should be assigned
+	// to the instance
+	Nat string `json:"nat,omitempty"`
+
+	// Seclits is the security lists that you want to add the instance
+	Seclists []string `json:"seclists,omitempty"`
+
+	// Vethernet is present if the nic is a vethernet type
+	Vethernet string `json:"vethernet,omitempty"`
+
+	// Vnic is present if the nic is a Vnic type
+	Vnic string `json:"vnic,omitempty"`
+
+	Ipnetwork string `json:"ipnetwork,omitempty"`
+}
+
+func (n Nic) GetType() NicType {
+	if n.Vethernet != "" {
+		return VEthernet
+	}
+
+	return VNic
+}
+
 // VcableID is the vcable it of the instance that
 // is associated with the ip reservation.
 type VcableID string
