@@ -11,42 +11,62 @@ import (
 )
 
 var (
+	// errNotAuth error that represents that the client it not authenticated
 	errNotAuth = &ErrNotAuth{
 		message: "go-oracle-cloud: Client is not authenticated",
 	}
 
+	// errBadRequest error meaning the given request used
+	// is invalid or constructed bad
 	errBadRequest = &ErrBadRequest{
 		message: "go-oracle-cloud: The request given is invalid",
 	}
 
+	// errNotAuthorized error meaning that the client does not
+	// have authorization to access that specific resource
 	errNotAuthorized = &ErrNotAuthorized{
 		message: "go-oracle-cloud: Client does not have authorization to access this resource",
 	}
 
+	// errInternalAPI error meaning the oracle rest server has encountered
+	// an internal error
 	errInternalApi = &ErrInternalApi{
 		message: "go-oracle-cloud: Oracle infrstracutre has encountered an internal error",
 	}
 
+	// errStatusConflict error meaning that the current association or relation could not be
+	// created
 	errStatusConflict = &ErrStatusConflict{
 		message: "go-oracle-cloud: Some association isn't right or object already",
 	}
 
+	// errNotFound error meaning that the resource the client want's to access is not found
 	errNotFound = &ErrNotFound{
 		message: "go-oracle-cloud: The resource you requested is not found",
 	}
 )
 
+// ErrorDumper interface that represents the
+// ability to dump the error in a go error format
+// from a given reader
 type ErrorDumper interface {
 	DumpApiError(r io.Reader) error
 }
 
+// ErrNotAuth error type that implements the error interface
 type ErrNotAuth struct{ message string }
 
+// Error returns the internal error in a string format
 func (e ErrNotAuth) Error() string { return e.message }
 
+// errNotAuthorized error type that implements the error and
+// ErrorDumper interfaces
 type ErrNotAuthorized struct{ message string }
 
+// Error returns the internal error in a string format
 func (e ErrNotAuthorized) Error() string { return e.message }
+
+// DumpApiError returns the error in a error format from a given reader source
 func (e *ErrNotAuthorized) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
 	e.message = e.message + " ,Raw: " + string(body)
@@ -54,36 +74,56 @@ func (e *ErrNotAuthorized) DumpApiError(r io.Reader) error {
 
 }
 
+// ErrBadRequest error type that implements the error and
+// ErrorDumper interfaces
 type ErrBadRequest struct{ message string }
 
+// Error returns the internal error in a string format
 func (e ErrBadRequest) Error() string { return e.message }
+
+// DumpApiError returns the error in a error format from a given reader source
 func (e *ErrBadRequest) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
 	e.message = e.message + " ,Raw: " + string(body)
 	return e
 }
 
+// ErrInternalApi error type that implements the error and
+// ErrorDumper interfaces
 type ErrInternalApi struct{ message string }
 
+// Error returns the internal error in a string format
 func (e ErrInternalApi) Error() string { return e.message }
+
+// DumpApiError returns the error in a error format from a given reader source
 func (e *ErrInternalApi) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
 	e.message = e.message + " ,Raw: " + string(body)
 	return e
 }
 
+// ErrNotFound error type that implements the error and
+// ErrorDumper interfaces
 type ErrNotFound struct{ message string }
 
+// Error returns the internal error in a string format
 func (e ErrNotFound) Error() string { return e.message }
+
+// DumpApiError returns the error in a error format from a given reader source
 func (e *ErrNotFound) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
 	e.message = e.message + " ,Raw: " + string(body)
 	return e
 }
 
+// ErrStatusConflict error type that implements the error and
+// ErrorDumper interfaces
 type ErrStatusConflict struct{ message string }
 
+// Error returns the internal error in a string format
 func (e ErrStatusConflict) Error() string { return e.message }
+
+// DumpApiError returns the error in a error format from a given reader source
 func (e *ErrStatusConflict) DumpApiError(r io.Reader) error {
 	body, _ := ioutil.ReadAll(r)
 	e.message = e.message + " ,Raw: " + string(body)
