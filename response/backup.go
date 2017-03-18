@@ -25,6 +25,7 @@ type Backup struct {
 
 	// Name is the name of the backup
 	Name string `json:"name"`
+
 	//RunAsUser is any actions on this model will be performed as this user
 	RunAsUser string `json:"runAsUser"`
 

@@ -80,8 +80,8 @@ func (s StorageSnapshotParams) validate() (err error) {
 // the current state of the storage volume.
 // You can retain snapshots as a backup, or use
 // them to create new, identical storage volumes.
-// You can create a snapshot of a storage volume either
 // when it is attached to an instance or after detaching it.
+// You can create a snapshot of a storage volume either
 // If the storage volume is attached to an instance, then only
 // data that has already been written to the storage volume will
 // be captured in the snapshot. Data that is cached by the

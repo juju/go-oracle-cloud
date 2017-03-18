@@ -175,7 +175,8 @@ type Object struct {
 	Writecache bool `json:"writecache,omitempty"`
 
 	// Size is the storage size in the cloud
-	Size string `json:"size,omitempty"`
+	Size uint64 `json:"size,string"`
+
 	// Platform is the platform storage could be linux,windows, etc.
 	Platform string `json:"platform"`
 
