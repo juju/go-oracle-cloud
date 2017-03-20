@@ -81,6 +81,10 @@ func (c *Client) CreateRoute(
 		return resp, errNotAuth
 	}
 
+	if err = p.validate(); err != nil {
+		return resp, err
+	}
+
 	url := c.endpoints["route"] + "/"
 
 	if err = c.request(paramsRequest{
@@ -186,6 +190,10 @@ func (c *Client) UpdateRoute(
 
 	if !c.isAuth() {
 		return resp, errNotAuth
+	}
+
+	if err = p.validate(); err != nil {
+		return resp, err
 	}
 
 	if currentName == "" {
