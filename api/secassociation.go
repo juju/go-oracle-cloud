@@ -23,7 +23,7 @@ func (c *Client) CreateSecAssociation(
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Empty sec association name")
+		return resp, errors.New("go-oracle-cloud: Empty secure association name")
 	}
 
 	if err := vcable.Validate(); err != nil {
@@ -31,7 +31,7 @@ func (c *Client) CreateSecAssociation(
 	}
 
 	if seclist == "" {
-		return resp, errors.New("go-oracle-cloud: Empty sec association sec list")
+		return resp, errors.New("go-oracle-cloud: Empty secure association sec list")
 	}
 
 	url := c.endpoints["secassociation"] + "/"
@@ -69,7 +69,7 @@ func (c *Client) DeleteSecAssociation(
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: Empty sec association name")
+		return errors.New("go-oracle-cloud: Empty secure association name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secassociation"], name)
@@ -94,7 +94,7 @@ func (c *Client) SecAssociationDetails(
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Empty sec association name")
+		return resp, errors.New("go-oracle-cloud: Empty secure association name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secassociation"], name)
