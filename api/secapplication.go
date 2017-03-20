@@ -112,6 +112,12 @@ func (c *Client) DeleteSecApplication(name string) (err error) {
 		return errNotAuth
 	}
 
+	if name == "" {
+		return errors.New(
+			"go-oracle-cloud: Empty secure application name",
+		)
+	}
+
 	url := fmt.Sprintf("%s%s", c.endpoints["secapplication"], name)
 
 	if err = c.request(paramsRequest{
@@ -131,7 +137,7 @@ func (c *Client) SecApplicationDetails(name string) (resp response.SecApplicatio
 	}
 
 	if name == "" {
-		errors.New("go-oracle-cloud: Empty sec application name")
+		return resp, errors.New("go-oracle-cloud: Empty secure application name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secapplication"], name)
