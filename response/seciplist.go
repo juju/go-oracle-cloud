@@ -10,8 +10,9 @@ package response
 // is predefined in Oracle Compute Cloud Service. You can use this security IP
 // list as the source in a security rule to permit traffic from any host on the Internet.
 type SecIpList struct {
+
 	// Description is a description of the security IP list.
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 
 	// Name is the name of the secure ip list
 	Name string `json:"name"`

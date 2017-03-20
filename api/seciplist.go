@@ -96,17 +96,17 @@ func (c *Client) DeleteSecIpList(name string) (err error) {
 	return nil
 }
 
-// SecIpListDetail retrieves information about the specified security IP list.
+// SecIpListDetails retrieves information about the specified security IP list.
 // You can use this request to verify whether CreateSecIpList
 // or UpdateSecIpList operations were completed successfully.
-func (c *Client) IpSecListDetail(name string) (resp response.SecIpList, err error) {
+func (c *Client) SecIpListDetails(name string) (resp response.SecIpList, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
 	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty sec ip list name",
+			"go-oracle-cloud: Empty secure ip list name",
 		)
 	}
 
@@ -145,9 +145,9 @@ func (c *Client) AllSecIpLists(filter []Filter) (resp response.AllSecIpLists, er
 	return resp, nil
 }
 
-// AllDefaultSecIpLists retrieves details of the security IP lists that are defined by default in
+// DefaultSecIpList retrieves details of the security IP lists that are defined by default in
 // the oracle compute cloud.
-func (c *Client) AllDefaultSecIpLists(filter []Filter) (resp response.AllSecIpLists, err error) {
+func (c *Client) DefaultSecIpList(filter []Filter) (resp response.AllSecIpLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
