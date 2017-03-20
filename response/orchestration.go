@@ -252,21 +252,46 @@ func (o Orchestration) OrchestrationType() OType {
 // InstancesOrchestration holds information for
 // an instances inside the orchestration object
 type InstancesOrchestration struct {
-	Hostname            string                  `json:"hostname,omitempty"`
-	Networking          common.Networking       `json:"networking,omitempty"`
-	Name                string                  `json:"name,omitempty"`
-	Boot_order          []int                   `json:"boot_order,omitempty"`
-	Ip                  string                  `json:"ip,omitempty"`
-	Start_time          string                  `json:"start_time,omitempty"`
-	Storage_attachments []StorageOrhcestration  `json:"storage_attachments,omitmepty"`
-	Uri                 *string                 `json:"uri,omitempty"`
-	Label               string                  `json:"label,omitempty"`
-	Shape               string                  `json:"shape,omitempty"`
-	State               common.InstanceState    `json:"state,omitempty"`
-	Attributes          AttributesOrchestration `json:"attributes,omitmepty"`
-	Imagelist           string                  `json:"imagelist,omitempty"`
-	SSHkeys             []string                `json:"sshkeys,omitmepty"`
-	Tags                []string                `json:"tags,omitmepty"`
+	Hostname string `json:"hostname,omitempty"`
+
+	// Networking information of the instance
+	Networking common.Networking `json:"networking,omitempty"`
+
+	// Name of the instance
+	Name string `json:"name,omitempty"`
+
+	// Boot_order is the number in what order the instance is booting
+	Boot_order []int `json:"boot_order,omitempty"`
+
+	Ip string `json:"ip,omitempty"`
+
+	Start_time string `json:"start_time,omitempty"`
+
+	// Storage_attachments list of storages that the instnaces has
+	Storage_attachments []StorageOrhcestration `json:"storage_attachments,omitmepty"`
+
+	// Uri of the instnace
+	Uri *string `json:"uri,omitempty"`
+
+	// Label is the label of the instance
+	Label string `json:"label,omitempty"`
+
+	// Shape is the shape of the instnace
+	Shape string `json:"shape,omitempty"`
+
+	State common.InstanceState `json:"state,omitempty"`
+
+	// Attributes list of orchestration attributes
+	Attributes AttributesOrchestration `json:"attributes,omitmepty"`
+
+	// Imagelist is the image from what was created
+	Imagelist string `json:"imagelist,omitempty"`
+
+	// SSHKeys of the instance
+	SSHkeys []string `json:"sshkeys,omitmepty"`
+
+	// Tags are a list of tags, aliases for the instance
+	Tags []string `json:"tags,omitmepty"`
 }
 
 type StorageOrhcestration struct {
