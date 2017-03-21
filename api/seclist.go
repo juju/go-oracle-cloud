@@ -6,7 +6,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/juju/go-oracle-cloud/common"
 	"github.com/juju/go-oracle-cloud/response"
@@ -27,6 +26,14 @@ func (c *Client) CreateSecList(
 
 	if name == "" {
 		return resp, errors.New("go-oracle-cloud: Empty secure list name")
+	}
+
+	if err = outbound_cidr_policy.Validate(); err != nil {
+		return resp, err
+	}
+
+	if err = policy.Validate(); err != nil {
+		return resp, err
 	}
 
 	params := struct {
@@ -62,7 +69,7 @@ func (c *Client) DeleteSecList(name string) (err error) {
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: Empty secure list")
+		return errors.New("go-oracle-cloud: Empty secure list name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seclist"], name)
@@ -107,6 +114,10 @@ func (c *Client) SecListDetails(name string) (resp response.SecList, err error) 
 		return resp, errNotAuth
 	}
 
+	if name == "" {
+		return resp, errors.New("go-oracle-cloud: Empty secure list name")
+	}
+
 	url := fmt.Sprintf("%s%s", c.endpoints["seclist"], name)
 
 	if err = c.request(paramsRequest{
@@ -133,8 +144,8 @@ func (c *Client) UpdateSecList(
 	description string,
 	currentName string,
 	newName string,
-	outbound_cidr_policy string,
-	policy string,
+	outbound_cidr_policy common.SecRuleAction,
+	policy common.SecRuleAction,
 ) (resp response.SecList, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
@@ -148,16 +159,24 @@ func (c *Client) UpdateSecList(
 		newName = currentName
 	}
 
+	if err = outbound_cidr_policy.Validate(); err != nil {
+		return resp, err
+	}
+
+	if err = policy.Validate(); err != nil {
+		return resp, err
+	}
+
 	params := struct {
-		Policy               string `json:"policy"`
-		Description          string `json:"description,omitempty"`
-		Name                 string `json:"name"`
-		Outbound_cidr_policy string `json:"outbound_cidr_policy"`
+		Policy               common.SecRuleAction `json:"policy"`
+		Description          string               `json:"description,omitempty"`
+		Name                 string               `json:"name"`
+		Outbound_cidr_policy common.SecRuleAction `json:"outbound_cidr_policy"`
 	}{
 		Description:          description,
 		Name:                 newName,
-		Outbound_cidr_policy: strings.ToUpper(outbound_cidr_policy),
-		Policy:               strings.ToUpper(policy),
+		Outbound_cidr_policy: outbound_cidr_policy,
+		Policy:               policy,
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["seclist"], currentName)

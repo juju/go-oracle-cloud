@@ -3,6 +3,8 @@
 
 package response
 
+import "github.com/juju/go-oracle-cloud/common"
+
 // SecList a security list is a group of one or more instances
 // that you can specify as the destination or source
 // in a security rule. Instances within a security list
@@ -17,24 +19,30 @@ package response
 // security list, which has the inbound policy set to DENY
 // and the outbound policy set to PERMIT.
 type SecList struct {
+
 	// Account shows the default account for your identity domain.
 	Account string `json:"account"`
+
 	// A description of the security list.
 	Description string `json:"description,omitempty"`
+
 	// Name of the secure list
 	Name string `json:"name"`
+
 	// The policy for outbound traffic from the security list.
 	// You can specify one of the following values:
 	// - deny: Packets are dropped. No response is sent.
 	// - reject: Packets are dropped, but a response is sent.
 	// - permit(default): Packets are allowed.
-	Outbound_cidr_policy string `json:"outbound_cidr_policy"`
+	Outbound_cidr_policy common.SecRuleAction `json:"outbound_cidr_policy"`
+
 	// The policy for inbound traffic to the security list.
 	// You can specify one of the following values:
 	// - deny(default): Packets are dropped. No response is sent.
 	// - reject: Packets are dropped, but a response is sent.
 	// - permit: Packets are allowed. This policy effectively turns off the firewall for all instances in this security list.
-	Policy string `json:"policy"`
+	Policy common.SecRuleAction `json:"policy"`
+
 	// uniform Resource Identifier
 	Uri string `json:"uri"`
 }
