@@ -17,7 +17,7 @@ func (c *Client) ShapeDetails(name string) (resp response.Shape, err error) {
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: Empty shape name provided")
+		return resp, errors.New("go-oracle-cloud: Empty shape name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["shape"], name)
