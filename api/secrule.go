@@ -50,16 +50,16 @@ type SecRuleParams struct {
 
 // validate will validate all the sec rule params
 func (s SecRuleParams) validate() (err error) {
+	if s.Name == "" {
+		return errors.New("go-oracle-cloud: Empty secure rule name")
+	}
+
 	if err = s.Action.Validate(); err != nil {
 		return err
 	}
 
 	if s.Application == "" {
-		return errors.New("go-oracle-cloud: Empty application field")
-	}
-
-	if s.Name == "" {
-		return errors.New("go-oracle-cloud: Empty secure rule name")
+		return errors.New("go-oracle-cloud: Empty secure rule application name")
 	}
 
 	if s.Src_list == "" {
