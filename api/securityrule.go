@@ -54,7 +54,7 @@ type SecurityRuleParams struct {
 
 func (s SecurityRuleParams) validate() (err error) {
 	if s.Name == "" {
-		errors.New("go-oracle-cloud: Empty name in security rule")
+		return errors.New("go-oracle-cloud: Empty security rule name")
 	}
 
 	if s.FlowDirection == "" {
@@ -106,6 +106,10 @@ func (c *Client) CreateSecurityRule(
 
 	if !c.isAuth() {
 		return resp, errNotAuth
+	}
+
+	if err = p.validate(); err != nil {
+		return resp, err
 	}
 
 	url := c.endpoints["securityrule"] + "/"
@@ -199,7 +203,7 @@ func (c *Client) AllSecurityRules(filter []Filter) (resp response.AllSecurityRul
 // by setting the value of the enabledFlag parameter as false.
 func (c *Client) UpdateSecurityRule(
 	p SecurityRuleParams,
-) (resp response.AllSecRules, err error) {
+) (resp response.SecurityRule, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
