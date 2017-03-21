@@ -2,7 +2,6 @@ package api_test
 
 import (
 	enc "encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -146,7 +145,6 @@ func (cl clientTest) TestSecRuleResourceWithEmptyName(c *gc.C) {
 	c.Assert(strings.Contains(err.Error(), "Empty secure rule name"), gc.Equals, true)
 
 	_, err = client.UpdateSecRule(api.SecRuleParams{}, "")
-	fmt.Println(err)
 	c.Assert(err, gc.NotNil)
 	c.Assert(strings.Contains(err.Error(), "Empty secure rule name"), gc.Equals, true)
 

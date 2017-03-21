@@ -100,6 +100,11 @@ func (c *Client) DeleteSecurityProtocol(name string) (err error) {
 		return errNotAuth
 	}
 
+	if name == "" {
+		return errors.New(
+			"go-oracle-cloud: Empty security protocol name",
+		)
+	}
 	url := fmt.Sprintf("%s%s", c.endpoints["securityprotocol"], name)
 
 	if err = c.request(paramsRequest{
