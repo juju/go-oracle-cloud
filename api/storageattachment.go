@@ -20,7 +20,7 @@ type StorageAttachmentParams struct {
 	// to the temporary boot disk, /dev/xvda An attachment with
 	// index 1 is exposed to the instance as /dev/xvdb,
 	// an attachment with index 2 is exposed as /dev/xvdc, and so on.
-	Index common.Index `json:"instance_name"`
+	Index common.Index `json:"index"`
 
 	// Instance_name multipart name of the instance
 	// to which you want to attach the volume
@@ -32,14 +32,14 @@ type StorageAttachmentParams struct {
 
 // validate validates the given storage attachment params
 func (s StorageAttachmentParams) validate() (err error) {
-	if err = s.Index.Validate(); err != nil {
-		return err
-	}
-
 	if s.Instance_name == "" {
 		return errors.New(
 			"go-oracle-cloud: Empty storage attachment instance name",
 		)
+	}
+
+	if err = s.Index.Validate(); err != nil {
+		return err
 	}
 
 	if s.Storage_volume_name == "" {
@@ -93,7 +93,7 @@ func (c *Client) DeleteStorageAttachment(
 
 	if name == "" {
 		return errors.New(
-			"go-oracle-cloud: Empty storage attachment name",
+			"go-oracle-cloud: Empty storage attachment instance name",
 		)
 	}
 
@@ -120,7 +120,7 @@ func (c *Client) StorageAttachmentDetails(
 
 	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty storage attachment name",
+			"go-oracle-cloud: Empty storage attachment instance name",
 		)
 	}
 
