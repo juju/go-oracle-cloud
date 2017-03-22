@@ -82,7 +82,6 @@ const (
 
 // NewStorageSize returns a new storage size compliant with the
 // oracle storgae spec
-func NewStorageSize(n uint64, of StorageSizeType) string {
-	return fmt.Sprintf("%d%s", n, of)
-
+func NewStorageSize(n uint64, of StorageSizeType) StorageSize {
+	return StorageSize(fmt.Sprintf("%d%s", n, of))
 }

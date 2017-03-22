@@ -27,10 +27,10 @@ type StorageVolume struct {
 
 	// Description is the description of the
 	// storage volume
-	Description string `json:"description"`
+	Description *string `json:"description"`
 
 	// Hypervisor is the hypervisor that this volume is compatible with
-	Hypervisor string `json:"hypervisor"`
+	Hypervisor *string `json:"hypervisor"`
 
 	// Imagelist is the name of machineimage
 	// to extract onto this volume when created.<Paste>
@@ -61,7 +61,7 @@ type StorageVolume struct {
 	Properties []common.StoragePool `json:"properties"`
 
 	// Quota field not used
-	Quota string `json:"quota"`
+	Quota *string `json:"quota,omitempty"`
 
 	// Readonly boolean field indicating whether this volume
 	// can be attached as readonly. If set to False the
@@ -88,11 +88,11 @@ type StorageVolume struct {
 	// If you are creating this storage volume from a storage snapshot,
 	// ensure that the size of the storage volume that you create
 	// is greater than the size of the storage snapshot.
-	Size common.StorageSize
+	Size int `json:",string"`
 
 	// Snapshot multipart name of the storage volume snapshot if
 	// this storage volume is a clone.
-	Snapshot string `json:"snapshot"`
+	Snapshot *string `json:"snapshot"`
 
 	// Snapshot_account of the parent snapshot
 	// from which the storage volume is restored
