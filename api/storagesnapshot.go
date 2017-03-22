@@ -100,7 +100,7 @@ func (c *Client) CreateStorageSnapshot(
 	}
 
 	if err = p.validate(); err != nil {
-		return resp, nil
+		return resp, err
 	}
 
 	url := c.endpoints["storagesnapshot"] + "/"
@@ -118,7 +118,7 @@ func (c *Client) CreateStorageSnapshot(
 }
 
 // DeleteStorageSnapshot deletes the specified storage volume snapshot
-func (c *Client) DelteStorageSnapshot(
+func (c *Client) DeleteStorageSnapshot(
 	name string,
 ) (err error) {
 
@@ -196,13 +196,13 @@ func (c *Client) AllStorageSnapshots(
 	return resp, nil
 }
 
-// StorageSnapshotNames retrieves the names of objects and subcontainers that you can access in the specified container
-func (c *Client) StorageSnapshotNames() (resp response.DirectoryNames, err error) {
+// AllStorageSnapshotNames retrieves the names of objects and subcontainers that you can access in the specified container
+func (c *Client) AllStorageSnapshotNames() (resp response.DirectoryNames, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
 
-	url := fmt.Sprintf("%/Compute-%s/%s/",
+	url := fmt.Sprintf("%s/Compute-%s/%s/",
 		c.endpoints["storagesnapshot"], c.identify, c.username)
 
 	if err = c.request(paramsRequest{
