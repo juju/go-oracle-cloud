@@ -22,11 +22,11 @@ func (c *Client) CreateSHHKey(
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: empty key name")
+		return resp, errors.New("go-oracle-cloud: Empty ssh key name")
 	}
 
 	if key == "" {
-		return resp, errors.New("go-oracle-cloud: ssh key provided is empty")
+		return resp, errors.New("go-oracle-cloud: Empty ssh key provided is empty")
 	}
 
 	ssh := struct {
@@ -39,7 +39,7 @@ func (c *Client) CreateSHHKey(
 		Name:    name,
 	}
 
-	url := c.endpoints["sshkeys"] + "/"
+	url := c.endpoints["sshkey"] + "/"
 
 	if err = c.request(paramsRequest{
 		url:  url,
@@ -60,10 +60,10 @@ func (c *Client) DeleteSSHKey(name string) (err error) {
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: empty key name")
+		return errors.New("go-oracle-cloud: Empty ssh key name")
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["sshkey"], name)
 
 	if err = c.request(paramsRequest{
 		url:  url,
@@ -82,10 +82,10 @@ func (c *Client) SSHKeyDetails(name string) (resp response.SSH, err error) {
 	}
 
 	if name == "" {
-		return resp, errors.New("go-oracle-cloud: empty key name")
+		return resp, errors.New("go-oracle-cloud: Empty ssh key name")
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["sshkeys"], name)
+	url := fmt.Sprintf("%s%s", c.endpoints["sshkey"], name)
 
 	if err = c.request(paramsRequest{
 		url:  url,
@@ -155,7 +155,7 @@ func (c *Client) UpdateSSHKey(
 	}
 
 	if currentName == "" {
-		return resp, errors.New("go-oracle-cloud: empty key name")
+		return resp, errors.New("go-oracle-cloud: Empty ssh key name")
 	}
 
 	if key == "" {
@@ -176,7 +176,7 @@ func (c *Client) UpdateSSHKey(
 		Name:    newName,
 	}
 
-	url := fmt.Sprintf("%s%s", c.endpoints["sshkey"], ssh.Name)
+	url := fmt.Sprintf("%s%s", c.endpoints["sshkey"], currentName)
 
 	if err = c.request(paramsRequest{
 		body: &ssh,
