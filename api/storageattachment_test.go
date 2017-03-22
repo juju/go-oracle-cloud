@@ -5,7 +5,6 @@ package api_test
 
 import (
 	enc "encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -128,7 +127,6 @@ func (cl clientTest) TestStorageAttachmentResourceWithEmptyName(c *gc.C) {
 	c.Assert(strings.Contains(err.Error(), "Empty storage attachment instance name"), gc.Equals, true)
 
 	_, err = client.CreateStorageAttachment(api.StorageAttachmentParams{})
-	fmt.Println(err)
 	c.Assert(err, gc.NotNil)
 	c.Assert(strings.Contains(err.Error(), "Empty storage attachment instance name"), gc.Equals, true)
 

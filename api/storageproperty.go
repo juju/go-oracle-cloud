@@ -62,9 +62,9 @@ func (c *Client) AllStorageProperties(
 	return resp, nil
 }
 
-// StoragePropertyNames retrieves the names of objects and subcontainers
+// AllStoragePropertyNames retrieves the names of objects and subcontainers
 // that you can access in the specified container.
-func (c *Client) StoragePropertyNames() (resp response.DirectoryNames, err error) {
+func (c *Client) AllStoragePropertyNames() (resp response.DirectoryNames, err error) {
 
 	if !c.isAuth() {
 		return resp, errNotAuth
