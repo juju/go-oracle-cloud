@@ -66,7 +66,7 @@ func (c *Client) CreateVnicSet(
 	return resp, nil
 }
 
-// DeleteVnicSet deletes a virutal nic set
+// DeleteVnicSet deletes a virtual nic set
 func (c *Client) DeleteVnicSet(name string) (err error) {
 	if !c.isAuth() {
 		return errNotAuth
@@ -135,7 +135,7 @@ func (c *Client) VnicSetDetails(name string) (resp response.VnicSet, err error) 
 	return resp, nil
 }
 
-// UpdateVnicSet changes option, specification, atributes in a vNicSet
+// UpdateVnicSet changes option, specification, attributes in a vNicSet
 func (c *Client) UpdateVnicSet(
 	p VnicSetParams,
 	currentName string,

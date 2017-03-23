@@ -127,7 +127,7 @@ func (c *Client) DeleteRoute(
 	return nil
 }
 
-// RouteDetails retrives a route detials that has a given name
+// RouteDetails retrives a route details that has a given name
 // from the oracle cloud account
 func (c *Client) RouteDetails(
 	name string,

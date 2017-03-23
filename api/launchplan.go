@@ -207,7 +207,7 @@ func (n Nat) Validate() (err error) {
 }
 
 // SharedNetwork type subparameters for a
-// netowrk instance shared network
+// network instance shared network
 type SharedNetwork struct {
 
 	// seclits are the security lists that

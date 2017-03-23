@@ -188,7 +188,7 @@ type Object struct {
 	// belongs to
 	Storage_pool string `json:"storage_pool,omitempty"`
 
-	// Shared flag true if the storage is shared accross multiple instances
+	// Shared flag true if the storage is shared across multiple instances
 	Shared bool `json:"shared,omitempty"`
 
 	// Description is the description of the object

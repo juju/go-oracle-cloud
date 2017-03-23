@@ -93,7 +93,7 @@ type Instance struct {
 // Attributes holds a map of attributes that is returned from
 // the instance response
 // This attributes can have user data scripts or any other
-// key, value passed to be executed when the instance will strat, inits
+// key, value passed to be executed when the instance will start, inits
 type Attributes struct {
 	Dns                   map[string]string  `json:"dns"`
 	Network               map[string]Network `json:"network"`

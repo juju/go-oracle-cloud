@@ -7,7 +7,7 @@ import "errors"
 
 // Networking is a json object of string keys
 // Every key is the name of the interface example eth0,eth1, etc.
-// And every valu is a predefined json objects that holds infromation
+// And every value is a predefined json objects that holds information
 // about the interface
 type Networking map[string]Nic
 
@@ -26,7 +26,7 @@ const (
 // Nic type used to hold information from a
 // given interface card
 // This wil be used to dump all information from the
-// Netowrking type above
+// Networking type above
 type Nic struct {
 	// Dns is the dns of the nic
 	Dns []string `json:"dns,omitempty"`
