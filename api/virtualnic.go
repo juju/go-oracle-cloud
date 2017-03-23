@@ -10,8 +10,8 @@ import (
 	"github.com/juju/go-oracle-cloud/response"
 )
 
-// VirtualNic retrives a virtual nic with that has a given name
-func (c *Client) VirtualNic(name string) (resp response.VirtualNic, err error) {
+// VirtualNicDetails retrives a virtual nic with that has a given name
+func (c *Client) VirtualNicDetails(name string) (resp response.VirtualNic, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}

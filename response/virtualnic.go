@@ -13,6 +13,7 @@ package response
 // should be associated with. For more information, see Instance Attributes
 // in Using Oracle Compute Cloud Service (IaaS).
 type VirtualNic struct {
+
 	// Name is the name of the vnc
 	Name string `json:"name"`
 
@@ -20,7 +21,7 @@ type VirtualNic struct {
 	Uri string `json:"uri"`
 
 	//Description is the description of the object.
-	Description string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty"`
 
 	// Tags associated with the object.
 	Tags []string `json:"tags"`
