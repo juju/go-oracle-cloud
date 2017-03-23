@@ -47,7 +47,7 @@ type VpnEndpointParams struct {
 	// You can specify a maximum of 20 IP subnet addresses.
 	// Specify IPv4 addresses in dot-decimal
 	// notation with or without mask.
-	Reachable_routes []string `json:reachable_routes"`
+	Reachable_routes []string `json:"reachable_routes"`
 }
 
 func (v VpnEndpointParams) validate() (err error) {

@@ -182,7 +182,7 @@ func (c *Client) UpdateSecRule(
 	}
 
 	if currentName == "" {
-		errors.New("go-oracle-cloud: Empty secure rule current name")
+		return resp, errors.New("go-oracle-cloud: Empty secure rule current name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["secrule"], currentName)

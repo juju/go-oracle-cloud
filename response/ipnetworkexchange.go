@@ -15,10 +15,10 @@ type IpNetworkExchange struct {
 	Name string `json:"name"`
 
 	// Tags associated with the object.
-	Tags []string `json:tags,omitempty"`
+	Tags []string `json:"tags,omitempty"`
 
 	// Uri is the Uniform Resource Identifier
-	Uri string `json:"uri'`
+	Uri string `json:"uri"`
 }
 
 // AllIpNetworkExchanges is holds all internal ip network exchanges

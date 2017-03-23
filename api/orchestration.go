@@ -159,7 +159,7 @@ type Object struct {
 
 	// Machineimage_name is the name of the machine image
 	// that the storage was/will bot from
-	Machineimage_name string `json:"machineimage_name,omitempty`
+	Machineimage_name string `json:"machineimage_name,omitempty"`
 
 	// Snapshot_id is the snapshot id
 	Snapshot_id *string `json:"snapshot_id,omitempty"`

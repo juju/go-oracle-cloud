@@ -39,7 +39,7 @@ func (c *Client) CreateIpNetworkExchange(
 	params := struct {
 		Description string   `json:"description,omitempty"`
 		Name        string   `json:"name"`
-		Tags        []string `json:tags,omitempty"`
+		Tags        []string `json:"tags,omitempty"`
 	}{
 		Description: description,
 		Name:        name,

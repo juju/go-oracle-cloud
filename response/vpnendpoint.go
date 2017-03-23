@@ -50,7 +50,7 @@ type VpnEndpoint struct {
 	// You can specify a maximum of 20 IP subnet addresses.
 	// Specify IPv4 addresses in dot-decimal
 	// notation with or without mask.
-	Reachable_routes []string `json:reachable_routes"`
+	Reachable_routes []string `json:"reachable_routes"`
 
 	// Status is the current status of the VPN tunnel.
 	Status string `json:"status"`
