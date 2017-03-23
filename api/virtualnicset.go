@@ -32,7 +32,7 @@ type VnicSetParams struct {
 func (v VnicSetParams) validate() (err error) {
 	if v.Name == "" {
 		return errors.New(
-			"go-oracle-cloud: Empty vnic set name",
+			"go-oracle-cloud: Empty virtual nic set name",
 		)
 	}
 
@@ -73,7 +73,7 @@ func (c *Client) DeleteVnicSet(name string) (err error) {
 	}
 
 	if name == "" {
-		return errors.New("go-oracle-cloud: Empty vnic set name")
+		return errors.New("go-oracle-cloud: Empty virtual nic set name")
 	}
 
 	url := fmt.Sprintf("%s%s", c.endpoints["virtualnicset"], name)
@@ -118,7 +118,7 @@ func (c *Client) VnicSetDetails(name string) (resp response.VnicSet, err error) 
 
 	if name == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty vnic set name",
+			"go-oracle-cloud: Empty virtual nic set name",
 		)
 	}
 
@@ -151,7 +151,7 @@ func (c *Client) UpdateVnicSet(
 
 	if currentName == "" {
 		return resp, errors.New(
-			"go-oracle-cloud: Empty vnic set current name",
+			"go-oracle-cloud: Empty virtual nic set current name",
 		)
 	}
 
