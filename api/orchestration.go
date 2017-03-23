@@ -263,7 +263,7 @@ type InstancesOrchestration struct {
 
 type StorageOrhcestration struct {
 	Volume string `json:"volume,omitempty"`
-	Index  int    `json:index,omitempty"`
+	Index  int    `json:"index,omitempty"`
 }
 
 type AttributesOrchestration struct {
