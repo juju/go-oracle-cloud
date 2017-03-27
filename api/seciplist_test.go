@@ -51,7 +51,7 @@ func (cl clientTest) TestSecIpListResourceWithNoAuthentication(c *gc.C) {
 	})
 	defer ts.Close()
 
-	_, err := client.DefaultSecIpList(nil)
+	_, err := client.AllDefaultSecIpLists(nil)
 	c.Assert(err, gc.NotNil)
 	c.Assert(api.IsNotAuth(err), gc.Equals, true)
 
@@ -138,7 +138,7 @@ func (cl clientTest) TestSecIpListResourceWithErrors(c *gc.C) {
 			gc.Equals,
 			true)
 
-		_, err = client.DefaultSecIpList(nil)
+		_, err = client.AllDefaultSecIpLists(nil)
 		c.Assert(err, gc.NotNil)
 		c.Assert(val(err), gc.Equals, true)
 		c.Assert(
@@ -193,14 +193,14 @@ func (cl clientTest) TestAllSecIpLists(c *gc.C) {
 	c.Assert(resp, gc.DeepEquals, allseciplists)
 }
 
-func (cl clientTest) TestDefaultSecIpLists(c *gc.C) {
+func (cl clientTest) TestAllDefaultSecIpListss(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allseciplists),
 		check: c,
 	})
 	defer ts.Close()
 
-	resp, err := client.DefaultSecIpList(nil)
+	resp, err := client.AllDefaultSecIpLists(nil)
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, allseciplists)
 }

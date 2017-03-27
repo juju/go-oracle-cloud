@@ -145,9 +145,9 @@ func (c *Client) AllSecIpLists(filter []Filter) (resp response.AllSecIpLists, er
 	return resp, nil
 }
 
-// DefaultSecIpList retrieves details of the security IP lists that are defined by default in
+// AllDefaultSecIpLists retrieves details of the security IP lists that are defined by default in
 // the oracle compute cloud.
-func (c *Client) DefaultSecIpList(filter []Filter) (resp response.AllSecIpLists, err error) {
+func (c *Client) AllDefaultSecIpLists(filter []Filter) (resp response.AllSecIpLists, err error) {
 	if !c.isAuth() {
 		return resp, errNotAuth
 	}
