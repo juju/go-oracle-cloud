@@ -43,7 +43,7 @@ const (
 	StateDetached StateStorage = "detached"
 
 	// StateUnavailable tells that the storage attachment is unavailable.
-	StateUnavailable StateStorage = "unabailable"
+	StateUnavailable StateStorage = "unavailable"
 
 	//StateUnknown descibes the state of the storage attachment is not known.
 	StateUnknown StateStorage = "unknown"
