@@ -64,7 +64,7 @@ type StorageVolumeParams struct {
 	// If you are creating this storage volume from a storage snapshot,
 	// ensure that the size of the storage volume that you create
 	// is greater than the size of the storage snapshot.
-	Size common.StorageSize
+	Size common.StorageSize `json:"size"`
 
 	// Snapshot multipart name of the storage volume snapshot if
 	// this storage volume is a clone.
