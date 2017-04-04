@@ -103,7 +103,7 @@ type StorageVolume struct {
 	Snapshot_id string `json:"snapshot_id"`
 
 	// Status it the current state of the storage volume
-	Status string `json:"status"`
+	Status common.VolumeState `json:"status"`
 
 	// Status_details details about the latest state of the storage volume.
 	Status_detail string `json:"status_detail"`

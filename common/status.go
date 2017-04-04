@@ -18,3 +18,12 @@ const (
 	StateUnreachable  InstanceState = "unreachable"
 	StateError        InstanceState = "error"
 )
+
+type VolumeState string
+
+const (
+	VolumeInitializint VolumeState = "Initializing"
+	VolumeDeleting     VolumeState = "Deleting"
+	VolumeOnline       VolumeState = "Online"
+	VolumeError        VolumeState = "Error"
+)
