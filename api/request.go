@@ -136,7 +136,6 @@ func (c *Client) request(cfg paramsRequest) (err error) {
 	// be appendend into the request
 	if cfg.body != nil {
 		raw, err := json.Marshal(cfg.body)
-		logger.Debugf("Composing request body: %v", string(raw))
 		if err != nil {
 			return err
 		}
@@ -160,7 +159,6 @@ func (c *Client) request(cfg paramsRequest) (err error) {
 		// we now encode them into the base url
 		req.URL.RawQuery = q.Encode()
 	}
-	logger.Debugf("Sending request to: %v", req.URL)
 	// add the session cookie if there is one
 	if c.cookie != nil {
 		req.AddCookie(c.cookie)

@@ -8,11 +8,7 @@ import (
 	"fmt"
 
 	"github.com/juju/go-oracle-cloud/response"
-
-	"github.com/juju/loggo"
 )
-
-var logger = loggo.GetLogger("oracle.client")
 
 // CreateSecIpList a security IP list. Note that, after creating a
 // security IP list, you can add additional IP addresses to the list
