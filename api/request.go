@@ -103,6 +103,8 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 		return errServiceUnavailable.DumpApiError(resp.Body)
 	case http.StatusGatewayTimeout:
 		return errGatewayTimeout.DumpApiError(resp.Body)
+	case http.StatusHTTPVersionNotSupported:
+		return errNotSupported.DumpApiError(resp.Body)
 	case http.StatusConflict:
 		return errStatusConflict.DumpApiError(resp.Body)
 	case http.StatusNotFound:

@@ -74,7 +74,24 @@ var (
 	errGatewayTimeout = &ErrGatewayTimeout{
 		message: "go-oracle-cloud: The server,while acting as a gateway or proxy, did not receive a timely response from an upstream server it needed to access in order to complete the request.",
 	}
+	errNotSupported = &ErrNotSupported{
+		message: "go-oracle-cloud: The server does not support, or refuses to support, the major version of HTTP that was used in the request message",
+	}
 )
+
+// ErrNotSupported the server does not support, or refuses to support,
+// the major version of HTTP that was used in the request message
+type ErrNotSupported struct{ message string }
+
+// Error returns the internal error in a string format
+func (e ErrNotSupported) Error() string { return e.message }
+
+// DumpApiError returns the error in a error format from a given reader source
+func (e *ErrNotSupported) DumpApiError(r io.Reader) error {
+	body, _ := ioutil.ReadAll(r)
+	e.message = e.message + " Raw: " + string(body)
+	return e
+}
 
 // ErrGatewayTimeout the server, while acting as a gateway or proxy, did
 // not recive a timely response from the upstream server it needed to access
@@ -608,6 +625,18 @@ func IsGatewayTimeout(err error) bool {
 	if err == nil {
 		return false
 	}
+
 	_, ok := err.(*ErrGatewayTimeout)
+	return ok
+}
+
+// IsNotSupported returns true if the underlying error
+// is ErrNotSupported
+func IsNotSupported(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	_, ok := err.(*ErrNotSupported)
 	return ok
 }
