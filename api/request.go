@@ -71,6 +71,22 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 		return errBadRequest.DumpApiError(resp.Body)
 	case http.StatusUnauthorized:
 		return errNotAuthorized.DumpApiError(resp.Body)
+	case http.StatusPaymentRequired:
+		return errPaymentRequired.DumpApiError(resp.Body)
+	case http.StatusForbidden:
+		return errForbidden.DumpApiError(resp.Body)
+	case http.StatusMethodNotAllowed:
+		return errMethodNotAllowed.DumpApiError(resp.Body)
+	case http.StatusNotAcceptable:
+		return errNotAcceptable.DumpApiError(resp.Body)
+	case http.StatusRequestTimeout:
+		return errRequestTimeout.DumpApiError(resp.Body)
+	case http.StatusGone:
+		return errGone.DumpApiError(resp.Body)
+	case http.StatusLengthRequired:
+		return errLengthRequired.DumpApiError(resp.Body)
+	case http.StatusRequestEntityTooLarge:
+		return errRequestEntityTooLarge.DumpApiError(resp.Body)
 	case http.StatusInternalServerError:
 		return errInternalApi.DumpApiError(resp.Body)
 	case http.StatusConflict:
