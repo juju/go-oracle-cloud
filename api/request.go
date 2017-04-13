@@ -87,8 +87,22 @@ func defaultTreat(resp *http.Response, verbRequest string) (err error) {
 		return errLengthRequired.DumpApiError(resp.Body)
 	case http.StatusRequestEntityTooLarge:
 		return errRequestEntityTooLarge.DumpApiError(resp.Body)
+	case http.StatusPreconditionRequired:
+		return errPreconditionRequired.DumpApiError(resp.Body)
+	case http.StatusRequestURITooLong:
+		return errURITooLong.DumpApiError(resp.Body)
+	case http.StatusUnsupportedMediaType:
+		return errUnsupportedMediaType.DumpApiError(resp.Body)
+	case http.StatusRequestedRangeNotSatisfiable:
+		return errRequestNotSatisfiable.DumpApiError(resp.Body)
 	case http.StatusInternalServerError:
 		return errInternalApi.DumpApiError(resp.Body)
+	case http.StatusNotImplemented:
+		return errNotImplemented.DumpApiError(resp.Body)
+	case http.StatusServiceUnavailable:
+		return errServiceUnavailable.DumpApiError(resp.Body)
+	case http.StatusGatewayTimeout:
+		return errGatewayTimeout.DumpApiError(resp.Body)
 	case http.StatusConflict:
 		return errStatusConflict.DumpApiError(resp.Body)
 	case http.StatusNotFound:
