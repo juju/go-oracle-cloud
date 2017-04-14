@@ -121,6 +121,10 @@ func (cl clientTest) TestAccountDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &accountDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  accountDetailsRaw,
+			into: &response.Account{},
+		},
 	})
 	defer ts.Close()
 
@@ -134,6 +138,10 @@ func (cl clientTest) TestAllAccounts(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allaccounts),
 		check: c,
+		u: &unmarshaler{
+			raw:  allAccountsRaw,
+			into: &response.AllAccounts{},
+		},
 	})
 	defer ts.Close()
 
@@ -146,6 +154,10 @@ func (cl clientTest) TestAccountNames(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &accountnames),
 		check: c,
+		u: &unmarshaler{
+			raw:  accountNamesRaw,
+			into: &response.DirectoryNames{},
+		},
 	})
 	defer ts.Close()
 
@@ -158,6 +170,10 @@ func (cl clientTest) TestDirectoryAccount(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &accountnames),
 		check: c,
+		u: &unmarshaler{
+			raw:  directoryAccountRaw,
+			into: &response.DirectoryNames{},
+		},
 	})
 	defer ts.Close()
 

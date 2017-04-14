@@ -67,6 +67,25 @@ type httpParams struct {
 	// handler manual the header
 	// and header status
 	manualHeaderStatus bool
+
+	// if this field is present
+	// the we also check the unmarhaling process
+	// check if the raw passed can be dumped
+	// into into filed
+	u *unmarshaler
+}
+
+// unmarshaler type used to check if unmarshaling process
+// of the raw into from
+type unmarshaler struct {
+	// raw json here
+	raw []byte
+	// into structure here
+	into interface{}
+}
+
+func (u *unmarshaler) Dumping() error {
+	return enc.Unmarshal(u.raw, u.into)
 }
 
 func hdr(value string, w http.ResponseWriter, r *http.Request) (err error) {
@@ -122,6 +141,11 @@ func (cli clientTest) StartTestServer(
 			// treat the w and *r here in a custom way
 			if params.handler != nil {
 				params.handler(w, r)
+			}
+
+			if params.u != nil {
+				err := params.u.Dumping()
+				params.check.Assert(err, gc.IsNil)
 			}
 
 			// if the caller is expecting the
@@ -210,6 +234,11 @@ func (cl clientTest) StartTestServerAuth(
 				// handler the header if it's somthing wrong then
 				// handler the status based on the method
 				err := handlerHeaderStatus(w, r)
+				params.check.Assert(err, gc.IsNil)
+			}
+
+			if params.u != nil {
+				err := params.u.Dumping()
 				params.check.Assert(err, gc.IsNil)
 			}
 
