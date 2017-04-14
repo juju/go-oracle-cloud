@@ -203,6 +203,10 @@ func (cl clientTest) TestCreateImageList(c *gc.C) {
 			c.Assert(req.Description, gc.DeepEquals, imageListParams.Description)
 			c.Assert(req.Name, gc.DeepEquals, imageListParams.Name)
 		},
+		u: &unmarshaler{
+			raw:  imageListDetailsRaw,
+			into: &response.ImageList{},
+		},
 	})
 	defer ts.Close()
 
@@ -232,6 +236,10 @@ func (cl clientTest) TestUpdateImageList(c *gc.C) {
 			c.Assert(req.Description, gc.DeepEquals, imageListParams.Description)
 			c.Assert(req.Name, gc.DeepEquals, imageListParams.Name)
 		},
+		u: &unmarshaler{
+			raw:  imageListDetailsRaw,
+			into: &response.ImageList{},
+		},
 	})
 	defer ts.Close()
 
@@ -249,6 +257,10 @@ func (cl clientTest) TestImageListDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &imageListDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  imageListDetailsRaw,
+			into: &response.ImageList{},
+		},
 	})
 	defer ts.Close()
 
@@ -262,6 +274,10 @@ func (cl clientTest) TestAllImageLists(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allimagelists),
 		check: c,
+		u: &unmarshaler{
+			raw:  allImageListDetailsRaw,
+			into: &response.AllImageLists{},
+		},
 	})
 	defer ts.Close()
 
@@ -274,6 +290,10 @@ func (cl clientTest) TestImageListNames(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &imagelistnames),
 		check: c,
+		u: &unmarshaler{
+			raw:  imageListNamesRaw,
+			into: &response.DirectoryNames{},
+		},
 	})
 	defer ts.Close()
 

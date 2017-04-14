@@ -187,6 +187,10 @@ func (cl clientTest) TestCreateImageListEntry(c *gc.C) {
 			c.Assert(req.Attributes, gc.DeepEquals, imageListEntryParams.attributes)
 			c.Assert(req.MachineImages, gc.DeepEquals, imageListEntryParams.machineimages)
 		},
+		u: &unmarshaler{
+			raw:  imageListEntryRaw,
+			into: &response.ImageListEntry{},
+		},
 	})
 	defer ts.Close()
 
@@ -217,6 +221,10 @@ func (cl clientTest) TestImageListEntryDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		check: c,
 		body:  createResponse(c, &imageListEntryDetails),
+		u: &unmarshaler{
+			raw:  imageListEntryRaw,
+			into: &response.ImageListEntry{},
+		},
 	})
 	defer ts.Close()
 

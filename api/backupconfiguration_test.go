@@ -73,9 +73,9 @@ func (cl clientTest) TestBackupConfigratuionWithErrors(c *gc.C) {
 			true)
 
 		// when we encounter this case that,[
-		// the delete method is recivng http.StatusNotFound
+		// the delete method is receiving http.StatusNotFound
 		// this means for the delete resource point of view to not be
-		// an acutal error and it will return nil so we don't need to check this
+		// an actual error and it will return nil so we don't need to check this
 		if key != http.StatusNotFound {
 			err = client.DeleteBackupConfiguration(backupConfigurationParams.Name)
 			c.Assert(err, gc.NotNil)
@@ -164,6 +164,10 @@ func (cl clientTest) TestCreateBackupConfiguration(c *gc.C) {
 			c.Assert(err, gc.IsNil)
 			c.Assert(req, gc.DeepEquals, backupConfigurationParams)
 		},
+		u: &unmarshaler{
+			raw:  backupConfigurationDetailsRaw,
+			into: &response.BackupConfiguration{},
+		},
 	})
 	defer ts.Close()
 
@@ -186,6 +190,10 @@ func (cl clientTest) TestBackupConfigurationDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		check: c,
 		body:  createResponse(c, &backupConfigurationDetails),
+		u: &unmarshaler{
+			raw:  backupConfigurationDetailsRaw,
+			into: &response.BackupConfiguration{},
+		},
 	})
 	defer ts.Close()
 
@@ -215,6 +223,10 @@ func (cl clientTest) TestUpdateBackupConfiguration(c *gc.C) {
 			err := enc.NewDecoder(r.Body).Decode(&req)
 			c.Assert(err, gc.IsNil)
 			c.Assert(req, gc.DeepEquals, backupConfigurationParams)
+		},
+		u: &unmarshaler{
+			raw:  backupConfigurationDetailsRaw,
+			into: &response.BackupConfiguration{},
 		},
 	})
 	defer ts.Close()

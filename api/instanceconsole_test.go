@@ -72,6 +72,10 @@ func (cl clientTest) TestInstanceConsoleDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &instanceConsoleDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  instanceConsoleDetailsRaw,
+			into: &response.InstanceConsole{},
+		},
 	})
 	defer ts.Close()
 
