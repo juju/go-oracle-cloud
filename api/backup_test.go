@@ -152,6 +152,10 @@ func (cl clientTest) TestCreateBackup(c *gc.C) {
 			c.Assert(err, gc.IsNil)
 			c.Assert(req, gc.DeepEquals, backupParams)
 		},
+		u: &unmarshaler{
+			raw:  backupDetailsRaw,
+			into: &response.Backup{},
+		},
 	})
 	defer ts.Close()
 
@@ -174,6 +178,10 @@ func (cl clientTest) TestBackupDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		check: c,
 		body:  createResponse(c, &backupDetails),
+		u: &unmarshaler{
+			raw:  backupDetailsRaw,
+			into: &response.Backup{},
+		},
 	})
 	defer ts.Close()
 
@@ -186,6 +194,10 @@ func (cl clientTest) TestAllBackups(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		check: c,
 		body:  createResponse(c, &allbackups),
+		u: &unmarshaler{
+			raw:  allBackupsRaw,
+			into: &response.AllBackups{},
+		},
 	})
 	defer ts.Close()
 

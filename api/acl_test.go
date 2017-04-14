@@ -155,6 +155,10 @@ func (cl clientTest) TestCreateAcl(c *gc.C) {
 			c.Assert(err, gc.IsNil)
 			c.Assert(aclDetails, gc.DeepEquals, req)
 		},
+		u: &unmarshaler{
+			raw:  aclDetailsRaw,
+			into: &response.Acl{},
+		},
 	})
 	defer ts.Close()
 
@@ -183,6 +187,10 @@ func (cl clientTest) TestAclDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &aclDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  aclDetailsRaw,
+			into: &response.Acl{},
+		},
 	})
 	defer ts.Close()
 
@@ -196,6 +204,10 @@ func (cl clientTest) TestAllAcls(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allacls),
 		check: c,
+		u: &unmarshaler{
+			raw:  allAclsRaw,
+			into: &response.AllAcls{},
+		},
 	})
 	defer ts.Close()
 
@@ -210,6 +222,10 @@ func (cl clientTest) TestUpdateAcl(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &aclDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  aclDetailsRaw,
+			into: &response.Acl{},
+		},
 		handler: func(w http.ResponseWriter, r *http.Request) {
 			var req response.Acl
 			err := enc.NewDecoder(r.Body).Decode(&req)
