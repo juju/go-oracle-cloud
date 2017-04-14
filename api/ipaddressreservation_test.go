@@ -161,6 +161,10 @@ func (cl clientTest) TestIpAddressReservationDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &ipAddressReservationDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  ipAddressReservationRaw,
+			into: &response.IpAddressReservation{},
+		},
 	})
 
 	defer ts.Close()
@@ -175,6 +179,10 @@ func (cl clientTest) TestAllIpAddressReservations(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allipaddressreservations),
 		check: c,
+		u: &unmarshaler{
+			raw:  allIpAddressReservationRaw,
+			into: &response.AllIpAddressReservations{},
+		},
 	})
 
 	defer ts.Close()
@@ -207,6 +215,10 @@ func (cl clientTest) TestCreateIpAddressReservation(c *gc.C) {
 			c.Assert(err, gc.IsNil)
 			c.Assert(req, gc.DeepEquals, ipAddressReservationParams)
 		},
+		u: &unmarshaler{
+			raw:  ipAddressReservationRaw,
+			into: &response.IpAddressReservation{},
+		},
 	})
 	defer ts.Close()
 
@@ -226,6 +238,10 @@ func (cl clientTest) TestUpdateIpAddressReservation(c *gc.C) {
 
 			c.Assert(err, gc.IsNil)
 			c.Assert(req, gc.DeepEquals, ipAddressReservationParams)
+		},
+		u: &unmarshaler{
+			raw:  ipAddressReservationRaw,
+			into: &response.IpAddressReservation{},
 		},
 	})
 	defer ts.Close()

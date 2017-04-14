@@ -156,6 +156,10 @@ func (cl clientTest) TestIpAddressPrefixSetDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &ipAddressPrefixSetDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  ipAddressPrefixSetsRaw,
+			into: &response.IpAddressPrefixSet{},
+		},
 	})
 
 	defer ts.Close()
@@ -169,6 +173,10 @@ func (cl clientTest) TestAllIpAddressPrefixSets(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allipaddressprefixsets),
 		check: c,
+		u: &unmarshaler{
+			raw:  allIpAddressPrefixSetsRaw,
+			into: &response.AllIpAddressPrefixSets{},
+		},
 	})
 
 	defer ts.Close()
@@ -201,6 +209,10 @@ func (cl clientTest) TestCreateIpAddressPrefixset(c *gc.C) {
 			c.Assert(err, gc.IsNil)
 			c.Assert(req, gc.DeepEquals, ipAddressPrefixSetParams)
 		},
+		u: &unmarshaler{
+			raw:  ipAddressPrefixSetsRaw,
+			into: &response.IpAddressPrefixSet{},
+		},
 	})
 	defer ts.Close()
 
@@ -219,6 +231,10 @@ func (cl clientTest) TestUpdateIpAddressPrefixSet(c *gc.C) {
 
 			c.Assert(err, gc.IsNil)
 			c.Assert(req, gc.DeepEquals, ipAddressPrefixSetParams)
+		},
+		u: &unmarshaler{
+			raw:  ipAddressPrefixSetsRaw,
+			into: &response.IpAddressPrefixSet{},
 		},
 	})
 	defer ts.Close()

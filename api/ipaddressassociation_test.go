@@ -229,6 +229,10 @@ func (cl clientTest) TestIpAddressAssociationDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &ipAddressAssociationDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  ipAddressAssociationDetailsRaw,
+			into: &response.IpAddressAssociation{},
+		},
 	})
 
 	defer ts.Close()
@@ -243,6 +247,10 @@ func (cl clientTest) TestAllIpAddressAssocitations(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allipaddressassociations),
 		check: c,
+		u: &unmarshaler{
+			raw:  allIpAddressAssociationRaw,
+			into: &response.AllIpAddressAssociations{},
+		},
 	})
 
 	defer ts.Close()
@@ -256,6 +264,10 @@ func (cl clientTest) TestAllIpAddressAssocitations(c *gc.C) {
 func (cl clientTest) TestDeleteIpAddressAssociation(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		check: c,
+		u: &unmarshaler{
+			raw:  ipAddressAssociationDetailsRaw,
+			into: &response.IpAddressAssociation{},
+		},
 	})
 
 	defer ts.Close()
@@ -281,6 +293,10 @@ func (cl clientTest) TestCreateIpAddressAssociation(c *gc.C) {
 			c.Assert(req.IpAddressReservation, gc.DeepEquals,
 				ipAddressAssociationDetails.IpAddressReservation)
 			c.Assert(req.Uri, gc.DeepEquals, "")
+		},
+		u: &unmarshaler{
+			raw:  ipAddressAssociationDetailsRaw,
+			into: &response.IpAddressAssociation{},
 		},
 	})
 	defer ts.Close()
@@ -314,6 +330,10 @@ func (cl clientTest) TestUpdateIpAssociation(c *gc.C) {
 			c.Assert(req.IpAddressReservation, gc.DeepEquals,
 				ipAddressAssociationDetails.IpAddressReservation)
 			c.Assert(req.Uri, gc.DeepEquals, "")
+		},
+		u: &unmarshaler{
+			raw:  ipAddressAssociationDetailsRaw,
+			into: &response.IpAddressAssociation{},
 		},
 	})
 	defer ts.Close()

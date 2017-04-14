@@ -311,4 +311,271 @@ var (
 	"name": "/Compute-acme/jack.jones@example.com/68a3c40c-466e-41df-a7f2-00fbfbd590e5"
 }
 	`)[1:]
+
+	instanceDetailsRaw = []byte(`
+{
+ "list": [
+  {
+   "domain": "acme...",
+   "placement_requirements": [
+    "/system/compute/placement/default",
+    "/system/compute/allow_instances"
+   ],
+   "ip": "10...",
+   "site": "",
+   "shape": "oc5",
+   "imagelist": "/oracle/public/oel_6.4_60GB",
+   "attributes": {
+    "network": {
+     "nimbula_vcable-eth0": {
+      "vethernet_id": "0",
+      "vethernet": "/oracle/public/default",
+      "address": [
+       "c6:b0:09:f4:bc:c0",
+       "0.0.0.0"
+      ],
+      "model": "",
+      "vethernet_type": "vlan",
+      "id": "/Compute-acme/jack.jones@example.com/016e75e7-e911-42d1-bfe1-6a7f1b3f7908",
+      "dhcp_options": []
+     }
+    },
+    "dns": {
+     "domain": "acme...",
+     "hostname": "d06886.compute-acme...",
+     "nimbula_vcable-eth0": "d06886.acme..."
+    },
+    "sshkeys": [
+     "ssh-rsa AAAAB3NzaC1yc2EAAA..."
+    ]
+   },
+   "networking": {
+    "eth0": {
+     "model": "",
+     "dns": [
+      "d06886.acme..."
+     ],
+     "seclists": [
+      "/Compute-acme/default/default",
+      "/Compute-acme/jack.jones@example.com/prod-ng"
+     ],
+     "vethernet": "/oracle/public/default",
+     "nat": "ipreservation:/Compute-acme/jack.jones@example.com/prod-vm1"
+    }
+   },
+   "hostname": "d06886.acme...",
+   "quota_reservation": "/Compute-acme/ffc8e6d4-8f93-41f3-a062-bdbb042c3191",
+   "disk_attach": "",
+   "label": "Production instance 1",
+   "priority": "/oracle/public/default",
+   "state": "running",
+   "vnc": "10...",
+   "storage_attachments": [
+    {
+     "index": 1,
+     "storage_volume_name": "/Compute-acme/jack.jones@example.com/prod-vol1",
+     "name": "/Compute-acme/admin/dev1/f653a677-b566-4f92-8e93-71d47b364119/f1a67244-9abc-45d5-af69-8..."
+    }
+   ],
+   "start_time": "2014-06-24T17:51:35Z",
+   "quota": "/acme",
+   "fingerprint": "19:c4:3f:2d:dc:76:b1:06:e8:88:bd:7f:a3:3b:3c:93",
+   "error_reason": "",
+   "sshkeys": [
+    "/Compute-acme/jack.jones@example.com/acme-prod-admin"
+   ],
+   "tags": [
+    "prod2"
+   ],
+   "resolvers": null,
+   "account": "/Compute-acme/default",
+   "name": "/Compute-acme/jack.jones@example.com/dev1/f653a677-b566-4f92-8e93-71d47b364119",
+   "vcable_id": "/Compute-acme/jack.jones@example.com/016e75e7-e911-42d1-bfe1-6a7f1b3f7908",
+   "uri": "http://10....",
+   "reverse_dns": true,
+   "entry": 1,
+   "boot_order": []
+  }
+ ]
+}`)[1:]
+
+	allInstancesRaw = []byte(`
+{
+ "list": [
+  {
+   "domain": "acme...",
+   "placement_requirements": [
+    "/system/compute/placement/default",
+    "/system/compute/allow_instances"
+   ],
+   "ip": "10...",
+   "site": "",
+   "shape": "oc5",
+   "imagelist": "/oracle/public/oel_6.4_60GB",
+   "attributes": {
+    "network": {
+     "nimbula_vcable-eth0": {
+      "vethernet_id": "0",
+      "vethernet": "/oracle/public/default",
+      "address": [
+       "c6:b0:09:f4:bc:c0",
+       "0.0.0.0"
+      ],
+      "model": "",
+      "vethernet_type": "vlan",
+      "id": "/Compute-acme/jack.jones@example.com/016e75e7-e911-42d1-bfe1-6a7f1b3f7908",
+      "dhcp_options": []
+     }
+    },
+    "dns": {
+     "domain": "acme...",
+     "hostname": "d06886.compute-acme...",
+     "nimbula_vcable-eth0": "d06886.acme..."
+    },
+    "sshkeys": [
+     "ssh-rsa AAAAB3NzaC1yc2EAAA..."
+    ]
+   },
+   "networking": {
+    "eth0": {
+     "model": "",
+     "dns": [
+      "d06886.acme..."
+     ],
+     "seclists": [
+      "/Compute-acme/default/default",
+      "/Compute-acme/jack.jones@example.com/prod-ng"
+     ],
+     "vethernet": "/oracle/public/default",
+     "nat": "ipreservation:/Compute-acme/jack.jones@example.com/prod-vm1"
+    }
+   },
+   "hostname": "d06886.acme...",
+   "quota_reservation": "/Compute-acme/ffc8e6d4-8f93-41f3-a062-bdbb042c3191",
+   "disk_attach": "",
+   "label": "Production instance 1",
+   "priority": "/oracle/public/default",
+   "state": "running",
+   "vnc": "10...",
+   "storage_attachments": [
+    {
+     "index": 1,
+     "storage_volume_name": "/Compute-acme/jack.jones@example.com/prod-vol1",
+     "name": "/Compute-acme/admin/dev1/f653a677-b566-4f92-8e93-71d47b364119/f1a67244-9abc-45d5-af69-8..."
+    }
+   ],
+   "start_time": "2014-06-24T17:51:35Z",
+   "quota": "/acme",
+   "fingerprint": "19:c4:3f:2d:dc:76:b1:06:e8:88:bd:7f:a3:3b:3c:93",
+   "error_reason": "",
+   "sshkeys": [
+    "/Compute-acme/jack.jones@example.com/acme-prod-admin"
+   ],
+   "tags": [
+    "prod2"
+   ],
+   "resolvers": null,
+   "account": "/Compute-acme/default",
+   "name": "/Compute-acme/jack.jones@example.com/dev1/f653a677-b566-4f92-8e93-71d47b364119",
+   "vcable_id": "/Compute-acme/jack.jones@example.com/016e75e7-e911-42d1-bfe1-6a7f1b3f7908",
+   "uri": "http://10....",
+   "reverse_dns": true,
+   "entry": 1,
+   "boot_order": []
+  }
+ ]
+}`)
+
+	ipAddressAssociationDetailsRaw = []byte(`
+{
+ "default": 1, 
+ "description": "ol 6", 
+ "entries": [], 
+ "uri": "https://api-z999.compute.us0.oraclecloud.com/imagelist/Compute-acme/admin/ol6",
+ "name": "/Compute-acme/jack.jones@example.com/ol6"
+}`)[1:]
+
+	allIpAddressAssociationRaw = []byte(`
+{
+"result":[
+{
+  "name": "/Compute-acme/jack.jones@example.com/ipassociation1",
+  "uri": "https://api-z999.compute.us0.oraclecloud.com/network/v1/ipassociation/Compute-acme/jack.jones@example.com/ipassociation1",
+  "description": null,
+  "tags": [],
+  "vnic": "/Compute-acme/jack.jones@example.com/2e6627de-6842-49bc-9c28-21da524c297d/eth0",
+  "ipAddressReservation": "/Compute-acme/jack.jones@example.com/ipreservation1"
+}
+]
+}
+`)[1:]
+
+	ipAddressPrefixSetsRaw = []byte(`
+{
+ "ipAddressPrefixes": ["192.168.0.0/16"],
+ "uri": "https://api-z999.compute.us0.oraclecloud.com/network/v1/ipaddressprefixset/Compute-acme/jack.jones@example.com/ipaddressprefixset1",
+ "description": null,
+ "tags": [],
+ "name": "/Compute-acme/jack.jones@example.com/ipaddressprefixset1"
+}
+`)[1:]
+	allIpAddressPrefixSetsRaw = []byte(`
+{
+  "result": [
+    {
+      "name": "/Compute-acme/jack.jones@example.com/ipreservation2",
+      "uri": "https://api-z999.compute.us0.oraclecloud.com:443/network/v1/ipaddressprefixset/Compute-acme/jack.jones@example.com/ipreservation2",
+      "description": "Sample IP address prefix set",
+      "tags": [
+        
+      ],
+      "ipAddressPrefixes": [
+        "178.120.0.0/24"
+      ]
+    },
+    {
+      "name": "/Compute-acme/jack.jones@example.com/ipreservation1",
+      "uri": "https://api-z999.compute.us0.oraclecloud.com:443/network/v1/ipaddressprefixset/Compute-acme/jack.jones@example.com/ipreservation1",
+      "description": "updating an IP address prefix set",
+      "tags": [
+        
+      ],
+      "ipAddressPrefixes": [
+        "192.168.0.0/16",
+        "172.120.0.0/24"
+      ]
+    }
+  ]
+}`)[1:]
+	ipAddressReservationRaw = []byte(`
+	{
+  "name": "/Compute-acme/jack.jones@example.com/ipreservation1",
+  "uri": "https://api-z999.compute.us0.oraclecloud.com/network/v1/ipreservation/Compute-acme/jack.jones@example.com/ipreservation1",
+  "description": null,
+  "tags": [],
+  "ipAddress": "10.252.152.90",
+  "ipAddressPool": "/oracle/public/public-ippool"
+}`)[1:]
+
+	allIpAddressReservationRaw = []byte(`
+{
+"result":[
+{
+  "name": "/Compute-acme/jack.jones@example.com/ipreservation1",
+  "uri": "https://api-z999.compute.us0.oraclecloud.com/network/v1/ipreservation/Compute-acme/jack.jones@example.com/ipreservation1",
+  "description": null,
+  "tags": [],
+  "ipAddress": "10.252.152.90",
+  "ipAddressPool": "/oracle/public/public-ippool"
+},
+{
+  "name": "/Compute-acme/jack.jones@example.com/ipreservation2",
+  "uri": "https://api-z999.compute.us0.oraclecloud.com/network/v1/ipreservation/Compute-acme/jack.jones@example.com/ipreservation2",
+  "description": null,
+  "tags": [],
+  "ipAddress": "10.252.152.52",
+  "ipAddressPool": "/oracle/public/cloud-ippool"
+}
+]
+}`)[1:]
 )

@@ -162,6 +162,10 @@ func (cl clientTest) TestInstnaceDetails(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &instanceDetails),
 		check: c,
+		u: &unmarshaler{
+			raw:  instanceDetailsRaw,
+			into: &response.Instance{},
+		},
 	})
 	defer ts.Close()
 
@@ -184,6 +188,10 @@ func (cl clientTest) TestAllInstances(c *gc.C) {
 	ts, client := cl.StartTestServerAuth(httpParams{
 		body:  createResponse(c, &allinstances),
 		check: c,
+		u: &unmarshaler{
+			raw:  allInstancesRaw,
+			into: &response.AllInstances{},
+		},
 	})
 	defer ts.Close()
 
@@ -191,5 +199,3 @@ func (cl clientTest) TestAllInstances(c *gc.C) {
 	c.Assert(err, gc.IsNil)
 	c.Assert(resp, gc.DeepEquals, allinstances)
 }
-
-// TODO(sgiulitti) test here the launchplan also
