@@ -112,7 +112,7 @@ func (c *Client) CreateImageListEntry(
 
 	params := struct {
 		Attributes    map[string]interface{} `json:"attributes,omitempty"`
-		MachineImages []string               `json:"machineImages"`
+		MachineImages []string               `json:"machineimages"`
 		Version       int                    `json:"version"`
 	}{
 		Attributes:    attributes,
